@@ -1,4 +1,4 @@
-This package implements the models of [Shelegia and Motta (2021)](shelegia_motta_2021.pdf).
+This package implements the models of [Shelegia and Motta (2021)](../shelegia_motta_2021.pdf).
 
 ### Basic Usage
 ```
