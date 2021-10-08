@@ -7,37 +7,38 @@ pip install Shelegia-Motta-2021
 ```
 
 ### Introduction
-Since all models implement the IModel - Interface, therefore all models provide the same functionality (public methods), even though the results may change substantially.
+Since all models implement the Shelegia_Motta_2021.IModel.IModel - Interface, therefore all models provide the same functionality (public methods), even though the results may change substantially.
 
 For all models add the following import statement:
 ```
 import Shelegia_Motta_2021.Models
 ```
 
-### Base Model
+### Models
+#### Base Model
 ```
 base_model = Shelegia_Motta_2021.Models.BaseModel()
 ```
 
-### Unobservable Choices Model
+#### Unobservable Choices Model
 ```
 unobservable_model = Shelegia_Motta_2021.Models.UnobservableModel()
 ```
 
-### Acquisition Model
+#### Acquisition Model
 ```
 acquisition_model = Shelegia_Motta_2021.Models.AcquisitionModel()
 ```
 
-### Two-sided Market Model
+#### Two-sided Market Model
 ```
 two_sided_market_model = Shelegia_Motta_2021.Models.TwoSidedMarketModel()
 ```
 
-### Basic usage for every type of model
+### Basic usage
 ```
 # every model type can be plugged in
-model: Shelegia_Motta_2021.IModel = Shelegia_Motta_2021.BaseModel()
+model: Shelegia_Motta_2021.IModel.IModel = Shelegia_Motta_2021.BaseModel()
 
 # print string representation of the model
 print(model)
@@ -49,7 +50,7 @@ model.plot_incumbent_best_answers()
 model.plot_equilibrium()
 ```
 
-### Generate Documentation
+### Documentation
 Install the pdoc package:
 ```
 pip install pdoc

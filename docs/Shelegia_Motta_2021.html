@@ -32,12 +32,15 @@
                     <ul>
   <li><a href="#installation">Installation</a></li>
   <li><a href="#introduction">Introduction</a></li>
-  <li><a href="#base-model">Base Model</a></li>
-  <li><a href="#unobservable-choices-model">Unobservable Choices Model</a></li>
-  <li><a href="#acquisition-model">Acquisition Model</a></li>
-  <li><a href="#two-sided-market-model">Two-sided Market Model</a></li>
-  <li><a href="#basic-usage-for-every-type-of-model">Basic usage for every type of model</a></li>
-  <li><a href="#generate-documentation">Generate Documentation</a></li>
+  <li><a href="#models">Models</a>
+  <ul>
+    <li><a href="#base-model">Base Model</a></li>
+    <li><a href="#unobservable-choices-model">Unobservable Choices Model</a></li>
+    <li><a href="#acquisition-model">Acquisition Model</a></li>
+    <li><a href="#two-sided-market-model">Two-sided Market Model</a></li>
+  </ul></li>
+  <li><a href="#basic-usage">Basic usage</a></li>
+  <li><a href="#documentation">Documentation</a></li>
 </ul>
 
 
@@ -72,37 +75,39 @@ Shelegia_Motta_2021    </h1>
 
 <h3 id="introduction">Introduction</h3>
 
-<p>Since all models implement the IModel - Interface, therefore all models provide the same functionality (public methods), even though the results may change substantially.</p>
+<p>Since all models implement the <a href="Shelegia_Motta_2021/IModel.html#IModel">Shelegia_Motta_2021.IModel.IModel</a> - Interface, therefore all models provide the same functionality (public methods), even though the results may change substantially.</p>
 
 <p>For all models add the following import statement:</p>
 
 <pre><code>import <a href="Shelegia_Motta_2021/Models.html">Shelegia_Motta_2021.Models</a>
 </code></pre>
 
-<h3 id="base-model">Base Model</h3>
+<h3 id="models">Models</h3>
+
+<h4 id="base-model">Base Model</h4>
 
 <pre><code>base_model = <a href="Shelegia_Motta_2021/Models.html#BaseModel">Shelegia_Motta_2021.Models.BaseModel()</a>
 </code></pre>
 
-<h3 id="unobservable-choices-model">Unobservable Choices Model</h3>
+<h4 id="unobservable-choices-model">Unobservable Choices Model</h4>
 
 <pre><code>unobservable_model = <a href="Shelegia_Motta_2021/Models.html#UnobservableModel">Shelegia_Motta_2021.Models.UnobservableModel()</a>
 </code></pre>
 
-<h3 id="acquisition-model">Acquisition Model</h3>
+<h4 id="acquisition-model">Acquisition Model</h4>
 
 <pre><code>acquisition_model = <a href="Shelegia_Motta_2021/Models.html#AcquisitionModel">Shelegia_Motta_2021.Models.AcquisitionModel()</a>
 </code></pre>
 
-<h3 id="two-sided-market-model">Two-sided Market Model</h3>
+<h4 id="two-sided-market-model">Two-sided Market Model</h4>
 
 <pre><code>two_sided_market_model = <a href="Shelegia_Motta_2021/Models.html#TwoSidedMarketModel">Shelegia_Motta_2021.Models.TwoSidedMarketModel()</a>
 </code></pre>
 
-<h3 id="basic-usage-for-every-type-of-model">Basic usage for every type of model</h3>
+<h3 id="basic-usage">Basic usage</h3>
 
 <pre><code># every model type can be plugged in
-model: <a href="Shelegia_Motta_2021/IModel.html">Shelegia_Motta_2021.IModel</a> = <a href="#BaseModel">Shelegia_Motta_2021.BaseModel()</a>
+model: <a href="Shelegia_Motta_2021/IModel.html#IModel">Shelegia_Motta_2021.IModel.IModel</a> = <a href="#BaseModel">Shelegia_Motta_2021.BaseModel()</a>
 
 # print string representation of the model
 print(model)
@@ -114,7 +119,7 @@ model.plot_incumbent_best_answers()
 model.plot_equilibrium()
 </code></pre>
 
-<h3 id="generate-documentation">Generate Documentation</h3>
+<h3 id="documentation">Documentation</h3>
 
 <p>Install the pdoc package:</p>
 
