@@ -52,7 +52,7 @@
                                 <a class="function" href="#IModel.plot_incumbent_best_answers">plot_incumbent_best_answers</a>
                         </li>
                         <li>
-                                <a class="function" href="#IModel.plot_entrant_best_answers">plot_entrant_best_answers</a>
+                                <a class="function" href="#IModel.plot_equilibrium">plot_equilibrium</a>
                         </li>
                         <li>
                                 <a class="function" href="#IModel.get_optimal_choice">get_optimal_choice</a>
@@ -86,36 +86,96 @@
 
 
 <span class="k">class</span> <span class="nc">IModel</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Interface for all models in Shelegia and Motta (2021).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">calculate_funding_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates the thresholds for the funding of the incumbent.</span>
+
+<span class="sd">        Number and type of the thresholds will be specific to the model.</span>
+
+<span class="sd">        :return: dict including the thresholds for the funding of the incumbent.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">calculate_asset_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates the thresholds for the assets of the entrant.</span>
+
+<span class="sd">        Number and type of the thresholds will be specific to the model.</span>
+
+<span class="sd">        :return: dict including the thresholds for the assets of the entrant.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">get_asset_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the asset thresholds of the entrant.</span>
+
+<span class="sd">        Number and type of the thresholds will be specific to the model.</span>
+
+<span class="sd">        :return: dict including the thresholds for the assets of the entrant.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">get_funding_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the funding thresholds of the incumbent.</span>
+
+<span class="sd">        Number and type of the thresholds will be specific to the model.</span>
+
+<span class="sd">        :return: dict including the thresholds for the funding of the incumbent.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">plot_incumbent_best_answers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plots the best answers of the incumbent to all possible actions of the entrant.</span>
+
+<span class="sd">        :param axis: to plot the figure to (optional)</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">plot_entrant_best_answers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">plot_equilibrium</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plots the equilibrium path based on the choices of the entrant and incumbent.</span>
+
+<span class="sd">        :param axis: to plot the figure to (optional)</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">get_optimal_choice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">F</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the optimal choice of the entrant and the incumbent based on a pair of assets of the entrant ann funding of the incumbent.</span>
+
+<span class="sd">        :param A: assets of the entrant.</span>
+<span class="sd">        :param F: funding of the incumbent.</span>
+<span class="sd">        :return: optimal choice of the entrant and the incumbent.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a string representation of the object.</span>
+
+<span class="sd">        Includes:</span>
+<span class="sd">        - Asset thresholds of the entrant</span>
+<span class="sd">        - Funding thresholds of the incumbent.</span>
+<span class="sd">        - Utilities for different market configurations</span>
+
+<span class="sd">        :return: string representation of the object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 </pre></div>
 
@@ -134,42 +194,104 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">IModel</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Interface for all models in Shelegia and Motta (2021).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">calculate_funding_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates the thresholds for the funding of the incumbent.</span>
+
+<span class="sd">        Number and type of the thresholds will be specific to the model.</span>
+
+<span class="sd">        :return: dict including the thresholds for the funding of the incumbent.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">calculate_asset_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates the thresholds for the assets of the entrant.</span>
+
+<span class="sd">        Number and type of the thresholds will be specific to the model.</span>
+
+<span class="sd">        :return: dict including the thresholds for the assets of the entrant.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">get_asset_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the asset thresholds of the entrant.</span>
+
+<span class="sd">        Number and type of the thresholds will be specific to the model.</span>
+
+<span class="sd">        :return: dict including the thresholds for the assets of the entrant.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">get_funding_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the funding thresholds of the incumbent.</span>
+
+<span class="sd">        Number and type of the thresholds will be specific to the model.</span>
+
+<span class="sd">        :return: dict including the thresholds for the funding of the incumbent.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">plot_incumbent_best_answers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plots the best answers of the incumbent to all possible actions of the entrant.</span>
+
+<span class="sd">        :param axis: to plot the figure to (optional)</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">plot_entrant_best_answers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">plot_equilibrium</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plots the equilibrium path based on the choices of the entrant and incumbent.</span>
+
+<span class="sd">        :param axis: to plot the figure to (optional)</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">get_optimal_choice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">F</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the optimal choice of the entrant and the incumbent based on a pair of assets of the entrant ann funding of the incumbent.</span>
+
+<span class="sd">        :param A: assets of the entrant.</span>
+<span class="sd">        :param F: funding of the incumbent.</span>
+<span class="sd">        :return: optimal choice of the entrant and the incumbent.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a string representation of the object.</span>
+
+<span class="sd">        Includes:</span>
+<span class="sd">        - Asset thresholds of the entrant</span>
+<span class="sd">        - Funding thresholds of the incumbent.</span>
+<span class="sd">        - Utilities for different market configurations</span>
+
+<span class="sd">        :return: string representation of the object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 </pre></div>
 
         </details>
 
-    
+            <div class="docstring"><p>Interface for all models in Shelegia and Motta (2021).</p>
+</div>
+
 
                             <div id="IModel.__init__" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#IModel.__init__">#&nbsp;&nbsp</a>
@@ -195,12 +317,25 @@
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">calculate_funding_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates the thresholds for the funding of the incumbent.</span>
+
+<span class="sd">        Number and type of the thresholds will be specific to the model.</span>
+
+<span class="sd">        :return: dict including the thresholds for the funding of the incumbent.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 </pre></div>
 
         </details>
 
-    
+            <div class="docstring"><p>Calculates the thresholds for the funding of the incumbent.</p>
+
+<p>Number and type of the thresholds will be specific to the model.</p>
+
+<p>:return: dict including the thresholds for the funding of the incumbent.</p>
+</div>
+
 
                             </div>
                             <div id="IModel.calculate_asset_values" class="classattr">
@@ -216,12 +351,25 @@
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">calculate_asset_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates the thresholds for the assets of the entrant.</span>
+
+<span class="sd">        Number and type of the thresholds will be specific to the model.</span>
+
+<span class="sd">        :return: dict including the thresholds for the assets of the entrant.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 </pre></div>
 
         </details>
 
-    
+            <div class="docstring"><p>Calculates the thresholds for the assets of the entrant.</p>
+
+<p>Number and type of the thresholds will be specific to the model.</p>
+
+<p>:return: dict including the thresholds for the assets of the entrant.</p>
+</div>
+
 
                             </div>
                             <div id="IModel.get_asset_values" class="classattr">
@@ -237,12 +385,25 @@
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">get_asset_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the asset thresholds of the entrant.</span>
+
+<span class="sd">        Number and type of the thresholds will be specific to the model.</span>
+
+<span class="sd">        :return: dict including the thresholds for the assets of the entrant.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 </pre></div>
 
         </details>
 
-    
+            <div class="docstring"><p>Returns the asset thresholds of the entrant.</p>
+
+<p>Number and type of the thresholds will be specific to the model.</p>
+
+<p>:return: dict including the thresholds for the assets of the entrant.</p>
+</div>
+
 
                             </div>
                             <div id="IModel.get_funding_values" class="classattr">
@@ -258,12 +419,25 @@
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">get_funding_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the funding thresholds of the incumbent.</span>
+
+<span class="sd">        Number and type of the thresholds will be specific to the model.</span>
+
+<span class="sd">        :return: dict including the thresholds for the funding of the incumbent.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 </pre></div>
 
         </details>
 
-    
+            <div class="docstring"><p>Returns the funding thresholds of the incumbent.</p>
+
+<p>Number and type of the thresholds will be specific to the model.</p>
+
+<p>:return: dict including the thresholds for the funding of the incumbent.</p>
+</div>
+
 
                             </div>
                             <div id="IModel.plot_incumbent_best_answers" class="classattr">
@@ -279,33 +453,55 @@
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">plot_incumbent_best_answers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plots the best answers of the incumbent to all possible actions of the entrant.</span>
+
+<span class="sd">        :param axis: to plot the figure to (optional)</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 </pre></div>
 
         </details>
 
-    
+            <div class="docstring"><p>Plots the best answers of the incumbent to all possible actions of the entrant.</p>
+
+<p>:param axis: to plot the figure to (optional)
+:return:</p>
+</div>
+
 
                             </div>
-                            <div id="IModel.plot_entrant_best_answers" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#IModel.plot_entrant_best_answers">#&nbsp;&nbsp</a>
+                            <div id="IModel.plot_equilibrium" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#IModel.plot_equilibrium">#&nbsp;&nbsp</a>
 
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">plot_entrant_best_answers</span><span class="signature">(self, axis: matplotlib.axes._axes.Axes = None) -&gt; None</span>:
+            <span class="name">plot_equilibrium</span><span class="signature">(self, axis: matplotlib.axes._axes.Axes = None) -&gt; None</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">plot_entrant_best_answers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">plot_equilibrium</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plots the equilibrium path based on the choices of the entrant and incumbent.</span>
+
+<span class="sd">        :param axis: to plot the figure to (optional)</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 </pre></div>
 
         </details>
 
-    
+            <div class="docstring"><p>Plots the equilibrium path based on the choices of the entrant and incumbent.</p>
+
+<p>:param axis: to plot the figure to (optional)
+:return:</p>
+</div>
+
 
                             </div>
                             <div id="IModel.get_optimal_choice" class="classattr">
@@ -321,12 +517,25 @@
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">get_optimal_choice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">F</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the optimal choice of the entrant and the incumbent based on a pair of assets of the entrant ann funding of the incumbent.</span>
+
+<span class="sd">        :param A: assets of the entrant.</span>
+<span class="sd">        :param F: funding of the incumbent.</span>
+<span class="sd">        :return: optimal choice of the entrant and the incumbent.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 </pre></div>
 
         </details>
 
-    
+            <div class="docstring"><p>Return the optimal choice of the entrant and the incumbent based on a pair of assets of the entrant ann funding of the incumbent.</p>
+
+<p>:param A: assets of the entrant.
+:param F: funding of the incumbent.
+:return: optimal choice of the entrant and the incumbent.</p>
+</div>
+
 
                             </div>
                 </section>
