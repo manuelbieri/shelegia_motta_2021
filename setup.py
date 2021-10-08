@@ -10,7 +10,7 @@ with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
 setup(
     name='Shelegia_Motta_2021',
     packages=find_packages(),
-    version='0.0.1',
+    version='0.0.2',
     license='MIT',
     description='Implements Shelegia and Motta (2021)',
     long_description=long_description,
@@ -18,7 +18,7 @@ setup(
     author='Manuel Bieri',
     author_email='manuel.bieri@outlook.com',
     url='https://github.com/manuelbieri/shelegia_motta_2021',
-    download_url='https://github.com/manuelbieri/Shelegia_Motta_2021/archive/refs/tags/v0.0.1.tar.gz',
+    download_url='https://github.com/manuelbieri/Shelegia_Motta_2021/archive/refs/tags/v0.0.2.tar.gz',
     keywords=['Acquisition', 'Kill Zone', 'Start-up'],
     classifiers=[
         'Development Status :: 3 - Alpha',  # "3 - Alpha" / "4 - Beta" / "5 - Production/Stable"
