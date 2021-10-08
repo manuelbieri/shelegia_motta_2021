@@ -30,7 +30,13 @@
 
                     <h2>Contents</h2>
                     <ul>
-  <li><a href="#basic-usage">Basic Usage</a></li>
+  <li><a href="#installation">Installation</a></li>
+  <li><a href="#introduction">Introduction</a></li>
+  <li><a href="#base-model">Base Model</a></li>
+  <li><a href="#unobservable-choices-model">Unobservable Choices Model</a></li>
+  <li><a href="#acquisition-model">Acquisition Model</a></li>
+  <li><a href="#two-sided-market-model">Two-sided Market Model</a></li>
+  <li><a href="#basic-usage-for-every-type-of-model">Basic usage for every type of model</a></li>
   <li><a href="#generate-documentation">Generate Documentation</a></li>
 </ul>
 
@@ -57,16 +63,60 @@ Shelegia_Motta_2021    </h1>
 
                         <div class="docstring"><p>This package implements the models of <a href="shelegia_motta_2021.pdf">Shelegia and Motta (2021)</a>.</p>
 
-<h3 id="basic-usage">Basic Usage</h3>
+<h3 id="installation">Installation</h3>
+
+<p>Installation over PyPI:</p>
+
+<pre><code>pip install Shelegia-Motta-2021
+</code></pre>
+
+<h3 id="introduction">Introduction</h3>
+
+<p>Since all models implement the IModel - Interface, therefore all models provide the same functionality (public methods), even though the results may change substantially.</p>
+
+<p>For all models add the following import statement:</p>
 
 <pre><code>import <a href="Shelegia_Motta_2021/Models.html">Shelegia_Motta_2021.Models</a>
+</code></pre>
 
-base_model = <a href="Shelegia_Motta_2021/Models.html#BaseModel">Shelegia_Motta_2021.Models.BaseModel()</a>
+<h3 id="base-model">Base Model</h3>
+
+<pre><code>base_model = <a href="Shelegia_Motta_2021/Models.html#BaseModel">Shelegia_Motta_2021.Models.BaseModel()</a>
+</code></pre>
+
+<h3 id="unobservable-choices-model">Unobservable Choices Model</h3>
+
+<pre><code>unobservable_model = <a href="Shelegia_Motta_2021/Models.html#UnobservableModel">Shelegia_Motta_2021.Models.UnobservableModel()</a>
+</code></pre>
+
+<h3 id="acquisition-model">Acquisition Model</h3>
+
+<pre><code>acquisition_model = <a href="Shelegia_Motta_2021/Models.html#AcquisitionModel">Shelegia_Motta_2021.Models.AcquisitionModel()</a>
+</code></pre>
+
+<h3 id="two-sided-market-model">Two-sided Market Model</h3>
+
+<pre><code>two_sided_market_model = <a href="Shelegia_Motta_2021/Models.html#TwoSidedMarketModel">Shelegia_Motta_2021.Models.TwoSidedMarketModel()</a>
+</code></pre>
+
+<h3 id="basic-usage-for-every-type-of-model">Basic usage for every type of model</h3>
+
+<pre><code># every model type can be plugged in
+model: <a href="Shelegia_Motta_2021/IModel.html">Shelegia_Motta_2021.IModel</a> = <a href="#BaseModel">Shelegia_Motta_2021.BaseModel()</a>
+
+# print string representation of the model
+print(model)
+
+# plot the best answers of the incumbent to the choice of the entrant
+model.plot_incumbent_best_answers()
+
+# plot the equilibrium path
+model.plot_equilibrium()
 </code></pre>
 
 <h3 id="generate-documentation">Generate Documentation</h3>
 
-<p>Install pdoc:</p>
+<p>Install the pdoc package:</p>
 
 <pre><code>pip install pdoc
 </code></pre>
@@ -85,7 +135,7 @@ base_model = <a href="Shelegia_Motta_2021/Models.html#BaseModel">Shelegia_Motta_
 <span class="n">__docformat__</span> <span class="o">=</span> <span class="s2">&quot;restructuredtext&quot;</span>
 
 <span class="kn">from</span> <span class="nn">Shelegia_Motta_2021.IModel</span> <span class="kn">import</span> <span class="n">IModel</span>
-<span class="kn">from</span> <span class="nn">Shelegia_Motta_2021.Models</span> <span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">UnobservableModel</span><span class="p">,</span> <span class="n">AcquisitionModel</span>
+<span class="kn">from</span> <span class="nn">Shelegia_Motta_2021.Models</span> <span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">UnobservableModel</span><span class="p">,</span> <span class="n">AcquisitionModel</span><span class="p">,</span> <span class="n">TwoSidedMarketModel</span>
 </pre></div>
 
         </details>
