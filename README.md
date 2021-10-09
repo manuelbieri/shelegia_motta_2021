@@ -13,7 +13,7 @@ This package implements the models of [Shelegia and Motta (2021)](shelegia_motta
 ![GitHub deployments](https://img.shields.io/github/deployments/manuelbieri/shelegia_motta_2021/github-pages?label=Documentation)
 
 ### Installation
-Installation over PyPI:
+Installation over [PyPI](https://pypi.org/project/Shelegia-Motta-2021/):
 ```
 pip install Shelegia-Motta-2021
 ```
@@ -63,6 +63,8 @@ model.plot_equilibrium()
 ```
 
 ### Documentation
+The latest version of the documentation can be found on [manuelbieri.github.io/shelegia_motta_2021](https://manuelbieri.github.io/shelegia_motta_2021/Shelegia_Motta_2021.html)
+
 Install the pdoc package:
 ```
 pip install pdoc
