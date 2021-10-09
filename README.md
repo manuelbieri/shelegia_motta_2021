@@ -1,5 +1,17 @@
 This package implements the models of [Shelegia and Motta (2021)](shelegia_motta_2021.pdf).
 
+![GitHub](https://img.shields.io/github/license/manuelbieri/shelegia_motta_2021)
+![GitHub language count](https://img.shields.io/github/languages/count/manuelbieri/shelegia_motta_2021)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/Shelegia-Motta-2021)
+![GitHub top language](https://img.shields.io/github/languages/top/manuelbieri/shelegia_motta_2021)
+![GitHub repo size](https://img.shields.io/github/repo-size/manuelbieri/shelegia_motta_2021)
+![GitHub last commit](https://img.shields.io/github/last-commit/manuelbieri/shelegia_motta_2021)
+![PyPi](https://github.com/manuelbieri/shelegia_motta_2021/actions/workflows/pypi.yml/badge.svg)
+![PyPI](https://img.shields.io/pypi/v/Shelegia-Motta-2021)
+![PyPI - Status](https://img.shields.io/pypi/status/Shelegia-Motta-2021)
+![GitHub Release Date](https://img.shields.io/github/release-date/manuelbieri/shelegia_motta_2021)
+![GitHub deployments](https://img.shields.io/github/deployments/manuelbieri/shelegia_motta_2021/github-pages?label=Documentation)
+
 ### Installation
 Installation over PyPI:
 ```
