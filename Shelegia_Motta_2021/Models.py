@@ -1,5 +1,7 @@
 from typing import Dict, List, Tuple
 
+from numpy import arange
+
 import matplotlib.axes
 import matplotlib.pyplot as plt
 
@@ -19,6 +21,7 @@ ability to obtain funding
 """
 
     def __init__(self, u: float = 1, B: float = 0.5, small_delta: float = 0.5, delta: float = 0.51, K: float = 0.2):
+        # TODO add assertions to check requirements for the model!
         self.u: float = u
         self.B: float = B
         self.small_delta: float = small_delta
@@ -101,6 +104,9 @@ ability to obtain funding
     def get_funding_values(self) -> Dict[str, float]:
         return self.funding
 
+    def get_utility_values(self) -> Dict[str, Dict[str, float]]:
+        return self.utility
+
     def get_optimal_choice(self, A: float, F: float):
         pass
 
@@ -167,6 +173,39 @@ ability to obtain funding
             [(self.assets['A-s'], self.funding['F(YY)s']), (x_max, self.funding['F(YY)s']),
              (x_max, y_max), (0, y_max), (0, self.funding['F(YN)s']), (self.assets['A-s'], self.funding['F(YN)s'])]]
 
+    def plot_utilities(self, axis: matplotlib.axes.Axes = None) -> None:
+        if axis is None:
+            fig, axis = plt.subplots()
+        index = arange(0, len(self.utility) * 2, 2)
+        bar_width = 0.35
+        opacity = 0.8
+        spacing = 0.05
+
+        for counter, utility_type in enumerate(self.utility[list(self.utility.keys())[0]].keys()):
+            utility_values: List[float] = []
+            for market_configuration in self.utility:
+                utility_values.append(self.utility[market_configuration][utility_type])
+
+            bars = axis.bar(index + counter * (bar_width + spacing), utility_values, bar_width,
+                            alpha=opacity,
+                            color='w',
+                            edgecolor=self._get_color(counter),
+                            label=utility_type)
+            max_indices: List[int] = list(
+                filter(lambda x: utility_values[x] == max(utility_values), range(len(utility_values))))
+            for max_index in max_indices:
+                bars[max_index].set_color(self._get_color(counter))
+
+        axis.set_xlabel('Market Configuration')
+        axis.set_ylabel('Utility')
+        axis.set_title('Market Configurations')
+        axis.set_xticks(index + 1.5 * (bar_width + spacing))
+        axis.set_xticklabels(tuple(self.utility.keys()))
+        axis.legend()
+
+        BaseModel._set_axis(axis)
+        plt.show()
+
     def _get_x_max(self) -> float:
         return round(self.assets['A-c'] * 1.3, 1)
 
@@ -200,11 +239,13 @@ ability to obtain funding
             str_representation += '\n\t- ' + key + ':\t' + str(self.funding[key])
 
         market_configurations: List[str] = list(self.utility.keys())
-        str_representation += '\nUtility - Levels for different Market Configurations:\n\t' + ''.join(['{0: <14}'.format(item) for item in market_configurations])
+        str_representation += '\nUtility - Levels for different Market Configurations:\n\t' + ''.join(
+            ['{0: <14}'.format(item) for item in market_configurations])
         for utility_type in self.utility[market_configurations[0]].keys():
             str_representation += '\n\t'
             for market_configuration in market_configurations:
-                str_representation += '-' + '{0: <4}'.format(utility_type).replace('pi', 'π') + ': ' + '{0: <5}'.format(str(self.utility[market_configuration][utility_type])) + '| '
+                str_representation += '-' + '{0: <4}'.format(utility_type).replace('pi', 'π') + ': ' + '{0: <5}'.format(
+                    str(self.utility[market_configuration][utility_type])) + '| '
 
         return str_representation
 
@@ -229,4 +270,5 @@ if __name__ == '__main__':
     base_model = BaseModel()
     base_model.plot_incumbent_best_answers()
     base_model.plot_equilibrium()
+    base_model.plot_utilities()
     print(base_model)

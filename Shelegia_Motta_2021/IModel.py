@@ -1,5 +1,5 @@
 import abc
-from typing import Dict, Optional
+from typing import Dict
 
 import matplotlib.axes
 
@@ -31,6 +31,20 @@ class IModel:
         pass
 
     @abc.abstractmethod
+    def calculate_welfare(self) -> Dict[str, Dict[str, float]]:
+        """
+        Calculates the utility values for different market configurations.
+
+        Includes the following utilities:
+        - pi(I):
+        - pi(E):
+        - CS:
+        - W:
+
+        :return: dict containing the mentioned utilities for different market configurations.
+        """
+
+    @abc.abstractmethod
     def get_asset_values(self) -> Dict[str, float]:
         """
         Returns the asset thresholds of the entrant.
@@ -53,6 +67,21 @@ class IModel:
         pass
 
     @abc.abstractmethod
+    def get_utility_values(self) -> Dict[str, Dict[str, float]]:
+        """
+        Returns the utility values for different market configurations.
+
+        Includes the following utilities:
+        TODO Add explanations for the different types
+        - pi(I):
+        - pi(E):
+        - CS:
+        - W:
+
+        :return: dict containing the mentioned utilities for different market configurations.
+        """
+
+    @abc.abstractmethod
     def plot_incumbent_best_answers(self, axis: matplotlib.axes.Axes = None) -> None:
         """
         Plots the best answers of the incumbent to all possible actions of the entrant.
@@ -66,6 +95,16 @@ class IModel:
     def plot_equilibrium(self, axis: matplotlib.axes.Axes = None) -> None:
         """
         Plots the equilibrium path based on the choices of the entrant and incumbent.
+
+        :param axis: to plot the figure to (optional)
+        :return:
+        """
+        pass
+
+    @abc.abstractmethod
+    def plot_utilities(self, axis: matplotlib.axes.Axes = None) -> None:
+        """
+        Plots the utilities for different market configurations.
 
         :param axis: to plot the figure to (optional)
         :return:

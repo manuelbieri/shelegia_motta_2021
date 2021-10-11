@@ -50,7 +50,7 @@ two_sided_market_model = Shelegia_Motta_2021.Models.TwoSidedMarketModel()
 ### Basic usage
 ```
 # every model type can be plugged in
-model: Shelegia_Motta_2021.IModel.IModel = Shelegia_Motta_2021.BaseModel()
+model: Shelegia_Motta_2021.IModel.IModel = Shelegia_Motta_2021.Models.BaseModel()
 
 # print string representation of the model
 print(model)

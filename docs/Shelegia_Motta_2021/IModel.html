@@ -43,16 +43,25 @@
                                 <a class="function" href="#IModel.calculate_asset_values">calculate_asset_values</a>
                         </li>
                         <li>
+                                <a class="function" href="#IModel.calculate_welfare">calculate_welfare</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#IModel.get_asset_values">get_asset_values</a>
                         </li>
                         <li>
                                 <a class="function" href="#IModel.get_funding_values">get_funding_values</a>
                         </li>
                         <li>
+                                <a class="function" href="#IModel.get_utility_values">get_utility_values</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#IModel.plot_incumbent_best_answers">plot_incumbent_best_answers</a>
                         </li>
                         <li>
                                 <a class="function" href="#IModel.plot_equilibrium">plot_equilibrium</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#IModel.plot_utilities">plot_utilities</a>
                         </li>
                         <li>
                                 <a class="function" href="#IModel.get_optimal_choice">get_optimal_choice</a>
@@ -80,7 +89,7 @@
                         <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="kn">import</span> <span class="nn">abc</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span>
 
 <span class="kn">import</span> <span class="nn">matplotlib.axes</span>
 
@@ -112,6 +121,20 @@
         <span class="k">pass</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">calculate_welfare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates the utility values for different market configurations.</span>
+
+<span class="sd">        Includes the following utilities:</span>
+<span class="sd">        - pi(I):</span>
+<span class="sd">        - pi(E):</span>
+<span class="sd">        - CS:</span>
+<span class="sd">        - W:</span>
+
+<span class="sd">        :return: dict containing the mentioned utilities for different market configurations.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">get_asset_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the asset thresholds of the entrant.</span>
@@ -134,6 +157,21 @@
         <span class="k">pass</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_utility_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the utility values for different market configurations.</span>
+
+<span class="sd">        Includes the following utilities:</span>
+<span class="sd">        TODO Add explanations for the different types</span>
+<span class="sd">        - pi(I):</span>
+<span class="sd">        - pi(E):</span>
+<span class="sd">        - CS:</span>
+<span class="sd">        - W:</span>
+
+<span class="sd">        :return: dict containing the mentioned utilities for different market configurations.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">plot_incumbent_best_answers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plots the best answers of the incumbent to all possible actions of the entrant.</span>
@@ -147,6 +185,16 @@
     <span class="k">def</span> <span class="nf">plot_equilibrium</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plots the equilibrium path based on the choices of the entrant and incumbent.</span>
+
+<span class="sd">        :param axis: to plot the figure to (optional)</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">plot_utilities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plots the utilities for different market configurations.</span>
 
 <span class="sd">        :param axis: to plot the figure to (optional)</span>
 <span class="sd">        :return:</span>
@@ -220,6 +268,20 @@
         <span class="k">pass</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">calculate_welfare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates the utility values for different market configurations.</span>
+
+<span class="sd">        Includes the following utilities:</span>
+<span class="sd">        - pi(I):</span>
+<span class="sd">        - pi(E):</span>
+<span class="sd">        - CS:</span>
+<span class="sd">        - W:</span>
+
+<span class="sd">        :return: dict containing the mentioned utilities for different market configurations.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">get_asset_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the asset thresholds of the entrant.</span>
@@ -242,6 +304,21 @@
         <span class="k">pass</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_utility_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the utility values for different market configurations.</span>
+
+<span class="sd">        Includes the following utilities:</span>
+<span class="sd">        TODO Add explanations for the different types</span>
+<span class="sd">        - pi(I):</span>
+<span class="sd">        - pi(E):</span>
+<span class="sd">        - CS:</span>
+<span class="sd">        - W:</span>
+
+<span class="sd">        :return: dict containing the mentioned utilities for different market configurations.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">plot_incumbent_best_answers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plots the best answers of the incumbent to all possible actions of the entrant.</span>
@@ -255,6 +332,16 @@
     <span class="k">def</span> <span class="nf">plot_equilibrium</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plots the equilibrium path based on the choices of the entrant and incumbent.</span>
+
+<span class="sd">        :param axis: to plot the figure to (optional)</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">plot_utilities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plots the utilities for different market configurations.</span>
 
 <span class="sd">        :param axis: to plot the figure to (optional)</span>
 <span class="sd">        :return:</span>
@@ -372,6 +459,50 @@
 
 
                             </div>
+                            <div id="IModel.calculate_welfare" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#IModel.calculate_welfare">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@abc.abstractmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">calculate_welfare</span><span class="signature">(self) -&gt; Dict[str, Dict[str, float]]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">calculate_welfare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates the utility values for different market configurations.</span>
+
+<span class="sd">        Includes the following utilities:</span>
+<span class="sd">        - pi(I):</span>
+<span class="sd">        - pi(E):</span>
+<span class="sd">        - CS:</span>
+<span class="sd">        - W:</span>
+
+<span class="sd">        :return: dict containing the mentioned utilities for different market configurations.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Calculates the utility values for different market configurations.</p>
+
+<p>Includes the following utilities:</p>
+
+<ul>
+<li>pi(I):</li>
+<li>pi(E):</li>
+<li>CS:</li>
+<li>W:</li>
+</ul>
+
+<p>:return: dict containing the mentioned utilities for different market configurations.</p>
+</div>
+
+
+                            </div>
                             <div id="IModel.get_asset_values" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#IModel.get_asset_values">#&nbsp;&nbsp</a>
 
@@ -440,6 +571,52 @@
 
 
                             </div>
+                            <div id="IModel.get_utility_values" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#IModel.get_utility_values">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@abc.abstractmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">get_utility_values</span><span class="signature">(self) -&gt; Dict[str, Dict[str, float]]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_utility_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the utility values for different market configurations.</span>
+
+<span class="sd">        Includes the following utilities:</span>
+<span class="sd">        TODO Add explanations for the different types</span>
+<span class="sd">        - pi(I):</span>
+<span class="sd">        - pi(E):</span>
+<span class="sd">        - CS:</span>
+<span class="sd">        - W:</span>
+
+<span class="sd">        :return: dict containing the mentioned utilities for different market configurations.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Returns the utility values for different market configurations.</p>
+
+<p>Includes the following utilities:
+TODO Add explanations for the different types</p>
+
+<ul>
+<li>pi(I):</li>
+<li>pi(E):</li>
+<li>CS:</li>
+<li>W:</li>
+</ul>
+
+<p>:return: dict containing the mentioned utilities for different market configurations.</p>
+</div>
+
+
+                            </div>
                             <div id="IModel.plot_incumbent_best_answers" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#IModel.plot_incumbent_best_answers">#&nbsp;&nbsp</a>
 
@@ -497,6 +674,38 @@
         </details>
 
             <div class="docstring"><p>Plots the equilibrium path based on the choices of the entrant and incumbent.</p>
+
+<p>:param axis: to plot the figure to (optional)
+:return:</p>
+</div>
+
+
+                            </div>
+                            <div id="IModel.plot_utilities" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#IModel.plot_utilities">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@abc.abstractmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">plot_utilities</span><span class="signature">(self, axis: matplotlib.axes._axes.Axes = None) -&gt; None</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">plot_utilities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plots the utilities for different market configurations.</span>
+
+<span class="sd">        :param axis: to plot the figure to (optional)</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Plots the utilities for different market configurations.</p>
 
 <p>:param axis: to plot the figure to (optional)
 :return:</p>
