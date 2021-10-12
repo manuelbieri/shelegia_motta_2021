@@ -1,9 +1,7 @@
 This package implements the models of [Shelegia and Motta (2021)](shelegia_motta_2021.pdf).
 
 ![GitHub](https://img.shields.io/github/license/manuelbieri/shelegia_motta_2021)
-![GitHub language count](https://img.shields.io/github/languages/count/manuelbieri/shelegia_motta_2021)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/Shelegia-Motta-2021)
-![GitHub top language](https://img.shields.io/github/languages/top/manuelbieri/shelegia_motta_2021)
 ![GitHub repo size](https://img.shields.io/github/repo-size/manuelbieri/shelegia_motta_2021)
 ![GitHub last commit](https://img.shields.io/github/last-commit/manuelbieri/shelegia_motta_2021)
 ![PyPi](https://github.com/manuelbieri/shelegia_motta_2021/actions/workflows/pypi.yml/badge.svg)
@@ -16,6 +14,11 @@ This package implements the models of [Shelegia and Motta (2021)](shelegia_motta
 Installation over [PyPI](https://pypi.org/project/Shelegia-Motta-2021/):
 ```
 pip install Shelegia-Motta-2021
+```
+
+Or clone the repository via [GitHub](https://github.com/manuelbieri/shelegia_motta_2021):
+```
+git clone manuelbieri/shelegia_motta_2021
 ```
 
 ### Introduction
@@ -63,8 +66,14 @@ model.plot_equilibrium()
 ```
 
 ### Documentation
-The latest version of the documentation can be found on [manuelbieri.github.io/shelegia_motta_2021](https://manuelbieri.github.io/shelegia_motta_2021/Shelegia_Motta_2021.html)
+For the latest version of the documentation open [manuelbieri.github.io/shelegia_motta_2021](https://manuelbieri.github.io/shelegia_motta_2021/Shelegia_Motta_2021.html) in your browser or call:
+```
+import Shelegia_Motta_2021
 
+Shelegia_Motta_2021.docs()
+```
+
+#### Build Documentation
 Install the pdoc package:
 ```
 pip install pdoc

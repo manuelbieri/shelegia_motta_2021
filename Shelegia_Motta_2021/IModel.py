@@ -9,18 +9,18 @@ class IModel:
     Interface for all models in Shelegia and Motta (2021).
     """
     @abc.abstractmethod
-    def calculate_funding_values(self) -> Dict[str, float]:
+    def _calculate_copying_fixed_costs_values(self) -> Dict[str, float]:
         """
-        Calculates the thresholds for the funding of the incumbent.
+        Calculates the thresholds for the fixed costs for copying of the incumbent.
 
         Number and type of the thresholds will be specific to the model.
 
-        :return: dict including the thresholds for the funding of the incumbent.
+        :return: dict including the thresholds for the fixed costs for copying of the incumbent.
         """
         pass
 
     @abc.abstractmethod
-    def calculate_asset_values(self) -> Dict[str, float]:
+    def _calculate_asset_values(self) -> Dict[str, float]:
         """
         Calculates the thresholds for the assets of the entrant.
 
@@ -31,7 +31,7 @@ class IModel:
         pass
 
     @abc.abstractmethod
-    def calculate_welfare(self) -> Dict[str, Dict[str, float]]:
+    def _calculate_welfare(self) -> Dict[str, Dict[str, float]]:
         """
         Calculates the utility values for different market configurations.
 
@@ -56,13 +56,13 @@ class IModel:
         pass
 
     @abc.abstractmethod
-    def get_funding_values(self) -> Dict[str, float]:
+    def get_copying_fixed_costs_values(self) -> Dict[str, float]:
         """
-        Returns the funding thresholds of the incumbent.
+        Returns the fixed costs for copying thresholds of the incumbent.
 
         Number and type of the thresholds will be specific to the model.
 
-        :return: dict including the thresholds for the funding of the incumbent.
+        :return: dict including the thresholds for the fixed costs for copying of the incumbent.
         """
         pass
 
@@ -114,10 +114,10 @@ class IModel:
     @abc.abstractmethod
     def get_optimal_choice(self, A: float, F: float):
         """
-        Return the optimal choice of the entrant and the incumbent based on a pair of assets of the entrant ann funding of the incumbent.
+        Return the optimal choice of the entrant and the incumbent based on a pair of assets of the entrant ann fixed costs for copying of the incumbent.
 
         :param A: assets of the entrant.
-        :param F: funding of the incumbent.
+        :param F: fixed costs for copying of the incumbent.
         :return: optimal choice of the entrant and the incumbent.
         """
         pass
@@ -129,7 +129,7 @@ class IModel:
 
         Includes:
         - Asset thresholds of the entrant
-        - Funding thresholds of the incumbent.
+        - fixed costs for copying thresholds of the incumbent.
         - Utilities for different market configurations
 
         :return: string representation of the object.

@@ -40,7 +40,10 @@
     <li><a href="#two-sided-market-model">Two-sided Market Model</a></li>
   </ul></li>
   <li><a href="#basic-usage">Basic usage</a></li>
-  <li><a href="#documentation">Documentation</a></li>
+  <li><a href="#documentation">Documentation</a>
+  <ul>
+    <li><a href="#build-documentation">Build Documentation</a></li>
+  </ul></li>
 </ul>
 
 
@@ -49,6 +52,13 @@
                             <li><a href="Shelegia_Motta_2021/IModel.html">Shelegia_Motta_2021.IModel</a></li>
                             <li><a href="Shelegia_Motta_2021/Models.html">Shelegia_Motta_2021.Models</a></li>
                     </ul>
+
+                    <h2>API Documentation</h2>
+                        <ul class="memberlist">
+            <li>
+                    <a class="function" href="#docs">docs</a>
+            </li>
+    </ul>
 
 
 
@@ -83,6 +93,11 @@ Shelegia_Motta_2021    </h1>
 <p>Installation over <a href="https://pypi.org/project/Shelegia-Motta-2021/">PyPI</a>:</p>
 
 <pre><code>pip install Shelegia-Motta-2021
+</code></pre>
+
+<p>Or clone the repository via <a href="https://github.com/manuelbieri/shelegia_motta_2021">GitHub</a>:</p>
+
+<pre><code>git clone manuelbieri/shelegia_motta_2021
 </code></pre>
 
 <h3 id="introduction">Introduction</h3>
@@ -133,7 +148,14 @@ model.plot_equilibrium()
 
 <h3 id="documentation">Documentation</h3>
 
-<p>The latest version of the documentation can be found on <a href="https://manuelbieri.github.io/shelegia_motta_2021/Shelegia_Motta_2021.html">manuelbieri.github.io/shelegia_motta_2021</a></p>
+<p>For the latest version of the documentation open <a href="https://manuelbieri.github.io/shelegia_motta_2021/Shelegia_Motta_2021.html">manuelbieri.github.io/shelegia_motta_2021</a> in your browser or call:</p>
+
+<pre><code>import Shelegia_Motta_2021
+
+<a href="#docs">Shelegia_Motta_2021.docs()</a>
+</code></pre>
+
+<h4 id="build-documentation">Build Documentation</h4>
 
 <p>Install the pdoc package:</p>
 
@@ -159,11 +181,44 @@ model.plot_equilibrium()
 <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">IModel</span> <span class="kn">import</span> <span class="n">IModel</span>
     <span class="kn">from</span> <span class="nn">Models</span> <span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">UnobservableModel</span><span class="p">,</span> <span class="n">AcquisitionModel</span><span class="p">,</span> <span class="n">TwoSidedMarketModel</span>
+
+
+<span class="k">def</span> <span class="nf">docs</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Opens the newest published version of the documentation of this package.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">webbrowser</span>
+    <span class="n">webbrowser</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;https://manuelbieri.github.io/shelegia_motta_2021/Shelegia_Motta_2021.html&#39;</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
             </section>
+                <section id="docs">
+                            <div class="attr function"><a class="headerlink" href="#docs">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">docs</span><span class="signature">() -&gt; None</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">docs</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Opens the newest published version of the documentation of this package.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">webbrowser</span>
+    <span class="n">webbrowser</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;https://manuelbieri.github.io/shelegia_motta_2021/Shelegia_Motta_2021.html&#39;</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Opens the newest published version of the documentation of this package.</p>
+</div>
+
+
+                </section>
     </main>
 <script>
     function escapeHTML(html) {
