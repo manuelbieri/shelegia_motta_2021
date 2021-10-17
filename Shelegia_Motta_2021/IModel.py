@@ -15,7 +15,10 @@ class IModel:
 
         Number and type of the thresholds will be specific to the model.
 
-        :return: dict including the thresholds for the fixed costs for copying of the incumbent.
+        Returns
+        -------
+        Dict[str, float]
+            Includes the thresholds for the fixed costs for copying of the incumbent.
         """
         pass
 
@@ -26,7 +29,10 @@ class IModel:
 
         Number and type of the thresholds will be specific to the model.
 
-        :return: dict including the thresholds for the assets of the entrant.
+        Returns
+        -------
+        Dict[str, float]
+            Includes the thresholds for the assets of the entrant.
         """
         pass
 
@@ -41,7 +47,10 @@ class IModel:
         - CS:
         - W:
 
-        :return: dict containing the mentioned utilities for different market configurations.
+        Returns
+        -------
+        Dict[str, float]
+            Includes the mentioned utilities for different market configurations.
         """
 
     @abc.abstractmethod
@@ -51,7 +60,10 @@ class IModel:
 
         Number and type of the thresholds will be specific to the model.
 
-        :return: dict including the thresholds for the assets of the entrant.
+        Returns
+        -------
+        Dict[str, float]
+            Includes the thresholds for the assets of the entrant.
         """
         pass
 
@@ -62,7 +74,10 @@ class IModel:
 
         Number and type of the thresholds will be specific to the model.
 
-        :return: dict including the thresholds for the fixed costs for copying of the incumbent.
+        Returns
+        -------
+        Dict[str, float]
+            Includes the thresholds for the fixed costs for copying of the incumbent.
         """
         pass
 
@@ -71,43 +86,79 @@ class IModel:
         """
         Returns the utility values for different market configurations.
 
-        Includes the following utilities:
-        TODO Add explanations for the different types
-        - pi(I):
-        - pi(E):
-        - CS:
-        - W:
+        A market configuration can include:
+        - $I_P$ : Primary product sold by the incumbent.
+        - $I_C$ : Complementary product to $I_P$ potentially sold by the incumbent, which is copied from $E_C$.
+        - $E_P$ : Perfect substitute to $I_P$ potentially sold by the entrant.
+        - $E_C$ : Complementary product to $I_P$ currently sold by the entrant
+        - $\\tilde{E}_C$ : Complementary product to $I_P$ potentially sold by the entrant.
+        <br>
 
-        :return: dict containing the mentioned utilities for different market configurations.
+        | Market Config. | $\pi(I)$ | $\pi(E)$ | CS | W |
+        |-----------------------|:--------:|:--------:|:--:|:-:|
+        | $I_P$ ; $E_C$         | N.A. | N.A. | N.A. | N.A. |
+        | $I_P + I_C$ ; $E_C$   | N.A. | N.A. | N.A. | N.A. |
+        | $I_P$ ; $E_P + E_C$   | N.A. | N.A. | N.A. | N.A. |
+        | $I_P + I_C$ ; $E_P + E_C$ | N.A. | N.A. | N.A. | N.A. |
+        | $I_P$ ; $E_C + \\tilde{E}_C$ | N.A. | N.A. | N.A. | N.A. |
+        | $I_P + I_C$ ; $E_C + \\tilde{E}_C$ | N.A. | N.A. | N.A. | N.A. |
+        <br>
+        The utility values are specific to the models.
+
+        Returns
+        -------
+        Dict[str, Dict[str, float]]
+            Contains the mentioned utilities for different market configurations.
         """
 
     @abc.abstractmethod
-    def plot_incumbent_best_answers(self, axis: matplotlib.axes.Axes = None) -> None:
+    def plot_incumbent_best_answers(self, axis: matplotlib.axes.Axes = None) -> matplotlib.axes.Axes:
         """
         Plots the best answers of the incumbent to all possible actions of the entrant.
 
-        :param axis: to plot the figure to (optional)
-        :return:
+        Parameters
+        ----------
+        axis : matplotlib.axes.Axes
+            Axis to draw the plot on. (optional)
+
+        Returns
+        -------
+        matplotlib.axes.Axes
+            Axis containing the plot.
         """
         pass
 
     @abc.abstractmethod
-    def plot_equilibrium(self, axis: matplotlib.axes.Axes = None) -> None:
+    def plot_equilibrium(self, axis: matplotlib.axes.Axes = None) -> matplotlib.axes.Axes:
         """
         Plots the equilibrium path based on the choices of the entrant and incumbent.
 
-        :param axis: to plot the figure to (optional)
-        :return:
+        Parameters
+        ----------
+        axis : matplotlib.axes.Axes
+            Axis to draw the plot on. (optional)
+
+        Returns
+        -------
+        matplotlib.axes.Axes
+            Axis containing the plot.
         """
         pass
 
     @abc.abstractmethod
-    def plot_utilities(self, axis: matplotlib.axes.Axes = None) -> None:
+    def plot_utilities(self, axis: matplotlib.axes.Axes = None) -> matplotlib.axes.Axes:
         """
         Plots the utilities for different market configurations.
 
-        :param axis: to plot the figure to (optional)
-        :return:
+        Parameters
+        ----------
+        axis : matplotlib.axes.Axes
+            Axis to draw the plot on. (optional)
+
+        Returns
+        -------
+        matplotlib.axes.Axes
+            Axis containing the plot.
         """
         pass
 
@@ -116,9 +167,16 @@ class IModel:
         """
         Return the optimal choice of the entrant and the incumbent based on a pair of assets of the entrant ann fixed costs for copying of the incumbent.
 
-        :param A: assets of the entrant.
-        :param F: fixed costs for copying of the incumbent.
-        :return: optimal choice of the entrant and the incumbent.
+        Parameters
+        ----------
+        A : float
+            Assets of the entrant.
+        F : float
+            Fixed costs for copying of the incumbent.
+
+        Returns
+        -------
+        Optimal choice of the entrant and the incumbent.
         """
         pass
 
@@ -129,9 +187,12 @@ class IModel:
 
         Includes:
         - Asset thresholds of the entrant
-        - fixed costs for copying thresholds of the incumbent.
+        - Fixed costs for copying thresholds of the incumbent.
         - Utilities for different market configurations
 
-        :return: string representation of the object.
+        Returns
+        -------
+        String
+            String representation of the object.
         """
         pass

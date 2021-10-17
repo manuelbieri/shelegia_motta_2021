@@ -80,5 +80,5 @@ pip install pdoc
 ```
 Generate api-documentation with the following command:
 ```
-pdoc -o ./docs Shelegia_Motta_2021
+pdoc -o ./docs Shelegia_Motta_2021 --docformat "numpy" --math
 ```
