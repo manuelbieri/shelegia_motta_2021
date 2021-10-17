@@ -87,7 +87,7 @@
                     <a class="class" href="#AcquisitionModel">AcquisitionModel</a>
                             <ul class="memberlist">
                         <li>
-                                <a class="function" href="#AcquisitionModel.calculate_funding_values">calculate_funding_values</a>
+                                <a class="function" href="#AcquisitionModel.__init__">AcquisitionModel</a>
                         </li>
                 </ul>
 
@@ -95,6 +95,9 @@
             <li>
                     <a class="class" href="#TwoSidedMarketModel">TwoSidedMarketModel</a>
                             <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#TwoSidedMarketModel.__init__">TwoSidedMarketModel</a>
+                        </li>
                 </ul>
 
             </li>
@@ -353,7 +356,7 @@
 
         <span class="n">axis</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Market Configuration&#39;</span><span class="p">)</span>
         <span class="n">axis</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Utility&#39;</span><span class="p">)</span>
-        <span class="n">axis</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Market Configurations&#39;</span><span class="p">)</span>
+        <span class="n">axis</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Utility levels for different Market Configurations&#39;</span><span class="p">)</span>
         <span class="n">axis</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">index</span> <span class="o">+</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">bar_width</span> <span class="o">+</span> <span class="n">spacing</span><span class="p">))</span>
         <span class="n">axis</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_utility</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
         <span class="n">axis</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
@@ -418,7 +421,12 @@
 
 
 <span class="k">class</span> <span class="nc">AcquisitionModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">calculate_funding_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">B</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">small_delta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">delta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.51</span><span class="p">,</span>
+                 <span class="n">K</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">delta</span> <span class="o">&gt;</span> <span class="n">small_delta</span><span class="p">,</span> <span class="s2">&quot;Delta has to be smaller than small_delta, meaning the innovation of the entrant is not too drastic.&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">AcquisitionModel</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="n">B</span><span class="o">=</span><span class="n">B</span><span class="p">,</span> <span class="n">small_delta</span><span class="o">=</span><span class="n">small_delta</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="n">delta</span><span class="p">,</span> <span class="n">K</span><span class="o">=</span><span class="n">K</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_calculate_copying_fixed_costs_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
         <span class="n">copying_fixed_costs_values</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_calculate_copying_fixed_costs_values</span><span class="p">()</span>
         <span class="n">copying_fixed_costs_values</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;F(ACQ)s&#39;</span><span class="p">:</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_u</span> <span class="o">+</span> <span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_small_delta</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delta</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_K</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
                                            <span class="s1">&#39;F(ACQ)c&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_small_delta</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_K</span> <span class="o">/</span> <span class="mi">2</span><span class="p">})</span>
@@ -426,7 +434,12 @@
 
 
 <span class="k">class</span> <span class="nc">TwoSidedMarketModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="k">pass</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">B</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">small_delta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">delta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.51</span><span class="p">,</span>
+                 <span class="n">K</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">gamma</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">gamma</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Gamma has to be between 0 and 1.&quot;</span>
+        <span class="k">assert</span> <span class="n">K</span> <span class="o">&lt;</span> <span class="n">small_delta</span> <span class="o">&lt;</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">small_delta</span> <span class="o">+</span> <span class="n">delta</span><span class="p">,</span> <span class="s2">&quot;(A4) not satisfied.&quot;</span>
+        <span class="k">assert</span> <span class="n">small_delta</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">small_delta</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">u</span> <span class="o">+</span> <span class="n">delta</span><span class="p">,</span> <span class="s2">&quot;(A5) not satisfied.&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">TwoSidedMarketModel</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="n">B</span><span class="o">=</span><span class="n">B</span><span class="p">,</span> <span class="n">small_delta</span><span class="o">=</span><span class="n">small_delta</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="n">delta</span><span class="p">,</span> <span class="n">K</span><span class="o">=</span><span class="n">K</span><span class="p">)</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
@@ -677,7 +690,7 @@
 
         <span class="n">axis</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Market Configuration&#39;</span><span class="p">)</span>
         <span class="n">axis</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Utility&#39;</span><span class="p">)</span>
-        <span class="n">axis</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Market Configurations&#39;</span><span class="p">)</span>
+        <span class="n">axis</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Utility levels for different Market Configurations&#39;</span><span class="p">)</span>
         <span class="n">axis</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">index</span> <span class="o">+</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">bar_width</span> <span class="o">+</span> <span class="n">spacing</span><span class="p">))</span>
         <span class="n">axis</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_utility</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
         <span class="n">axis</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
@@ -971,7 +984,8 @@ Investment costs to develop a second product for the entrant.</li>
 </tbody>
 </table>
 
-<p>The utility values are specific to the models.</p>
+<p><br>
+The utility values are specific to the models.</p>
 
 <h6 id="returns">Returns</h6>
 
@@ -1134,7 +1148,7 @@ Axis to draw the plot on. (optional)</li>
 
         <span class="n">axis</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Market Configuration&#39;</span><span class="p">)</span>
         <span class="n">axis</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Utility&#39;</span><span class="p">)</span>
-        <span class="n">axis</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Market Configurations&#39;</span><span class="p">)</span>
+        <span class="n">axis</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Utility levels for different Market Configurations&#39;</span><span class="p">)</span>
         <span class="n">axis</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">index</span> <span class="o">+</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">bar_width</span> <span class="o">+</span> <span class="n">spacing</span><span class="p">))</span>
         <span class="n">axis</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_utility</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
         <span class="n">axis</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
@@ -1222,7 +1236,12 @@ ability to obtain funding</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">AcquisitionModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">calculate_funding_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">B</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">small_delta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">delta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.51</span><span class="p">,</span>
+                 <span class="n">K</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">delta</span> <span class="o">&gt;</span> <span class="n">small_delta</span><span class="p">,</span> <span class="s2">&quot;Delta has to be smaller than small_delta, meaning the innovation of the entrant is not too drastic.&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">AcquisitionModel</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="n">B</span><span class="o">=</span><span class="n">B</span><span class="p">,</span> <span class="n">small_delta</span><span class="o">=</span><span class="n">small_delta</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="n">delta</span><span class="p">,</span> <span class="n">K</span><span class="o">=</span><span class="n">K</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_calculate_copying_fixed_costs_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
         <span class="n">copying_fixed_costs_values</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_calculate_copying_fixed_costs_values</span><span class="p">()</span>
         <span class="n">copying_fixed_costs_values</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;F(ACQ)s&#39;</span><span class="p">:</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_u</span> <span class="o">+</span> <span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_small_delta</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delta</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_K</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
                                            <span class="s1">&#39;F(ACQ)c&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_small_delta</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_K</span> <span class="o">/</span> <span class="mi">2</span><span class="p">})</span>
@@ -1242,34 +1261,61 @@ ability to obtain funding</p>
 </div>
 
 
-                            <div id="AcquisitionModel.calculate_funding_values" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#AcquisitionModel.calculate_funding_values">#&nbsp;&nbsp</a>
+                            <div id="AcquisitionModel.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#AcquisitionModel.__init__">#&nbsp;&nbsp</a>
 
         
-            <span class="def">def</span>
-            <span class="name">calculate_funding_values</span><span class="signature">(self) -&gt; Dict[str, float]</span>:
+            <span class="name">AcquisitionModel</span><span class="signature">(
+    u: float = 1,
+    B: float = 0.5,
+    small_delta: float = 0.5,
+    delta: float = 0.51,
+    K: float = 0.2
+)</span>
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">calculate_funding_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
-        <span class="n">copying_fixed_costs_values</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_calculate_copying_fixed_costs_values</span><span class="p">()</span>
-        <span class="n">copying_fixed_costs_values</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;F(ACQ)s&#39;</span><span class="p">:</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_u</span> <span class="o">+</span> <span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_small_delta</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delta</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_K</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
-                                           <span class="s1">&#39;F(ACQ)c&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_small_delta</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_K</span> <span class="o">/</span> <span class="mi">2</span><span class="p">})</span>
-        <span class="k">return</span> <span class="n">copying_fixed_costs_values</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">B</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">small_delta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">delta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.51</span><span class="p">,</span>
+                 <span class="n">K</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">delta</span> <span class="o">&gt;</span> <span class="n">small_delta</span><span class="p">,</span> <span class="s2">&quot;Delta has to be smaller than small_delta, meaning the innovation of the entrant is not too drastic.&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">AcquisitionModel</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="n">B</span><span class="o">=</span><span class="n">B</span><span class="p">,</span> <span class="n">small_delta</span><span class="o">=</span><span class="n">small_delta</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="n">delta</span><span class="p">,</span> <span class="n">K</span><span class="o">=</span><span class="n">K</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
-    
+            <div class="docstring"><p>Initializes a valid BaseModel object.</p>
+
+<p>The following preconditions have to be satisfied:</p>
+
+<ul>
+<li>(A1b) $\delta$ / 2 &lt; $\Delta$ &lt; 3 * $\delta$ / 2</li>
+<li>(A2) K &lt; $\delta$ / 2</li>
+</ul>
+
+<h6 id="parameters">Parameters</h6>
+
+<ul>
+<li><strong>u</strong> (float):
+Utility gained from consuming the primary product</li>
+<li><strong>B</strong> (float):
+Minimal difference between the return in case of a success and the return in case of failure of E. B is called the private benefit of E in case of failure.</li>
+<li><strong>small_delta</strong> (float):
+($\delta$) Additional utility gained from from a complement combined with a primary product.</li>
+<li><strong>delta</strong> (float):
+($\Delta$) Additional utility gained from the primary product of the entrant compared to the primary product of the incumbent.</li>
+<li><strong>K</strong> (float):
+Investment costs to develop a second product for the entrant.</li>
+</ul>
+</div>
+
 
                             </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
                                     <div><dt><a href="#BaseModel">BaseModel</a></dt>
-                                <dd id="AcquisitionModel.__init__" class="function"><a href="#BaseModel.__init__">BaseModel</a></dd>
-                <dd id="AcquisitionModel.get_asset_values" class="function"><a href="#BaseModel.get_asset_values">get_asset_values</a></dd>
+                                <dd id="AcquisitionModel.get_asset_values" class="function"><a href="#BaseModel.get_asset_values">get_asset_values</a></dd>
                 <dd id="AcquisitionModel.get_copying_fixed_costs_values" class="function"><a href="#BaseModel.get_copying_fixed_costs_values">get_copying_fixed_costs_values</a></dd>
                 <dd id="AcquisitionModel.get_utility_values" class="function"><a href="#BaseModel.get_utility_values">get_utility_values</a></dd>
                 <dd id="AcquisitionModel.get_optimal_choice" class="function"><a href="#BaseModel.get_optimal_choice">get_optimal_choice</a></dd>
@@ -1293,7 +1339,12 @@ ability to obtain funding</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">TwoSidedMarketModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="k">pass</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">B</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">small_delta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">delta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.51</span><span class="p">,</span>
+                 <span class="n">K</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">gamma</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">gamma</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Gamma has to be between 0 and 1.&quot;</span>
+        <span class="k">assert</span> <span class="n">K</span> <span class="o">&lt;</span> <span class="n">small_delta</span> <span class="o">&lt;</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">small_delta</span> <span class="o">+</span> <span class="n">delta</span><span class="p">,</span> <span class="s2">&quot;(A4) not satisfied.&quot;</span>
+        <span class="k">assert</span> <span class="n">small_delta</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">small_delta</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">u</span> <span class="o">+</span> <span class="n">delta</span><span class="p">,</span> <span class="s2">&quot;(A5) not satisfied.&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">TwoSidedMarketModel</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="n">B</span><span class="o">=</span><span class="n">B</span><span class="p">,</span> <span class="n">small_delta</span><span class="o">=</span><span class="n">small_delta</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="n">delta</span><span class="p">,</span> <span class="n">K</span><span class="o">=</span><span class="n">K</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -1309,12 +1360,64 @@ ability to obtain funding</p>
 </div>
 
 
+                            <div id="TwoSidedMarketModel.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#TwoSidedMarketModel.__init__">#&nbsp;&nbsp</a>
+
+        
+            <span class="name">TwoSidedMarketModel</span><span class="signature">(
+    u: float = 1,
+    B: float = 0.5,
+    small_delta: float = 0.5,
+    delta: float = 0.51,
+    K: float = 0.2,
+    gamma: float = 0.5
+)</span>
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">B</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">small_delta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">delta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.51</span><span class="p">,</span>
+                 <span class="n">K</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">gamma</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">gamma</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Gamma has to be between 0 and 1.&quot;</span>
+        <span class="k">assert</span> <span class="n">K</span> <span class="o">&lt;</span> <span class="n">small_delta</span> <span class="o">&lt;</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">small_delta</span> <span class="o">+</span> <span class="n">delta</span><span class="p">,</span> <span class="s2">&quot;(A4) not satisfied.&quot;</span>
+        <span class="k">assert</span> <span class="n">small_delta</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">small_delta</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">u</span> <span class="o">+</span> <span class="n">delta</span><span class="p">,</span> <span class="s2">&quot;(A5) not satisfied.&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">TwoSidedMarketModel</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">,</span> <span class="n">B</span><span class="o">=</span><span class="n">B</span><span class="p">,</span> <span class="n">small_delta</span><span class="o">=</span><span class="n">small_delta</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="n">delta</span><span class="p">,</span> <span class="n">K</span><span class="o">=</span><span class="n">K</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Initializes a valid BaseModel object.</p>
+
+<p>The following preconditions have to be satisfied:</p>
+
+<ul>
+<li>(A1b) $\delta$ / 2 &lt; $\Delta$ &lt; 3 * $\delta$ / 2</li>
+<li>(A2) K &lt; $\delta$ / 2</li>
+</ul>
+
+<h6 id="parameters">Parameters</h6>
+
+<ul>
+<li><strong>u</strong> (float):
+Utility gained from consuming the primary product</li>
+<li><strong>B</strong> (float):
+Minimal difference between the return in case of a success and the return in case of failure of E. B is called the private benefit of E in case of failure.</li>
+<li><strong>small_delta</strong> (float):
+($\delta$) Additional utility gained from from a complement combined with a primary product.</li>
+<li><strong>delta</strong> (float):
+($\Delta$) Additional utility gained from the primary product of the entrant compared to the primary product of the incumbent.</li>
+<li><strong>K</strong> (float):
+Investment costs to develop a second product for the entrant.</li>
+</ul>
+</div>
+
+
+                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
                                     <div><dt><a href="#BaseModel">BaseModel</a></dt>
-                                <dd id="TwoSidedMarketModel.__init__" class="function"><a href="#BaseModel.__init__">BaseModel</a></dd>
-                <dd id="TwoSidedMarketModel.get_asset_values" class="function"><a href="#BaseModel.get_asset_values">get_asset_values</a></dd>
+                                <dd id="TwoSidedMarketModel.get_asset_values" class="function"><a href="#BaseModel.get_asset_values">get_asset_values</a></dd>
                 <dd id="TwoSidedMarketModel.get_copying_fixed_costs_values" class="function"><a href="#BaseModel.get_copying_fixed_costs_values">get_copying_fixed_costs_values</a></dd>
                 <dd id="TwoSidedMarketModel.get_utility_values" class="function"><a href="#BaseModel.get_utility_values">get_utility_values</a></dd>
                 <dd id="TwoSidedMarketModel.get_optimal_choice" class="function"><a href="#BaseModel.get_optimal_choice">get_optimal_choice</a></dd>

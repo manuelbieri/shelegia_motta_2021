@@ -1,7 +1,8 @@
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Literal
 
 import matplotlib.axes
 import matplotlib.pyplot as plt
+plt.rcParams["font.family"] = "monospace"
 from numpy import arange
 
 import Shelegia_Motta_2021
@@ -37,10 +38,11 @@ ability to obtain funding
         small_delta : float
             ($\delta$) Additional utility gained from from a complement combined with a primary product.
         delta : float
-            ($\Delta$) Additional utility gained from the primary product of the entrant compared to the primary product of the incumbent.
+            ($\Delta$) Additional utility gained from the substitute of the entrant compared to the primary product of the incumbent.
         K : float
-            Investment costs to develop a second product for the entrant.
+            Investment costs for the entrant to develop a second product.
         """
+        super(BaseModel, self).__init__()
         assert small_delta / 2 < delta < 3 * small_delta / 2, "(A1b) not satisfied."
         assert K < small_delta / 2, "(A2) not satisfied."
         self._u: float = u
@@ -132,10 +134,27 @@ ability to obtain funding
     def get_utility_values(self) -> Dict[str, Dict[str, float]]:
         return self._utility
 
-    def get_optimal_choice(self, A: float, F: float):
-        pass
+    def get_optimal_choice(self, A: float, F: float) -> Dict[str, str]:
+        result: Dict[str, str] = {"entrant": "", "incumbent": "", "development": ""}
+        if self._copying_fixed_costs["F(YN)c"] <= F <= self._copying_fixed_costs["F(YN)s"] and A < self._assets["A-s"]:
+            result.update({"entrant": self.ENTRANT_CHOICES["product"]["complement"]})
+            result.update({"incumbent": self.INCUMBENT_CHOICES["copy_product"]["refrain"]})
+            result.update({"development": self.ENTRANT_CHOICES["development"]["success"]})
+        elif F <= self._copying_fixed_costs["F(YN)c"] and A < self._assets["A-s"]:
+            result.update({"entrant": self.ENTRANT_CHOICES["product"]["indifferent"]})
+            result.update({"incumbent": self.INCUMBENT_CHOICES["copy_product"]["copy"]})
+            result.update({"development": self.ENTRANT_CHOICES["development"]["failure"]})
+        else:
+            result.update({"entrant": self.ENTRANT_CHOICES["product"]["substitute"]})
+            result.update({"development": self.ENTRANT_CHOICES["development"]["success"]})
+            if F <= self._copying_fixed_costs["F(YY)s"]:
+                result.update({"incumbent": self.INCUMBENT_CHOICES["copy_product"]["copy"]})
+            else:
+                result.update({"incumbent": self.INCUMBENT_CHOICES["copy_product"]["refrain"]})
+        return result
 
-    def _plot(self, coordinates: List[List[Tuple[float, float]]], axis: matplotlib.axes.Axes = None) -> matplotlib.axes.Axes:
+    def _plot(self, coordinates: List[List[Tuple[float, float]]], labels: List[str],
+              axis: matplotlib.axes.Axes = None) -> matplotlib.axes.Axes:
         """
         Plots polygons containing the optimal choices and answers into a coordinate system.
 
@@ -155,33 +174,69 @@ ability to obtain funding
         self._draw_horizontal_lines(axis)
 
         for i, coordinates in enumerate(coordinates):
-            poly = plt.Polygon(coordinates, ec="k", color=self._get_color(i))
+            poly = plt.Polygon(coordinates, ec="k", color=self._get_color(i), label=labels[i])
             axis.add_patch(poly)
 
+        axis.legend(bbox_to_anchor=(1.15, 1), loc="upper left")
         BaseModel._set_axis(axis)
         plt.show()
         return axis
 
     def plot_incumbent_best_answers(self, axis: matplotlib.axes.Axes = None) -> matplotlib.axes.Axes:
         poly_coordinates: List[List[Tuple[float, float]]] = self._get_incumbent_best_answer_coordinates()
-        axis: matplotlib.axes.Axes = self._plot(coordinates=poly_coordinates, axis=axis)
+        poly_labels: List[str] = self._get_incumbent_best_answer_labels()
+        axis: matplotlib.axes.Axes = self._plot(coordinates=poly_coordinates, labels=poly_labels, axis=axis)
         return axis
+
+    def _create_choice_answer_label(self, entrant: Literal["complement", "substitute", "indifferent"],
+                                    incumbent: Literal["copy", "refrain"],
+                                    development: Literal["success", "failure"]) -> str:
+        return self.ENTRANT_CHOICES["product"][entrant] + " $\\rightarrow$ " + self.INCUMBENT_CHOICES["copy_product"][
+            incumbent] + " $\\rightarrow$ " + self.ENTRANT_CHOICES["development"][development]
+
+    def _get_incumbent_best_answer_labels(self) -> List[str]:
+        return [
+            # Square 1
+            self._create_choice_answer_label(entrant="substitute", incumbent="copy", development="failure") + " \n" +
+            self._create_choice_answer_label(entrant="complement", incumbent="copy", development="failure"),
+            # Square 2
+            self._create_choice_answer_label(entrant="substitute", incumbent="copy", development="failure") + " \n" +
+            self._create_choice_answer_label(entrant="complement", incumbent="refrain", development="success"),
+            # Square 3
+            self._create_choice_answer_label(entrant="substitute", incumbent="copy", development="success") + " \n" +
+            self._create_choice_answer_label(entrant="complement", incumbent="copy", development="failure"),
+            # Square 4
+            self._create_choice_answer_label(entrant="substitute", incumbent="copy", development="success") + " \n" +
+            self._create_choice_answer_label(entrant="complement", incumbent="copy", development="success"),
+            # Square 5
+            self._create_choice_answer_label(entrant="substitute", incumbent="refrain", development="success") + " \n" +
+            self._create_choice_answer_label(entrant="complement", incumbent="copy", development="success"),
+            # Square 6
+            self._create_choice_answer_label(entrant="substitute", incumbent="refrain", development="success") + " \n" +
+            self._create_choice_answer_label(entrant="complement", incumbent="refrain", development="success"),
+        ]
 
     def _get_incumbent_best_answer_coordinates(self) -> List[List[Tuple[float, float]]]:
         y_max: float = self._get_y_max()
         x_max: float = self._get_x_max()
         return [
+            # Square 1
             [(0, 0), (self._assets['A-s'], 0), (self._assets['A-s'], self._copying_fixed_costs['F(YY)s']),
              (0, self._copying_fixed_costs['F(YY)s'])],
+            # Square 2
             [(0, self._copying_fixed_costs['F(YY)s']), (self._assets['A-s'], self._copying_fixed_costs['F(YY)s']),
              (self._assets['A-s'], self._copying_fixed_costs['F(YN)s']), (0, self._copying_fixed_costs['F(YN)s'])],
+            # Square 3
             [(self._assets['A-s'], 0), (self._assets['A-c'], 0),
              (self._assets['A-c'], self._copying_fixed_costs['F(YY)s']),
              (self._assets['A-s'], self._copying_fixed_costs['F(YY)s'])],
+            # Square 4
             [(self._assets['A-c'], 0), (x_max, 0), (x_max, self._copying_fixed_costs['F(YY)s']),
              (self._assets['A-c'], self._copying_fixed_costs['F(YY)s'])],
+            # Square 5
             [(self._assets['A-c'], self._copying_fixed_costs['F(YY)s']), (x_max, self._copying_fixed_costs['F(YY)s']),
              (x_max, self._copying_fixed_costs['F(YY)c']), (self._assets['A-c'], self._copying_fixed_costs['F(YY)c'])],
+            # Square 6
             [(self._assets['A-s'], self._copying_fixed_costs['F(YY)s']),
              (self._assets['A-c'], self._copying_fixed_costs['F(YY)s']),
              (self._assets['A-c'], self._copying_fixed_costs['F(YY)c']), (x_max, self._copying_fixed_costs['F(YY)c']),
@@ -190,21 +245,36 @@ ability to obtain funding
 
     def plot_equilibrium(self, axis: matplotlib.axes.Axes = None) -> matplotlib.axes.Axes:
         poly_coordinates: List[List[Tuple[float, float]]] = self._get_equilibrium_coordinates()
-        axis: matplotlib.axes.Axes = self._plot(coordinates=poly_coordinates, axis=axis)
+        poly_labels: List[str] = self._get_equilibrium_labels()
+        axis: matplotlib.axes.Axes = self._plot(coordinates=poly_coordinates, labels=poly_labels, axis=axis)
         return axis
+
+    def _get_equilibrium_labels(self) -> List[str]:
+        return [
+            # Square 1
+            self._create_choice_answer_label(entrant="indifferent", incumbent="copy", development="failure"),
+            # Square 2
+            self._create_choice_answer_label(entrant="complement", incumbent="refrain", development="success"),
+            # Square 3
+            self._create_choice_answer_label(entrant="substitute", incumbent="copy", development="success"),
+            # Square 4
+            self._create_choice_answer_label(entrant="substitute", incumbent="refrain", development="success")
+        ]
 
     def _get_equilibrium_coordinates(self) -> List[List[Tuple[float, float]]]:
         y_max: float = self._get_y_max()
         x_max: float = self._get_x_max()
         return [
+            # Square 1
             [(0, 0), (self._assets['A-s'], 0), (self._assets['A-s'], self._copying_fixed_costs['F(YY)s']),
              (0, self._copying_fixed_costs['F(YY)s'])],
+            # Square 2
             [(0, self._copying_fixed_costs['F(YY)s']), (self._assets['A-s'], self._copying_fixed_costs['F(YY)s']),
              (self._assets['A-s'], self._copying_fixed_costs['F(YN)s']), (0, self._copying_fixed_costs['F(YN)s'])],
+            # Square 3
             [(self._assets['A-s'], 0), (x_max, 0), (x_max, self._copying_fixed_costs['F(YY)s']),
              (self._assets['A-s'], self._copying_fixed_costs['F(YY)s'])],
-            [(self._assets['A-c'], self._copying_fixed_costs['F(YY)s']), (x_max, self._copying_fixed_costs['F(YY)s']),
-             (x_max, self._copying_fixed_costs['F(YY)c']), (self._assets['A-c'], self._copying_fixed_costs['F(YY)c'])],
+            # Square 4
             [(self._assets['A-s'], self._copying_fixed_costs['F(YY)s']), (x_max, self._copying_fixed_costs['F(YY)s']),
              (x_max, y_max), (0, y_max), (0, self._copying_fixed_costs['F(YN)s']),
              (self._assets['A-s'], self._copying_fixed_costs['F(YN)s'])]]
@@ -225,6 +295,7 @@ ability to obtain funding
             bars = axis.bar(index + counter * (bar_width + spacing), utility_values, bar_width,
                             alpha=opacity,
                             color='w',
+                            hatch='///',
                             edgecolor=self._get_color(counter),
                             label=utility_type)
             max_indices: List[int] = list(
@@ -234,7 +305,7 @@ ability to obtain funding
 
         axis.set_xlabel('Market Configuration')
         axis.set_ylabel('Utility')
-        axis.set_title('Market Configurations')
+        axis.set_title('Utility levels for different Market Configurations')
         axis.set_xticks(index + 1.5 * (bar_width + spacing))
         axis.set_xticklabels(tuple(self._utility.keys()))
         axis.legend()
@@ -250,8 +321,8 @@ ability to obtain funding
         return round(self._copying_fixed_costs['F(YN)s'] * 1.3, 1)
 
     def _draw_horizontal_lines(self, axis: matplotlib.axes.Axes) -> None:
-        horizontal_line_x: float = self._get_x_max() + 0.15
-        vertical_line_y: float = self._get_y_max() + 0.25
+        horizontal_line_x: float = self._get_x_max() + 0.05
+        vertical_line_y: float = self._get_y_max() + 0.15
         axis.axhline(self._copying_fixed_costs['F(YN)s'], linestyle='--', color='k')
         axis.text(horizontal_line_x, self._copying_fixed_costs['F(YN)s'], r'$F^{YN}_S$')
         axis.axhline(self._copying_fixed_costs['F(YY)s'], linestyle='--', color='k')
@@ -269,9 +340,8 @@ ability to obtain funding
 
     @staticmethod
     def _set_axis(axis: matplotlib.axes.Axes):
-        axis.margins(x=0.2, y=0.1)
-        axis.relim()
         axis.autoscale_view()
+        axis.figure.tight_layout()
 
     def __str__(self) -> str:
         str_representation: str = 'Assets:'
@@ -299,7 +369,12 @@ class UnobservableModel(BaseModel):
 
 
 class AcquisitionModel(BaseModel):
-    def calculate_funding_values(self) -> Dict[str, float]:
+    def __init__(self, u: float = 1, B: float = 0.5, small_delta: float = 0.5, delta: float = 0.51,
+                 K: float = 0.2) -> None:
+        assert delta > small_delta, "Delta has to be smaller than small_delta, meaning the innovation of the entrant is not too drastic."
+        super(AcquisitionModel, self).__init__(u=u, B=B, small_delta=small_delta, delta=delta, K=K)
+
+    def _calculate_copying_fixed_costs_values(self) -> Dict[str, float]:
         copying_fixed_costs_values: Dict[str, float] = super()._calculate_copying_fixed_costs_values()
         copying_fixed_costs_values.update({'F(ACQ)s': (self._u + (3 * self._small_delta) + self._delta - self._K) / 2,
                                            'F(ACQ)c': self._small_delta - self._K / 2})
@@ -307,11 +382,17 @@ class AcquisitionModel(BaseModel):
 
 
 class TwoSidedMarketModel(BaseModel):
-    pass
+    def __init__(self, u: float = 1, B: float = 0.5, small_delta: float = 0.5, delta: float = 0.51,
+                 K: float = 0.2, gamma: float = 0.5) -> None:
+        assert 0 < gamma < 1, "Gamma has to be between 0 and 1."
+        assert K < small_delta < gamma * small_delta + delta, "(A4) not satisfied."
+        assert small_delta * (1 - small_delta) < u + delta, "(A5) not satisfied."
+        super(TwoSidedMarketModel, self).__init__(u=u, B=B, small_delta=small_delta, delta=delta, K=K)
 
 
 if __name__ == '__main__':
     base_model = BaseModel()
     base_model.plot_equilibrium()
     base_model.plot_incumbent_best_answers()
+    base_model.plot_utilities()
     print(base_model)

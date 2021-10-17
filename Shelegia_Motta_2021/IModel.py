@@ -1,5 +1,5 @@
 import abc
-from typing import Dict
+from typing import Dict, Final
 
 import matplotlib.axes
 
@@ -8,6 +8,10 @@ class IModel:
     """
     Interface for all models in Shelegia and Motta (2021).
     """
+    def __init__(self):
+        self.ENTRANT_CHOICES: Final[Dict[str, Dict[str, str]]] = {"product": {"complement": "C", "substitute": "S", "indifferent": "I"}, "development": {"success": "Y", "failure": "N"}}
+        self.INCUMBENT_CHOICES: Final[Dict[str, Dict[str, str]]] = {"copy_product": {"copy": "©", "refrain": "Ø"}}
+
     @abc.abstractmethod
     def _calculate_copying_fixed_costs_values(self) -> Dict[str, float]:
         """
@@ -163,7 +167,7 @@ class IModel:
         pass
 
     @abc.abstractmethod
-    def get_optimal_choice(self, A: float, F: float):
+    def get_optimal_choice(self, A: float, F: float) -> Dict[str, str]:
         """
         Return the optimal choice of the entrant and the incumbent based on a pair of assets of the entrant ann fixed costs for copying of the incumbent.
 
