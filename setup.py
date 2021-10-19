@@ -9,7 +9,7 @@ with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='Shelegia_Motta_2021',
-    packages=['matplotlib', 'numpy'],
+    packages=find_packages(),
     version='0.0.3',
     license='MIT',
     description='Implements the model presented in Shelegia and Motta (2021)',
@@ -29,5 +29,9 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+    ],
+    install_requires=[
+        "matplotlib>=3.4.3",
+        "numpy>=1.17",
     ],
 )

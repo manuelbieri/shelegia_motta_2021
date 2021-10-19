@@ -137,20 +137,20 @@ ability to obtain funding
     def get_optimal_choice(self, A: float, F: float) -> Dict[str, str]:
         result: Dict[str, str] = {"entrant": "", "incumbent": "", "development": ""}
         if self._copying_fixed_costs["F(YN)c"] <= F <= self._copying_fixed_costs["F(YN)s"] and A < self._assets["A-s"]:
-            result.update({"entrant": self.ENTRANT_CHOICES["product"]["complement"]})
-            result.update({"incumbent": self.INCUMBENT_CHOICES["copy_product"]["refrain"]})
-            result.update({"development": self.ENTRANT_CHOICES["development"]["success"]})
+            result.update({"entrant": self.ENTRANT_CHOICES["complement"]})
+            result.update({"incumbent": self.INCUMBENT_CHOICES["refrain"]})
+            result.update({"development": self.DEVELOPMENT_OUTCOME["success"]})
         elif F <= self._copying_fixed_costs["F(YN)c"] and A < self._assets["A-s"]:
-            result.update({"entrant": self.ENTRANT_CHOICES["product"]["indifferent"]})
-            result.update({"incumbent": self.INCUMBENT_CHOICES["copy_product"]["copy"]})
-            result.update({"development": self.ENTRANT_CHOICES["development"]["failure"]})
+            result.update({"entrant": self.ENTRANT_CHOICES["indifferent"]})
+            result.update({"incumbent": self.INCUMBENT_CHOICES["copy"]})
+            result.update({"development": self.DEVELOPMENT_OUTCOME["failure"]})
         else:
-            result.update({"entrant": self.ENTRANT_CHOICES["product"]["substitute"]})
-            result.update({"development": self.ENTRANT_CHOICES["development"]["success"]})
+            result.update({"entrant": self.ENTRANT_CHOICES["substitute"]})
+            result.update({"development": self.DEVELOPMENT_OUTCOME["success"]})
             if F <= self._copying_fixed_costs["F(YY)s"]:
-                result.update({"incumbent": self.INCUMBENT_CHOICES["copy_product"]["copy"]})
+                result.update({"incumbent": self.INCUMBENT_CHOICES["copy"]})
             else:
-                result.update({"incumbent": self.INCUMBENT_CHOICES["copy_product"]["refrain"]})
+                result.update({"incumbent": self.INCUMBENT_CHOICES["refrain"]})
         return result
 
     def _plot(self, coordinates: List[List[Tuple[float, float]]], labels: List[str],
@@ -171,7 +171,7 @@ ability to obtain funding
         """
         if axis is None:
             fig, axis = plt.subplots()
-        self._draw_horizontal_lines(axis)
+        self._draw_thresholds(axis)
 
         for i, coordinates in enumerate(coordinates):
             poly = plt.Polygon(coordinates, ec="k", color=self._get_color(i), label=labels[i])
@@ -191,8 +191,8 @@ ability to obtain funding
     def _create_choice_answer_label(self, entrant: Literal["complement", "substitute", "indifferent"],
                                     incumbent: Literal["copy", "refrain"],
                                     development: Literal["success", "failure"]) -> str:
-        return self.ENTRANT_CHOICES["product"][entrant] + " $\\rightarrow$ " + self.INCUMBENT_CHOICES["copy_product"][
-            incumbent] + " $\\rightarrow$ " + self.ENTRANT_CHOICES["development"][development]
+        return self.ENTRANT_CHOICES[entrant] + " $\\rightarrow$ " + self.INCUMBENT_CHOICES[
+            incumbent] + " $\\rightarrow$ " + self.DEVELOPMENT_OUTCOME[development]
 
     def _get_incumbent_best_answer_labels(self) -> List[str]:
         return [
@@ -297,7 +297,7 @@ ability to obtain funding
                             color='w',
                             hatch='///',
                             edgecolor=self._get_color(counter),
-                            label=utility_type)
+                            label=self._convert_utility_label(utility_type))
             max_indices: List[int] = list(
                 filter(lambda x: utility_values[x] == max(utility_values), range(len(utility_values))))
             for max_index in max_indices:
@@ -307,12 +307,38 @@ ability to obtain funding
         axis.set_ylabel('Utility')
         axis.set_title('Utility levels for different Market Configurations')
         axis.set_xticks(index + 1.5 * (bar_width + spacing))
-        axis.set_xticklabels(tuple(self._utility.keys()))
-        axis.legend()
+        axis.set_xticklabels(tuple([self._convert_market_configuration_label(i) for i in self._utility.keys()]))
+        axis.legend(bbox_to_anchor=(0, -0.3), loc="lower left", ncol=4)
+        axis.text(max(index) + 2 + 1.5 * (bar_width + spacing), self._utility["E(P)"]["W"]*0.5, self._get_market_configuration_annotations())
 
-        BaseModel._set_axis(axis)
+        # BaseModel._set_axis(axis)
         plt.show()
         return axis
+
+    @staticmethod
+    def _get_market_configuration_annotations() -> str:
+        return "$I_P$: Primary product sold by the incumbent\n" \
+               "$I_C$: Complementary product to $I_P$ potentially sold by the incumbent, which is copied from $E_C$\n" \
+               "$E_P$: Perfect substitute to $I_P$ potentially sold by the entrant\n" \
+               "$E_C$: Complementary product to $I_P$ currently sold by the entrant\n" \
+               "$\\tilde{E}_C$: Complementary product to $I_P$ potentially sold by the entrant\n"
+
+    @staticmethod
+    def _convert_utility_label(raw_label: str) -> str:
+        label: str = raw_label.replace("pi", "$\pi$")
+        label = label.replace("CS", "Consumer Surplus")
+        label = label.replace("W", "Welfare")
+        return label
+
+    @staticmethod
+    def _convert_market_configuration_label(raw_label: str) -> str:
+        labels: Dict[str] = {"basic": "$I_P;E_C$",
+                             "I(C)": "$I_P+I_C;E_C$",
+                             "E(P)": "$I_P;E_C+E_P$",
+                             "I(C)E(P)": "$I_P+I_C;E_C+E_P$",
+                             "E(C)": "$I_P;E_C+\\tilde{E}_C$",
+                             "I(C)E(C)": "$I_P+I_C;E_C+\\tilde{E}_C$"}
+        return labels.get(raw_label, 'No valid market configuration')
 
     def _get_x_max(self) -> float:
         return round(self._assets['A-c'] * 1.3, 1)
@@ -320,7 +346,7 @@ ability to obtain funding
     def _get_y_max(self) -> float:
         return round(self._copying_fixed_costs['F(YN)s'] * 1.3, 1)
 
-    def _draw_horizontal_lines(self, axis: matplotlib.axes.Axes) -> None:
+    def _draw_thresholds(self, axis: matplotlib.axes.Axes) -> None:
         horizontal_line_x: float = self._get_x_max() + 0.05
         vertical_line_y: float = self._get_y_max() + 0.15
         axis.axhline(self._copying_fixed_costs['F(YN)s'], linestyle='--', color='k')

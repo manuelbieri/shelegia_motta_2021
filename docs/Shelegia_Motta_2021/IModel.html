@@ -54,6 +54,15 @@
                                 <a class="function" href="#IModel.__init__">IModel</a>
                         </li>
                         <li>
+                                <a class="variable" href="#IModel.ENTRANT_CHOICES">ENTRANT_CHOICES</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#IModel.INCUMBENT_CHOICES">INCUMBENT_CHOICES</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#IModel.DEVELOPMENT_OUTCOME">DEVELOPMENT_OUTCOME</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#IModel.get_asset_values">get_asset_values</a>
                         </li>
                         <li>
@@ -63,6 +72,9 @@
                                 <a class="function" href="#IModel.get_utility_values">get_utility_values</a>
                         </li>
                         <li>
+                                <a class="function" href="#IModel.get_optimal_choice">get_optimal_choice</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#IModel.plot_incumbent_best_answers">plot_incumbent_best_answers</a>
                         </li>
                         <li>
@@ -70,9 +82,6 @@
                         </li>
                         <li>
                                 <a class="function" href="#IModel.plot_utilities">plot_utilities</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#IModel.get_optimal_choice">get_optimal_choice</a>
                         </li>
                 </ul>
 
@@ -97,7 +106,7 @@
                         <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="kn">import</span> <span class="nn">abc</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Final</span>
 
 <span class="kn">import</span> <span class="nn">matplotlib.axes</span>
 
@@ -106,6 +115,27 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Interface for all models in Shelegia and Motta (2021).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ENTRANT_CHOICES</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;complement&quot;</span><span class="p">:</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;substitute&quot;</span><span class="p">:</span> <span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="s2">&quot;indifferent&quot;</span><span class="p">:</span> <span class="s2">&quot;I&quot;</span><span class="p">}</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Contains all the possible product choices of the entrant.</span>
+<span class="sd">        - complement (C)</span>
+<span class="sd">        - substitute (S)</span>
+<span class="sd">        - Indifferent (I)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">INCUMBENT_CHOICES</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;copy&quot;</span><span class="p">:</span> <span class="s2">&quot;©&quot;</span><span class="p">,</span> <span class="s2">&quot;refrain&quot;</span><span class="p">:</span> <span class="s2">&quot;Ø&quot;</span><span class="p">}</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Contains all the possible answers of the incumbent to the choice of the entrant.</span>
+<span class="sd">        - copy (©)</span>
+<span class="sd">        - refrain (Ø)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DEVELOPMENT_OUTCOME</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;failure&quot;</span><span class="p">:</span> <span class="s2">&quot;N&quot;</span><span class="p">}</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Contains all the possible outcomes of the development for the chosen product of the entrant or the merged entity.</span>
+<span class="sd">        - success (Y)</span>
+<span class="sd">        - failure (N)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">_calculate_copying_fixed_costs_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -210,6 +240,31 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_optimal_choice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">F</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the optimal choice of the entrant and the incumbent based on a pair of assets of the entrant and fixed costs for copying of the incumbent.</span>
+
+<span class="sd">        The output dictionary will contain the following details:</span>
+
+<span class="sd">        - &quot;entrant&quot;: choice of the entrant (possible choices listed in Shelegia_Motta_2021.IModel.IModel.ENTRANT_CHOICES))</span>
+<span class="sd">        - &quot;incumbent&quot;: choice of the incumbent (possible choices listed in Shelegia_Motta_2021.IModel.IModel.INCUMBENT_CHOICES)</span>
+<span class="sd">        - &quot;development&quot;: outcome of the development (possible outcomes listed in Shelegia_Motta_2021.IModel.IModel.DEVELOPMENT_OUTCOME)</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        A : float</span>
+<span class="sd">            Assets of the entrant.</span>
+<span class="sd">        F : float</span>
+<span class="sd">            Fixed costs for copying of the incumbent.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Dict[str, str]</span>
+<span class="sd">            Optimal choice of the entrant, the incumbent and the outcome of the development.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">plot_incumbent_best_answers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plots the best answers of the incumbent to all possible actions of the entrant.</span>
@@ -257,24 +312,6 @@
 <span class="sd">        -------</span>
 <span class="sd">        matplotlib.axes.Axes</span>
 <span class="sd">            Axis containing the plot.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">pass</span>
-
-    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">get_optimal_choice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">F</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return the optimal choice of the entrant and the incumbent based on a pair of assets of the entrant ann fixed costs for copying of the incumbent.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        A : float</span>
-<span class="sd">            Assets of the entrant.</span>
-<span class="sd">        F : float</span>
-<span class="sd">            Fixed costs for copying of the incumbent.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        Optimal choice of the entrant and the incumbent.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
@@ -314,6 +351,27 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Interface for all models in Shelegia and Motta (2021).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ENTRANT_CHOICES</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;complement&quot;</span><span class="p">:</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;substitute&quot;</span><span class="p">:</span> <span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="s2">&quot;indifferent&quot;</span><span class="p">:</span> <span class="s2">&quot;I&quot;</span><span class="p">}</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Contains all the possible product choices of the entrant.</span>
+<span class="sd">        - complement (C)</span>
+<span class="sd">        - substitute (S)</span>
+<span class="sd">        - Indifferent (I)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">INCUMBENT_CHOICES</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;copy&quot;</span><span class="p">:</span> <span class="s2">&quot;©&quot;</span><span class="p">,</span> <span class="s2">&quot;refrain&quot;</span><span class="p">:</span> <span class="s2">&quot;Ø&quot;</span><span class="p">}</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Contains all the possible answers of the incumbent to the choice of the entrant.</span>
+<span class="sd">        - copy (©)</span>
+<span class="sd">        - refrain (Ø)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DEVELOPMENT_OUTCOME</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;failure&quot;</span><span class="p">:</span> <span class="s2">&quot;N&quot;</span><span class="p">}</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Contains all the possible outcomes of the development for the chosen product of the entrant or the merged entity.</span>
+<span class="sd">        - success (Y)</span>
+<span class="sd">        - failure (N)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">_calculate_copying_fixed_costs_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -418,6 +476,31 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_optimal_choice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">F</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the optimal choice of the entrant and the incumbent based on a pair of assets of the entrant and fixed costs for copying of the incumbent.</span>
+
+<span class="sd">        The output dictionary will contain the following details:</span>
+
+<span class="sd">        - &quot;entrant&quot;: choice of the entrant (possible choices listed in Shelegia_Motta_2021.IModel.IModel.ENTRANT_CHOICES))</span>
+<span class="sd">        - &quot;incumbent&quot;: choice of the incumbent (possible choices listed in Shelegia_Motta_2021.IModel.IModel.INCUMBENT_CHOICES)</span>
+<span class="sd">        - &quot;development&quot;: outcome of the development (possible outcomes listed in Shelegia_Motta_2021.IModel.IModel.DEVELOPMENT_OUTCOME)</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        A : float</span>
+<span class="sd">            Assets of the entrant.</span>
+<span class="sd">        F : float</span>
+<span class="sd">            Fixed costs for copying of the incumbent.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Dict[str, str]</span>
+<span class="sd">            Optimal choice of the entrant, the incumbent and the outcome of the development.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">plot_incumbent_best_answers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plots the best answers of the incumbent to all possible actions of the entrant.</span>
@@ -469,24 +552,6 @@
         <span class="k">pass</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">get_optimal_choice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">F</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return the optimal choice of the entrant and the incumbent based on a pair of assets of the entrant ann fixed costs for copying of the incumbent.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        A : float</span>
-<span class="sd">            Assets of the entrant.</span>
-<span class="sd">        F : float</span>
-<span class="sd">            Fixed costs for copying of the incumbent.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        Optimal choice of the entrant and the incumbent.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">pass</span>
-
-    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a string representation of the object.</span>
@@ -517,8 +582,82 @@
             <span class="name">IModel</span><span class="signature">()</span>
     </div>
 
-        
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ENTRANT_CHOICES</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;complement&quot;</span><span class="p">:</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;substitute&quot;</span><span class="p">:</span> <span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="s2">&quot;indifferent&quot;</span><span class="p">:</span> <span class="s2">&quot;I&quot;</span><span class="p">}</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Contains all the possible product choices of the entrant.</span>
+<span class="sd">        - complement (C)</span>
+<span class="sd">        - substitute (S)</span>
+<span class="sd">        - Indifferent (I)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">INCUMBENT_CHOICES</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;copy&quot;</span><span class="p">:</span> <span class="s2">&quot;©&quot;</span><span class="p">,</span> <span class="s2">&quot;refrain&quot;</span><span class="p">:</span> <span class="s2">&quot;Ø&quot;</span><span class="p">}</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Contains all the possible answers of the incumbent to the choice of the entrant.</span>
+<span class="sd">        - copy (©)</span>
+<span class="sd">        - refrain (Ø)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DEVELOPMENT_OUTCOME</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;failure&quot;</span><span class="p">:</span> <span class="s2">&quot;N&quot;</span><span class="p">}</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Contains all the possible outcomes of the development for the chosen product of the entrant or the merged entity.</span>
+<span class="sd">        - success (Y)</span>
+<span class="sd">        - failure (N)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+</pre></div>
+
+        </details>
+
     
+
+                            </div>
+                            <div id="IModel.ENTRANT_CHOICES" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#IModel.ENTRANT_CHOICES">#&nbsp;&nbsp</a>
+
+        <span class="name">ENTRANT_CHOICES</span><span class="annotation">: Final[Dict[str, str]]</span>
+    </div>
+
+            <div class="docstring"><p>Contains all the possible product choices of the entrant.</p>
+
+<ul>
+<li>complement (C)</li>
+<li>substitute (S)</li>
+<li>Indifferent (I)</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="IModel.INCUMBENT_CHOICES" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#IModel.INCUMBENT_CHOICES">#&nbsp;&nbsp</a>
+
+        <span class="name">INCUMBENT_CHOICES</span><span class="annotation">: Final[Dict[str, str]]</span>
+    </div>
+
+            <div class="docstring"><p>Contains all the possible answers of the incumbent to the choice of the entrant.</p>
+
+<ul>
+<li>copy (©)</li>
+<li>refrain (Ø)</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="IModel.DEVELOPMENT_OUTCOME" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#IModel.DEVELOPMENT_OUTCOME">#&nbsp;&nbsp</a>
+
+        <span class="name">DEVELOPMENT_OUTCOME</span><span class="annotation">: Final[Dict[str, str]]</span>
+    </div>
+
+            <div class="docstring"><p>Contains all the possible outcomes of the development for the chosen product of the entrant or the merged entity.</p>
+
+<ul>
+<li>success (Y)</li>
+<li>failure (N)</li>
+</ul>
+</div>
+
 
                             </div>
                             <div id="IModel.get_asset_values" class="classattr">
@@ -728,6 +867,73 @@ The utility values are specific to the models.</p>
 
 
                             </div>
+                            <div id="IModel.get_optimal_choice" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#IModel.get_optimal_choice">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@abc.abstractmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">get_optimal_choice</span><span class="signature">(self, A: float, F: float) -&gt; Dict[str, str]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_optimal_choice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">F</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the optimal choice of the entrant and the incumbent based on a pair of assets of the entrant and fixed costs for copying of the incumbent.</span>
+
+<span class="sd">        The output dictionary will contain the following details:</span>
+
+<span class="sd">        - &quot;entrant&quot;: choice of the entrant (possible choices listed in Shelegia_Motta_2021.IModel.IModel.ENTRANT_CHOICES))</span>
+<span class="sd">        - &quot;incumbent&quot;: choice of the incumbent (possible choices listed in Shelegia_Motta_2021.IModel.IModel.INCUMBENT_CHOICES)</span>
+<span class="sd">        - &quot;development&quot;: outcome of the development (possible outcomes listed in Shelegia_Motta_2021.IModel.IModel.DEVELOPMENT_OUTCOME)</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        A : float</span>
+<span class="sd">            Assets of the entrant.</span>
+<span class="sd">        F : float</span>
+<span class="sd">            Fixed costs for copying of the incumbent.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Dict[str, str]</span>
+<span class="sd">            Optimal choice of the entrant, the incumbent and the outcome of the development.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Return the optimal choice of the entrant and the incumbent based on a pair of assets of the entrant and fixed costs for copying of the incumbent.</p>
+
+<p>The output dictionary will contain the following details:</p>
+
+<ul>
+<li>"entrant": choice of the entrant (possible choices listed in <a href="#IModel.ENTRANT_CHOICES">Shelegia_Motta_2021.IModel.IModel.ENTRANT_CHOICES</a>))</li>
+<li>"incumbent": choice of the incumbent (possible choices listed in <a href="#IModel.INCUMBENT_CHOICES">Shelegia_Motta_2021.IModel.IModel.INCUMBENT_CHOICES</a>)</li>
+<li>"development": outcome of the development (possible outcomes listed in <a href="#IModel.DEVELOPMENT_OUTCOME">Shelegia_Motta_2021.IModel.IModel.DEVELOPMENT_OUTCOME</a>)</li>
+</ul>
+
+<h6 id="parameters">Parameters</h6>
+
+<ul>
+<li><strong>A</strong> (float):
+Assets of the entrant.</li>
+<li><strong>F</strong> (float):
+Fixed costs for copying of the incumbent.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<ul>
+<li><strong>Dict[str, str]</strong>: Optimal choice of the entrant, the incumbent and the outcome of the development.</li>
+</ul>
+</div>
+
+
+                            </div>
                             <div id="IModel.plot_incumbent_best_answers" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#IModel.plot_incumbent_best_answers">#&nbsp;&nbsp</a>
 
@@ -879,58 +1085,6 @@ Axis to draw the plot on. (optional)</li>
 
 <ul>
 <li><strong>matplotlib.axes.Axes</strong>: Axis containing the plot.</li>
-</ul>
-</div>
-
-
-                            </div>
-                            <div id="IModel.get_optimal_choice" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#IModel.get_optimal_choice">#&nbsp;&nbsp</a>
-
-                <div class="decorator">@abc.abstractmethod</div>
-
-            <span class="def">def</span>
-            <span class="name">get_optimal_choice</span><span class="signature">(self, A: float, F: float)</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">get_optimal_choice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">F</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return the optimal choice of the entrant and the incumbent based on a pair of assets of the entrant ann fixed costs for copying of the incumbent.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        A : float</span>
-<span class="sd">            Assets of the entrant.</span>
-<span class="sd">        F : float</span>
-<span class="sd">            Fixed costs for copying of the incumbent.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        Optimal choice of the entrant and the incumbent.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">pass</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Return the optimal choice of the entrant and the incumbent based on a pair of assets of the entrant ann fixed costs for copying of the incumbent.</p>
-
-<h6 id="parameters">Parameters</h6>
-
-<ul>
-<li><strong>A</strong> (float):
-Assets of the entrant.</li>
-<li><strong>F</strong> (float):
-Fixed costs for copying of the incumbent.</li>
-</ul>
-
-<h6 id="returns">Returns</h6>
-
-<ul>
-<li><strong>Optimal choice of the entrant and the incumbent.</strong></li>
 </ul>
 </div>
 
