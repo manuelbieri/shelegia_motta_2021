@@ -35,6 +35,11 @@ import Shelegia_Motta_2021.Models
 base_model = Shelegia_Motta_2021.Models.BaseModel()
 ```
 
+#### Bargaining Power Model
+```
+bargaining_power_model = Shelegia_Motta_2021.Models.BargainingPowerModel()
+```
+
 #### Unobservable Choices Model
 ```
 unobservable_model = Shelegia_Motta_2021.Models.UnobservableModel()
@@ -45,14 +50,9 @@ unobservable_model = Shelegia_Motta_2021.Models.UnobservableModel()
 acquisition_model = Shelegia_Motta_2021.Models.AcquisitionModel()
 ```
 
-#### Two-sided Market Model
-```
-two_sided_market_model = Shelegia_Motta_2021.Models.TwoSidedMarketModel()
-```
-
 ### Basic usage
 ```
-# every model type can be plugged in
+# every model type can be plugged in without changing the following code.
 model: Shelegia_Motta_2021.IModel.IModel = Shelegia_Motta_2021.Models.BaseModel()
 
 # print string representation of the model
@@ -63,6 +63,8 @@ model.plot_incumbent_best_answers()
 
 # plot the equilibrium path
 model.plot_equilibrium()
+
+
 ```
 
 ### Documentation
@@ -82,3 +84,6 @@ Generate api-documentation with the following command:
 ```
 pdoc -o ./docs Shelegia_Motta_2021 --docformat "numpy" --math
 ```
+
+#### Additional Notes
+For further information about the coordinates used in the code, see dev_notes.md. 

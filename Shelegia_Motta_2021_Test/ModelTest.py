@@ -14,7 +14,7 @@ class BaseModelTest(unittest.TestCase):
         self.model: IModel = self.setUpModel()
         self.copying_fixed_costs: Dict[str, float] = self.model.get_copying_fixed_costs_values()
         self.assets: Dict[str, float] = self.model.get_asset_values()
-        self.utility: Dict[str, Dict[str, float]] = self.model.get_utility_values()
+        self.utility: Dict[str, Dict[str, float]] = self.model.get_payoffs()
 
     def test_invalid_A1b(self):
         self.assertRaises(AssertionError, BaseModel, small_delta=0.2)

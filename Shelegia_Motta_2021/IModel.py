@@ -14,7 +14,7 @@ class IModel:
         Contains all the possible product choices of the entrant.
         - complement (C)
         - substitute (S)
-        - Indifferent (I)
+        - indifferent (I)
         """
         self.INCUMBENT_CHOICES: Final[Dict[str, str]] = {"copy": "©", "refrain": "Ø"}
         """
@@ -58,11 +58,11 @@ class IModel:
         pass
 
     @abc.abstractmethod
-    def _calculate_welfare(self) -> Dict[str, Dict[str, float]]:
+    def _calculate_payoffs(self) -> Dict[str, Dict[str, float]]:
         """
-        Calculates the utility values for different market configurations.
+        Calculates the payoffs for different market configurations.
 
-        Includes the following utilities:
+        Includes the following payoffs:
         - pi(I):
         - pi(E):
         - CS:
@@ -71,8 +71,9 @@ class IModel:
         Returns
         -------
         Dict[str, float]
-            Includes the mentioned utilities for different market configurations.
+            Includes the mentioned payoffs for different market configurations.
         """
+        pass
 
     @abc.abstractmethod
     def get_asset_values(self) -> Dict[str, float]:
@@ -103,9 +104,9 @@ class IModel:
         pass
 
     @abc.abstractmethod
-    def get_utility_values(self) -> Dict[str, Dict[str, float]]:
+    def get_payoffs(self) -> Dict[str, Dict[str, float]]:
         """
-        Returns the utility values for different market configurations.
+        Returns the payoffs for different market configurations.
 
         A market configuration can include:
         - $I_P$ : Primary product sold by the incumbent.
@@ -124,18 +125,18 @@ class IModel:
         | $I_P$ ; $E_C + \\tilde{E}_C$ | N.A. | N.A. | N.A. | N.A. |
         | $I_P + I_C$ ; $E_C + \\tilde{E}_C$ | N.A. | N.A. | N.A. | N.A. |
         <br>
-        The utility values are specific to the models.
+        The payoffs are specific to the models.
 
         Returns
         -------
         Dict[str, Dict[str, float]]
-            Contains the mentioned utilities for different market configurations.
+            Contains the mentioned payoffs for different market configurations.
         """
 
     @abc.abstractmethod
     def get_optimal_choice(self, A: float, F: float) -> Dict[str, str]:
         """
-        Return the optimal choice of the entrant and the incumbent based on a pair of assets of the entrant and fixed costs for copying of the incumbent.
+        Returns the optimal choice of the entrant and the incumbent based on a pair of assets of the entrant and fixed costs for copying of the incumbent.
 
         The output dictionary will contain the following details:
 
@@ -192,9 +193,9 @@ class IModel:
         pass
 
     @abc.abstractmethod
-    def plot_utilities(self, axis: matplotlib.axes.Axes = None) -> matplotlib.axes.Axes:
+    def plot_payoffs(self, axis: matplotlib.axes.Axes = None) -> matplotlib.axes.Axes:
         """
-        Plots the utilities for different market configurations.
+        Plots the payoffs for different market configurations.
 
         Parameters
         ----------

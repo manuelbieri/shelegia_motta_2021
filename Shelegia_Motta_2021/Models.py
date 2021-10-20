@@ -11,14 +11,14 @@ import Shelegia_Motta_2021
 class BaseModel(Shelegia_Motta_2021.IModel):
     """
     There are two players in our base model: the Incumbent, which sells the primary product, denoted
-by Ip, and a start-up, that we call Entrant, which sells a product Ec complementary to Ip. (One may
-think of Ip as a platform, and Ec as a service or product which can be accessed through the platform.)
-We are interested in studying the choice of E between developing a substitute to Ip, denoted by
-Ep, or another complement to Ip, denoted by E˜c;23 and the choice of I between copying E’s original
-complementary product Ec by creating a perfect substitute Ic, or not.24 Since E may not have enough
-assets to cover the development cost of its second product, copying its current product will a↵ect E’s
-ability to obtain funding
-"""
+    by Ip, and a start-up, that we call Entrant, which sells a product Ec complementary to Ip. (One may
+    think of Ip as a platform, and Ec as a service or product which can be accessed through the platform.)
+    We are interested in studying the choice of E between developing a substitute to Ip, denoted by
+    Ep, or another complement to Ip, denoted by E˜c;23 and the choice of I between copying E’s original
+    complementary product Ec by creating a perfect substitute Ic, or not.24 Since E may not have enough
+    assets to cover the development cost of its second product, copying its current product will a↵ect E’s
+    ability to obtain funding
+    """
 
     def __init__(self, u: float = 1, B: float = 0.5, small_delta: float = 0.5, delta: float = 0.51,
                  K: float = 0.2) -> None:
@@ -52,9 +52,19 @@ ability to obtain funding
         self._K: float = K
         self._copying_fixed_costs: Dict[str, float] = self._calculate_copying_fixed_costs_values()
         self._assets: Dict[str, float] = self._calculate_asset_values()
-        self._utility: Dict[str, Dict[str, float]] = self._calculate_welfare()
+        self._payoffs: Dict[str, Dict[str, float]] = self._calculate_payoffs()
 
-    def _calculate_welfare(self) -> Dict[str, Dict[str, float]]:
+    def _calculate_payoffs(self) -> Dict[str, Dict[str, float]]:
+        """
+        Calculates the payoffs for different market configurations with the formulas given in the paper.
+
+        The formulas are tabulated in BaseModel.get_payoffs.
+
+        Returns
+        -------
+        Dict[str, Dict[str, float]]
+            Contains the mentioned payoffs for different market configurations.
+        """
         return {'basic': {'pi(I)': self._u + self._small_delta / 2,
                           'pi(E)': self._small_delta / 2,
                           'CS': 0,
@@ -91,15 +101,12 @@ ability to obtain funding
         """
         Calculates the thresholds for the fixed costs of copying for the incumbent.
 
-        Includes:
-        - (6) F(YY)s = $\delta$ / 2
-        - (6) F(YN)s = u + 3 * $\delta$ / 2
-        - (6) F(YY)c = $\delta$
-        - (6) F(YN)c = $\delta$ / 2
+        The formulas are tabulated in BaseModel.get_copying_fixed_costs_values.
 
         Returns
         -------
-        Dict including the thresholds fixed costs of copying for the incumbent.
+        Dict[str, float]
+            Includes the thresholds for the fixed costs for copying of the incumbent.
         """
         return {'F(YY)s': self._small_delta / 2,
                 'F(YN)s': self._u + self._small_delta * 3 / 2,
@@ -110,15 +117,12 @@ ability to obtain funding
         """
         Calculates the thresholds for the assets of the entrant.
 
-        Includes:
-        - (2) A >= A_s = B - ($\Delta$ + 3 * $\delta$ / 2 - K)
-        - (3) A >= A_c = B - (3 * $\delta$ / 2 - K)
-        - (4) A >= A-s = B - ($\Delta$ - K)
-        - (5) A >= A-c = B - ($\delta$ / 2 - K)
+        The formulas are tabulated in BaseModel.get_asset_values.
 
         Returns
         -------
-        Dict including the thresholds for the assets of the entrant.
+        Dict[str, float]
+            Includes the thresholds for the assets of the entrant.
         """
         return {'A_s': self._B - (self._delta + 3 / 2 * self._small_delta - self._K),
                 'A_c': self._B - (3 / 2 * self._small_delta - self._K),
@@ -126,13 +130,69 @@ ability to obtain funding
                 'A-c': self._B - (1 / 2 * self._small_delta - self._K)}
 
     def get_asset_values(self) -> Dict[str, float]:
+        """
+        Returns the asset thresholds of the entrant.
+
+        | Threshold $\:\:\:\:\:$ | Name $\:\:\:\:\:$ | Formula $\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:$ |
+        |----------------|:----------|:-----------|
+        | $A_S$ | A_s | $(2)\: B + K - \Delta - 3\delta/2$ |
+        | $A_C$ | A_c | $(3)\: B + K - 3\delta/2$ |
+        | $\overline{A}_S$ | A-s | $(4)\: B + K - \Delta$ |
+        | $\overline{A}_C$ | A-c | $(5)\: B + K - \delta/2$ |
+        <br>
+        Returns
+        -------
+        Dict[str, float]
+            Includes the thresholds for the assets of the entrant.
+        """
         return self._assets
 
     def get_copying_fixed_costs_values(self) -> Dict[str, float]:
+        """
+        Returns the fixed costs for copying thresholds of the incumbent.
+
+        | Threshold $\:\:\:\:\:$ | Name $\:\:\:\:\:$ | Formula $\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:$ |
+        |----------|:-------|:--------|
+        | $F^{YY}_S$ | F(YY)s | $(6)\: \delta/2$ |
+        | $F^{YN}_S$ | F(YN)s | $(6)\: u + 3\delta/2$ |
+        | $F^{YY}_C$ | F(YY)c | $(6)\: \delta$ |
+        | $F^{YN}_C$ | F(YN)c | $(6)\: \delta/2$ |
+        <br>
+        Returns
+        -------
+        Dict[str, float]
+            Includes the thresholds for the fixed costs for copying of the incumbent.
+        """
         return self._copying_fixed_costs
 
-    def get_utility_values(self) -> Dict[str, Dict[str, float]]:
-        return self._utility
+    def get_payoffs(self) -> Dict[str, Dict[str, float]]:
+        """
+        Returns the payoffs for different market configurations.
+
+        A market configuration can include:
+        - $I_P$ : Primary product sold by the incumbent.
+        - $I_C$ : Complementary product to $I_P$ potentially sold by the incumbent, which is copied from $E_C$.
+        - $E_P$ : Perfect substitute to $I_P$ potentially sold by the entrant.
+        - $E_C$ : Complementary product to $I_P$ currently sold by the entrant
+        - $\\tilde{E}_C$ : Complementary product to $I_P$ potentially sold by the entrant.
+        <br>
+
+        | Market Config. $\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:$ | $\pi(I) \:\:\:\:\:\:\:\:\:\:\:\:\:\:\:$ | $\pi(E) \:\:\:\:\:\:\:\:\:\:\:\:\:\:\:$ | CS $\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:$ | W $\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:$ |
+        |-----------------------|:--------|:--------|:--|:-|
+        | $I_P$ ; $E_C$         | $u + \delta/2$ | $\delta/2$ | 0 | $u + \delta$ |
+        | $I_P + I_C$ ; $E_C$   | $u + \delta$ | 0 | 0 | $u + \delta$ |
+        | $I_P$ ; $E_P + E_C$   | 0 | $\Delta + \delta$ | $u$ | $u + \Delta + \delta$ |
+        | $I_P + I_C$ ; $E_P + E_C$ | 0 | $\Delta$ | $u + \delta$ | $u + \Delta + \delta$ |
+        | $I_P$ ; $E_C + \\tilde{E}_C$ | $u + \delta$ | $\delta$ | 0 | $u + 2\delta$ |
+        | $I_P + I_C$ ; $E_C + \\tilde{E}_C$ | $u + 3\delta/2$ | $\delta/2$ | 0 | $u + 2\delta$ |
+        <br>
+
+        Returns
+        -------
+        Dict[str, Dict[str, float]]
+            Contains the mentioned payoffs for different market configurations.
+        """
+        return self._payoffs
 
     def get_optimal_choice(self, A: float, F: float) -> Dict[str, str]:
         result: Dict[str, str] = {"entrant": "", "incumbent": "", "development": ""}
@@ -154,7 +214,7 @@ ability to obtain funding
         return result
 
     def _plot(self, coordinates: List[List[Tuple[float, float]]], labels: List[str],
-              axis: matplotlib.axes.Axes = None) -> matplotlib.axes.Axes:
+              axis: matplotlib.axes.Axes = None, **kwargs) -> matplotlib.axes.Axes:
         """
         Plots polygons containing the optimal choices and answers into a coordinate system.
 
@@ -162,8 +222,15 @@ ability to obtain funding
         ----------
         coordinates : List[List[Tuple[float, float]]]
             List of all polygons (list of coordinates) to plot.
+        labels: List[str]
+            List containing all the labels for the polygons.
         axis : matplotlib.axes.Axes
             Axis to draw the plot on. (optional)
+        **kwargs
+            Optional key word arguments for the plots.<br>
+            - title: title of the plot.<br>
+            - xlabel: label for the x - axis.<br>
+            - ylabel: label for the y - axis.<br>
 
         Returns
         -------
@@ -177,7 +244,10 @@ ability to obtain funding
             poly = plt.Polygon(coordinates, ec="k", color=self._get_color(i), label=labels[i])
             axis.add_patch(poly)
 
-        axis.legend(bbox_to_anchor=(1.15, 1), loc="upper left")
+        axis.legend(bbox_to_anchor=(1.3, 1), loc="upper left")
+        BaseModel._set_axis_labels(axis, title=kwargs.get('title', ''),
+                                   x_label=kwargs.get('xlabel', 'Assets of the entrant'),
+                                   y_label=kwargs.get('ylabel', 'Fixed costs of copying for the incumbent'))
         BaseModel._set_axis(axis)
         plt.show()
         return axis
@@ -185,7 +255,7 @@ ability to obtain funding
     def plot_incumbent_best_answers(self, axis: matplotlib.axes.Axes = None) -> matplotlib.axes.Axes:
         poly_coordinates: List[List[Tuple[float, float]]] = self._get_incumbent_best_answer_coordinates()
         poly_labels: List[str] = self._get_incumbent_best_answer_labels()
-        axis: matplotlib.axes.Axes = self._plot(coordinates=poly_coordinates, labels=poly_labels, axis=axis)
+        axis: matplotlib.axes.Axes = self._plot(title="Best Answers of the incumbent to the choices of the entrant", coordinates=poly_coordinates, labels=poly_labels, axis=axis)
         return axis
 
     def _create_choice_answer_label(self, entrant: Literal["complement", "substitute", "indifferent"],
@@ -195,19 +265,28 @@ ability to obtain funding
             incumbent] + " $\\rightarrow$ " + self.DEVELOPMENT_OUTCOME[development]
 
     def _get_incumbent_best_answer_labels(self) -> List[str]:
+        """
+        Returns a list containing the labels for the squares in the plot of the best answers of the incumbent to the choice of the entrant.
+
+        For the order of the labels refer to the file devnotes.md.
+
+        Returns
+        -------
+        List containing the labels for the squares in the plot of the best answers of the incumbent to the choice of the entrant.
+        """
         return [
             # Square 1
             self._create_choice_answer_label(entrant="substitute", incumbent="copy", development="failure") + " \n" +
             self._create_choice_answer_label(entrant="complement", incumbent="copy", development="failure"),
             # Square 2
-            self._create_choice_answer_label(entrant="substitute", incumbent="copy", development="failure") + " \n" +
-            self._create_choice_answer_label(entrant="complement", incumbent="refrain", development="success"),
-            # Square 3
             self._create_choice_answer_label(entrant="substitute", incumbent="copy", development="success") + " \n" +
             self._create_choice_answer_label(entrant="complement", incumbent="copy", development="failure"),
-            # Square 4
+            # Square 3
             self._create_choice_answer_label(entrant="substitute", incumbent="copy", development="success") + " \n" +
             self._create_choice_answer_label(entrant="complement", incumbent="copy", development="success"),
+            # Square 4
+            self._create_choice_answer_label(entrant="substitute", incumbent="copy", development="failure") + " \n" +
+            self._create_choice_answer_label(entrant="complement", incumbent="refrain", development="success"),
             # Square 5
             self._create_choice_answer_label(entrant="substitute", incumbent="refrain", development="success") + " \n" +
             self._create_choice_answer_label(entrant="complement", incumbent="copy", development="success"),
@@ -217,6 +296,15 @@ ability to obtain funding
         ]
 
     def _get_incumbent_best_answer_coordinates(self) -> List[List[Tuple[float, float]]]:
+        """
+        Returns a list containing the coordinates for the squares in the plot of the best answers of the incumbent to the choice of the entrant.
+
+        For the order of the squares refer to the file devnotes.md.
+
+        Returns
+        -------
+        List containing the coordinates for the squares in the plot of the best answers of the incumbent to the choice of the entrant.
+        """
         y_max: float = self._get_y_max()
         x_max: float = self._get_x_max()
         return [
@@ -224,15 +312,15 @@ ability to obtain funding
             [(0, 0), (self._assets['A-s'], 0), (self._assets['A-s'], self._copying_fixed_costs['F(YY)s']),
              (0, self._copying_fixed_costs['F(YY)s'])],
             # Square 2
-            [(0, self._copying_fixed_costs['F(YY)s']), (self._assets['A-s'], self._copying_fixed_costs['F(YY)s']),
-             (self._assets['A-s'], self._copying_fixed_costs['F(YN)s']), (0, self._copying_fixed_costs['F(YN)s'])],
-            # Square 3
             [(self._assets['A-s'], 0), (self._assets['A-c'], 0),
              (self._assets['A-c'], self._copying_fixed_costs['F(YY)s']),
              (self._assets['A-s'], self._copying_fixed_costs['F(YY)s'])],
-            # Square 4
+            # Square 3
             [(self._assets['A-c'], 0), (x_max, 0), (x_max, self._copying_fixed_costs['F(YY)s']),
              (self._assets['A-c'], self._copying_fixed_costs['F(YY)s'])],
+            # Square 4
+            [(0, self._copying_fixed_costs['F(YY)s']), (self._assets['A-s'], self._copying_fixed_costs['F(YY)s']),
+             (self._assets['A-s'], self._copying_fixed_costs['F(YN)s']), (0, self._copying_fixed_costs['F(YN)s'])],
             # Square 5
             [(self._assets['A-c'], self._copying_fixed_costs['F(YY)s']), (x_max, self._copying_fixed_costs['F(YY)s']),
              (x_max, self._copying_fixed_costs['F(YY)c']), (self._assets['A-c'], self._copying_fixed_costs['F(YY)c'])],
@@ -246,22 +334,40 @@ ability to obtain funding
     def plot_equilibrium(self, axis: matplotlib.axes.Axes = None) -> matplotlib.axes.Axes:
         poly_coordinates: List[List[Tuple[float, float]]] = self._get_equilibrium_coordinates()
         poly_labels: List[str] = self._get_equilibrium_labels()
-        axis: matplotlib.axes.Axes = self._plot(coordinates=poly_coordinates, labels=poly_labels, axis=axis)
+        axis: matplotlib.axes.Axes = self._plot(title='Equilibrium Path in the base Model', coordinates=poly_coordinates, labels=poly_labels, axis=axis)
         return axis
 
     def _get_equilibrium_labels(self) -> List[str]:
+        """
+        Returns a list containing the labels for the squares in the plot of the equilibrium path.
+
+        For the order of the squares refer to the file devnotes.md.
+
+        Returns
+        -------
+        List containing the labels for the squares in the plot of the best answers of the equilibrium path.
+        """
         return [
             # Square 1
             self._create_choice_answer_label(entrant="indifferent", incumbent="copy", development="failure"),
             # Square 2
-            self._create_choice_answer_label(entrant="complement", incumbent="refrain", development="success"),
-            # Square 3
             self._create_choice_answer_label(entrant="substitute", incumbent="copy", development="success"),
+            # Square 3
+            self._create_choice_answer_label(entrant="complement", incumbent="refrain", development="success"),
             # Square 4
             self._create_choice_answer_label(entrant="substitute", incumbent="refrain", development="success")
         ]
 
     def _get_equilibrium_coordinates(self) -> List[List[Tuple[float, float]]]:
+        """
+        Returns a list containing the coordinates for the squares in the plot of the equilibrium path.
+
+        For the order of the squares refer to the file devnotes.md.
+
+        Returns
+        -------
+        List containing the coordinates for the squares in the plot of the best answers of the equilibrium path.
+        """
         y_max: float = self._get_y_max()
         x_max: float = self._get_x_max()
         return [
@@ -269,35 +375,35 @@ ability to obtain funding
             [(0, 0), (self._assets['A-s'], 0), (self._assets['A-s'], self._copying_fixed_costs['F(YY)s']),
              (0, self._copying_fixed_costs['F(YY)s'])],
             # Square 2
-            [(0, self._copying_fixed_costs['F(YY)s']), (self._assets['A-s'], self._copying_fixed_costs['F(YY)s']),
-             (self._assets['A-s'], self._copying_fixed_costs['F(YN)s']), (0, self._copying_fixed_costs['F(YN)s'])],
-            # Square 3
             [(self._assets['A-s'], 0), (x_max, 0), (x_max, self._copying_fixed_costs['F(YY)s']),
              (self._assets['A-s'], self._copying_fixed_costs['F(YY)s'])],
+            # Square 3
+            [(0, self._copying_fixed_costs['F(YY)s']), (self._assets['A-s'], self._copying_fixed_costs['F(YY)s']),
+             (self._assets['A-s'], self._copying_fixed_costs['F(YN)s']), (0, self._copying_fixed_costs['F(YN)s'])],
             # Square 4
             [(self._assets['A-s'], self._copying_fixed_costs['F(YY)s']), (x_max, self._copying_fixed_costs['F(YY)s']),
              (x_max, y_max), (0, y_max), (0, self._copying_fixed_costs['F(YN)s']),
              (self._assets['A-s'], self._copying_fixed_costs['F(YN)s'])]]
 
-    def plot_utilities(self, axis: matplotlib.axes.Axes = None) -> matplotlib.axes.Axes:
+    def plot_payoffs(self, axis: matplotlib.axes.Axes = None) -> matplotlib.axes.Axes:
         if axis is None:
             fig, axis = plt.subplots()
-        index = arange(0, len(self._utility) * 2, 2)
+        index = arange(0, len(self._payoffs) * 2, 2)
         bar_width = 0.35
         opacity = 0.8
         spacing = 0.05
 
-        for counter, utility_type in enumerate(self._utility[list(self._utility.keys())[0]].keys()):
+        for counter, utility_type in enumerate(self._payoffs[list(self._payoffs.keys())[0]].keys()):
             utility_values: List[float] = []
-            for market_configuration in self._utility:
-                utility_values.append(self._utility[market_configuration][utility_type])
+            for market_configuration in self._payoffs:
+                utility_values.append(self._payoffs[market_configuration][utility_type])
 
             bars = axis.bar(index + counter * (bar_width + spacing), utility_values, bar_width,
                             alpha=opacity,
                             color='w',
                             hatch='///',
                             edgecolor=self._get_color(counter),
-                            label=self._convert_utility_label(utility_type))
+                            label=self._convert_payoffs_label(utility_type))
             max_indices: List[int] = list(
                 filter(lambda x: utility_values[x] == max(utility_values), range(len(utility_values))))
             for max_index in max_indices:
@@ -307,9 +413,9 @@ ability to obtain funding
         axis.set_ylabel('Utility')
         axis.set_title('Utility levels for different Market Configurations')
         axis.set_xticks(index + 1.5 * (bar_width + spacing))
-        axis.set_xticklabels(tuple([self._convert_market_configuration_label(i) for i in self._utility.keys()]))
+        axis.set_xticklabels(tuple([self._convert_market_configuration_label(i) for i in self._payoffs.keys()]))
         axis.legend(bbox_to_anchor=(0, -0.3), loc="lower left", ncol=4)
-        axis.text(max(index) + 2 + 1.5 * (bar_width + spacing), self._utility["E(P)"]["W"]*0.5, self._get_market_configuration_annotations())
+        axis.text(max(index) + 2 + 1.5 * (bar_width + spacing), self._payoffs["E(P)"]["W"] * 0.5, self._get_market_configuration_annotations())
 
         # BaseModel._set_axis(axis)
         plt.show()
@@ -317,6 +423,14 @@ ability to obtain funding
 
     @staticmethod
     def _get_market_configuration_annotations() -> str:
+        """
+        Returns a string containing all product options for the entrant and the incumbent.
+
+        Returns
+        -------
+        str
+            Contains all product options for the entrant and the incumbent.
+        """
         return "$I_P$: Primary product sold by the incumbent\n" \
                "$I_C$: Complementary product to $I_P$ potentially sold by the incumbent, which is copied from $E_C$\n" \
                "$E_P$: Perfect substitute to $I_P$ potentially sold by the entrant\n" \
@@ -324,7 +438,20 @@ ability to obtain funding
                "$\\tilde{E}_C$: Complementary product to $I_P$ potentially sold by the entrant\n"
 
     @staticmethod
-    def _convert_utility_label(raw_label: str) -> str:
+    def _convert_payoffs_label(raw_label: str) -> str:
+        """
+        Converts keys of the payoffs dict to latex labels.
+
+        Parameters
+        ----------
+        raw_label
+            As given as key in the payoffs dict.
+
+        Returns
+        -------
+        str
+            Latex compatible pretty label.
+        """
         label: str = raw_label.replace("pi", "$\pi$")
         label = label.replace("CS", "Consumer Surplus")
         label = label.replace("W", "Welfare")
@@ -332,6 +459,19 @@ ability to obtain funding
 
     @staticmethod
     def _convert_market_configuration_label(raw_label: str) -> str:
+        """
+        Returns the latex string for a specific market configuration.
+
+        Parameters
+        ----------
+        raw_label
+            Of the market configuration as given as key in the payoffs dict.
+
+        Returns
+        -------
+        str
+            Corresponding latex label for the market configuration as given as key in the payoffs dict.
+        """
         labels: Dict[str] = {"basic": "$I_P;E_C$",
                              "I(C)": "$I_P+I_C;E_C$",
                              "E(P)": "$I_P;E_C+E_P$",
@@ -341,12 +481,36 @@ ability to obtain funding
         return labels.get(raw_label, 'No valid market configuration')
 
     def _get_x_max(self) -> float:
+        """
+        Returns the maximum value to plot on the x - axis.
+
+        Returns
+        -------
+        float
+            Maximum value to plot on the x - axis.
+        """
         return round(self._assets['A-c'] * 1.3, 1)
 
     def _get_y_max(self) -> float:
+        """
+        Returns the maximum value to plot on the y - axis.
+
+        Returns
+        -------
+        float
+            Maximum value to plot on the y - axis.
+        """
         return round(self._copying_fixed_costs['F(YN)s'] * 1.3, 1)
 
     def _draw_thresholds(self, axis: matplotlib.axes.Axes) -> None:
+        """
+        Draws the thresholds and the corresponding labels on a given axis.
+
+        Parameters
+        ----------
+        axis: matplotlib.axes.Axes
+            Axis to draw the thresholds on.
+        """
         horizontal_line_x: float = self._get_x_max() + 0.05
         vertical_line_y: float = self._get_y_max() + 0.15
         axis.axhline(self._copying_fixed_costs['F(YN)s'], linestyle='--', color='k')
@@ -362,12 +526,57 @@ ability to obtain funding
 
     @staticmethod
     def _get_color(i: int) -> str:
+        """
+        Returns a string corresponding to a matplotlib - color for a given index.
+
+        The index helps to get different colors for different items, when iterating over list/dict/etc..
+
+        Parameters
+        ----------
+        i: int
+            Index of the color.
+        Returns
+        -------
+        str
+            A string corresponding to a matplotlib - color for a given index.
+        """
         return ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'w'][i]
 
     @staticmethod
-    def _set_axis(axis: matplotlib.axes.Axes):
+    def _set_axis(axis: matplotlib.axes.Axes) -> None:
+        """
+        Adjusts the axis to the given viewport.
+
+        Parameters
+        ----------
+        axis: matplotlib.axes.Axes
+            To adjust to the given viewport.
+        """
         axis.autoscale_view()
         axis.figure.tight_layout()
+
+    @staticmethod
+    def _set_axis_labels(axis: matplotlib.axes.Axes, title: str, x_label: str, y_label: str) -> None:
+        """
+        Sets all the labels for a plot, containing the title, x - label and y - label.
+
+        Parameters
+        ----------
+        axis
+            Axis to set the labels for.
+        title
+            Title of the axis. (not None)
+        x_label
+            Label of the x - axis. (not None)
+        y_label
+            Label of the y - axis. (not None)
+        """
+        assert title is not None
+        assert x_label is not None
+        assert y_label is not None
+        axis.set_title(title, loc='left', y=1.1)
+        axis.set_xlabel(x_label)
+        axis.set_ylabel(y_label)
 
     def __str__(self) -> str:
         str_representation: str = 'Assets:'
@@ -378,19 +587,24 @@ ability to obtain funding
         for key in self._copying_fixed_costs.keys():
             str_representation += '\n\t- ' + key + ':\t' + str(self._copying_fixed_costs[key])
 
-        market_configurations: List[str] = list(self._utility.keys())
+        market_configurations: List[str] = list(self._payoffs.keys())
         str_representation += '\nUtility - Levels for different Market Configurations:\n\t' + ''.join(
             ['{0: <14}'.format(item) for item in market_configurations])
-        for utility_type in self._utility[market_configurations[0]].keys():
+        for utility_type in self._payoffs[market_configurations[0]].keys():
             str_representation += '\n\t'
             for market_configuration in market_configurations:
                 str_representation += '-' + '{0: <4}'.format(utility_type).replace('pi', 'π') + ': ' + '{0: <5}'.format(
-                    str(self._utility[market_configuration][utility_type])) + '| '
+                    str(self._payoffs[market_configuration][utility_type])) + '| '
 
         return str_representation
 
 
-class UnobservableModel(BaseModel):
+class BargainingPowerModel(BaseModel):
+    def __init__(self):
+        super(BargainingPowerModel, self).__init__()
+
+
+class UnobservableModel(BargainingPowerModel):
     pass
 
 
@@ -407,18 +621,9 @@ class AcquisitionModel(BaseModel):
         return copying_fixed_costs_values
 
 
-class TwoSidedMarketModel(BaseModel):
-    def __init__(self, u: float = 1, B: float = 0.5, small_delta: float = 0.5, delta: float = 0.51,
-                 K: float = 0.2, gamma: float = 0.5) -> None:
-        assert 0 < gamma < 1, "Gamma has to be between 0 and 1."
-        assert K < small_delta < gamma * small_delta + delta, "(A4) not satisfied."
-        assert small_delta * (1 - small_delta) < u + delta, "(A5) not satisfied."
-        super(TwoSidedMarketModel, self).__init__(u=u, B=B, small_delta=small_delta, delta=delta, K=K)
-
-
 if __name__ == '__main__':
     base_model = BaseModel()
     base_model.plot_equilibrium()
     base_model.plot_incumbent_best_answers()
-    base_model.plot_utilities()
-    print(base_model)
+    # base_model.plot_payoffs()
+    # print(base_model)

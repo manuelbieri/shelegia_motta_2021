@@ -5,10 +5,10 @@ __docformat__ = "restructuredtext"
 
 try:
     from Shelegia_Motta_2021.IModel import IModel
-    from Shelegia_Motta_2021.Models import BaseModel, UnobservableModel, AcquisitionModel, TwoSidedMarketModel
+    from Shelegia_Motta_2021.Models import BaseModel, BargainingPowerModel, UnobservableModel, AcquisitionModel
 except ModuleNotFoundError:
     from IModel import IModel
-    from Models import BaseModel, UnobservableModel, AcquisitionModel, TwoSidedMarketModel
+    from Models import BaseModel, BargainingPowerModel, UnobservableModel, AcquisitionModel
 
 
 def docs() -> None:
