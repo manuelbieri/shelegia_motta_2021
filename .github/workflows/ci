@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+      *
+  pull_request:
+      *
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2      
+      - name: Set up python version
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+      - name: Run Test
+        run: |
+          cd Shelegia_Motta_2021_Test
+          python -m unittest *Test.py
