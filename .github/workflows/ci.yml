@@ -26,5 +26,4 @@ jobs:
           python -m pip install -r requirements.txt
       - name: Run Test
         run: |
-          cd Shelegia_Motta_2021_Test
-          python -m unittest *Test.py
+          python -m unittest Shelegia_Motta_2021_Test/*Test.py
