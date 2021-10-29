@@ -2,6 +2,7 @@ from typing import Dict, List, Tuple, Literal
 
 import matplotlib.axes
 import matplotlib.pyplot as plt
+
 plt.rcParams["font.family"] = "monospace"
 from numpy import arange
 
@@ -9,6 +10,9 @@ import Shelegia_Motta_2021
 
 
 class BaseModel(Shelegia_Motta_2021.IModel):
+    tolerance: float = 10**(-8)
+    """Tolerance for the comparison of two floating numbers."""
+
     """
     There are two players in our base model: the Incumbent, which sells the primary product, denoted
     by Ip, and a start-up, that we call Entrant, which sells a product Ec complementary to Ip. (One may
@@ -255,7 +259,8 @@ class BaseModel(Shelegia_Motta_2021.IModel):
     def plot_incumbent_best_answers(self, axis: matplotlib.axes.Axes = None) -> matplotlib.axes.Axes:
         poly_coordinates: List[List[Tuple[float, float]]] = self._get_incumbent_best_answer_coordinates()
         poly_labels: List[str] = self._get_incumbent_best_answer_labels()
-        axis: matplotlib.axes.Axes = self._plot(title="Best Answers of the incumbent to the choices of the entrant", coordinates=poly_coordinates, labels=poly_labels, axis=axis)
+        axis: matplotlib.axes.Axes = self._plot(title="Best Answers of the incumbent to the choices of the entrant",
+                                                coordinates=poly_coordinates, labels=poly_labels, axis=axis)
         return axis
 
     def _create_choice_answer_label(self, entrant: Literal["complement", "substitute", "indifferent"],
@@ -334,7 +339,8 @@ class BaseModel(Shelegia_Motta_2021.IModel):
     def plot_equilibrium(self, axis: matplotlib.axes.Axes = None) -> matplotlib.axes.Axes:
         poly_coordinates: List[List[Tuple[float, float]]] = self._get_equilibrium_coordinates()
         poly_labels: List[str] = self._get_equilibrium_labels()
-        axis: matplotlib.axes.Axes = self._plot(title='Equilibrium Path in the base Model', coordinates=poly_coordinates, labels=poly_labels, axis=axis)
+        axis: matplotlib.axes.Axes = self._plot(title='Equilibrium Path in the base Model',
+                                                coordinates=poly_coordinates, labels=poly_labels, axis=axis)
         return axis
 
     def _get_equilibrium_labels(self) -> List[str]:
@@ -415,7 +421,8 @@ class BaseModel(Shelegia_Motta_2021.IModel):
         axis.set_xticks(index + 1.5 * (bar_width + spacing))
         axis.set_xticklabels(tuple([self._convert_market_configuration_label(i) for i in self._payoffs.keys()]))
         axis.legend(bbox_to_anchor=(0, -0.3), loc="lower left", ncol=4)
-        axis.text(max(index) + 2 + 1.5 * (bar_width + spacing), self._payoffs["E(P)"]["W"] * 0.5, self._get_market_configuration_annotations())
+        axis.text(max(index) + 2 + 1.5 * (bar_width + spacing), self._payoffs["E(P)"]["W"] * 0.5,
+                  self._get_market_configuration_annotations())
 
         # BaseModel._set_axis(axis)
         plt.show()
@@ -511,18 +518,54 @@ class BaseModel(Shelegia_Motta_2021.IModel):
         axis: matplotlib.axes.Axes
             Axis to draw the thresholds on.
         """
-        horizontal_line_x: float = self._get_x_max() + 0.05
-        vertical_line_y: float = self._get_y_max() + 0.15
-        axis.axhline(self._copying_fixed_costs['F(YN)s'], linestyle='--', color='k')
-        axis.text(horizontal_line_x, self._copying_fixed_costs['F(YN)s'], r'$F^{YN}_S$')
-        axis.axhline(self._copying_fixed_costs['F(YY)s'], linestyle='--', color='k')
-        axis.text(horizontal_line_x, self._copying_fixed_costs['F(YY)s'], r'$F^{YY}_S=F^{YN}_C$')
-        axis.axhline(self._copying_fixed_costs['F(YY)c'], linestyle='--', color='k')
-        axis.text(horizontal_line_x, self._copying_fixed_costs['F(YY)c'], r'$F^{YY}_C$')
-        axis.axvline(self._assets['A-s'], linestyle='--', color='k')
-        axis.text(self._assets['A-s'], vertical_line_y, r'$\bar{A}_S$')
-        axis.axvline(self._assets['A-c'], linestyle='--', color='k')
-        axis.text(self._assets['A-c'], vertical_line_y, r'$\bar{A}_C$')
+        # horizontal lines (fixed cost of copying thresholds)
+        self._draw_horizontal_line_with_label(axis, y=self._copying_fixed_costs['F(YN)s'], label="$F^{YN}_S$")
+        self._draw_horizontal_line_with_label(axis, y=self._copying_fixed_costs['F(YY)c'], label="$F^{YY}_C$")
+
+        if self._copying_fixed_costs['F(YY)s'] - self._copying_fixed_costs['F(YN)c'] < BaseModel.tolerance:
+            self._draw_horizontal_line_with_label(axis, y=self._copying_fixed_costs['F(YY)s'], label="$F^{YY}_S=F^{YN}_C$")
+        else:
+            self._draw_horizontal_line_with_label(axis, y=self._copying_fixed_costs['F(YY)s'], label="$F^{YY}_S$")
+            self._draw_horizontal_line_with_label(axis, y=self._copying_fixed_costs['F(YN)c'], label="$F^{YN}_C$")
+        # vertical lines (asset thresholds)
+        self._draw_vertical_line_with_label(axis, x=self._assets['A-s'], label=r'$\bar{A}_S$')
+        self._draw_vertical_line_with_label(axis, x=self._assets['A-c'], label=r'$\bar{A}_C$')
+
+    def _draw_horizontal_line_with_label(self, axis: matplotlib.axes.Axes, y: float, label: str = None) -> None:
+        """
+        Draws a horizontal line at a given y - coordinate and writes the corresponding label at the edge.
+
+        Parameters
+        ----------
+        axis
+            To draw the horizontal line and label on.
+        y
+            Coordinate of the of the line on the y - axis.
+        label
+            Label for the horizontal line written at the edge.
+        """
+        label_x: float = self._get_x_max() + 0.05
+        axis.axhline(y, linestyle='--', color='k')
+        if label is not None:
+            axis.text(label_x, y, label)
+
+    def _draw_vertical_line_with_label(self, axis: matplotlib.axes.Axes, x: float, label: str = None) -> None:
+        """
+        Draws a vertical line at a given x - coordinate and writes the corresponding label at the edge.
+
+        Parameters
+        ----------
+        axis
+            To draw the vertical line and label on.
+        x
+            Coordinate of the of the line on the x - axis.
+        label
+            Label for the vertical line written at the edge.
+        """
+        label_y: float = self._get_y_max() + 0.15
+        axis.axvline(x, linestyle='--', color='k')
+        if label is not None:
+            axis.text(x, label_y, label)
 
     @staticmethod
     def _get_color(i: int) -> str:
@@ -600,15 +643,76 @@ class BaseModel(Shelegia_Motta_2021.IModel):
 
 
 class BargainingPowerModel(BaseModel):
-    def __init__(self):
-        super(BargainingPowerModel, self).__init__()
+    def __init__(self, u: float = 1, B: float = 0.5, small_delta: float = 0.5, delta: float = 0.51,
+                 K: float = 0.2, beta: float = 0.5):
+        assert 0 < beta < 1, 'Invalid bargaining power beta (has to be between 0 and 1).'
+        self._beta: float = beta
+        super(BargainingPowerModel, self).__init__(u=u, B=B, small_delta=small_delta, delta=delta, K=K)
+
+    def _calculate_payoffs(self) -> Dict[str, Dict[str, float]]:
+        """
+        Calculates the payoffs for different market configurations with the formulas given in the paper.
+
+        The formulas are tabulated in BargainingPowerModel.get_payoffs, which are different to the BaseModel.
+
+        Returns
+        -------
+        Dict[str, Dict[str, float]]
+            Contains the mentioned payoffs for different market configurations.
+        """
+        payoffs: Dict[str, Dict[str, float]] = super()._calculate_payoffs()
+        # basic market.
+        payoffs['basic']['pi(I)'] = self._u + self._small_delta * self._beta
+        payoffs['basic']['pi(E)'] = self._small_delta * (1 - self._beta)
+
+        # additional complement of the entrant
+        payoffs['E(C)']['pi(I)'] = self._u + 2 * self._small_delta * self._beta
+        payoffs['E(C)']['pi(E)'] = 2 * self._small_delta * (1 - self._beta)
+
+        # additional complement of the incumbent and the entrant
+        payoffs['I(C)E(C)']['pi(I)'] = self._u + self._small_delta * (1 + self._beta)
+        payoffs['I(C)E(C)']['pi(E)'] = self._small_delta * (1 - self._beta)
+
+        return payoffs
+
+    def _calculate_copying_fixed_costs_values(self) -> Dict[str, float]:
+        """
+        Calculates the thresholds for the fixed costs of copying for the incumbent.
+
+        The formulas are tabulated in BargainingPowerModel.get_copying_fixed_costs_values, which are different to the BaseModel.
+
+        Returns
+        -------
+        Dict[str, float]
+            Includes the thresholds for the fixed costs for copying of the incumbent.
+        """
+        return {'F(YY)s': self._small_delta * (1 - self._beta),
+                'F(YN)s': self._u + self._small_delta * (2 - self._beta),
+                'F(YY)c': 2 * self._small_delta * (1 - self._beta),
+                'F(YN)c': self._small_delta * (2 - 3 * self._beta)}
+
+    def _calculate_asset_values(self) -> Dict[str, float]:
+        """
+        Calculates the thresholds for the assets of the entrant.
+
+        The formulas are tabulated in BargainingPowerModel.get_asset_values, which are different to the BaseModel.
+
+        Returns
+        -------
+        Dict[str, float]
+            Includes the thresholds for the assets of the entrant.
+        """
+        return {'A_s': self._K + self._B - self._delta - self._small_delta * (2 - self._beta),
+                'A_c': self._K + self._B - 3 * self._small_delta * (1 - self._beta),
+                'A-s': self._K + self._B - self._delta,
+                'A-c': self._K + self._B - self._small_delta * (1 - self._beta)}
 
 
 class UnobservableModel(BargainingPowerModel):
     pass
 
 
-class AcquisitionModel(BaseModel):
+class AcquisitionModel(BargainingPowerModel):
     def __init__(self, u: float = 1, B: float = 0.5, small_delta: float = 0.5, delta: float = 0.51,
                  K: float = 0.2) -> None:
         assert delta > small_delta, "Delta has to be smaller than small_delta, meaning the innovation of the entrant is not too drastic."
@@ -622,8 +726,7 @@ class AcquisitionModel(BaseModel):
 
 
 if __name__ == '__main__':
-    base_model = BaseModel()
+    base_model = BargainingPowerModel(beta=0.6)
     base_model.plot_equilibrium()
     base_model.plot_incumbent_best_answers()
-    # base_model.plot_payoffs()
-    # print(base_model)
+    print(base_model)
