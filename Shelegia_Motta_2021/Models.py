@@ -2,17 +2,14 @@ from typing import Dict, List, Tuple, Literal
 
 import matplotlib.axes
 import matplotlib.pyplot as plt
-
 plt.rcParams["font.family"] = "monospace"
+
 from numpy import arange
 
 import Shelegia_Motta_2021
 
 
 class BaseModel(Shelegia_Motta_2021.IModel):
-    tolerance: float = 10**(-8)
-    """Tolerance for the comparison of two floating numbers."""
-
     """
     There are two players in our base model: the Incumbent, which sells the primary product, denoted
     by Ip, and a start-up, that we call Entrant, which sells a product Ec complementary to Ip. (One may
@@ -23,6 +20,9 @@ class BaseModel(Shelegia_Motta_2021.IModel):
     assets to cover the development cost of its second product, copying its current product will a↵ect E’s
     ability to obtain funding
     """
+
+    tolerance: float = 10**(-8)
+    """Tolerance for the comparison of two floating numbers."""
 
     def __init__(self, u: float = 1, B: float = 0.5, small_delta: float = 0.5, delta: float = 0.51,
                  K: float = 0.2) -> None:
