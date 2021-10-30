@@ -4,25 +4,19 @@ import matplotlib.axes
 import matplotlib.pyplot as plt
 
 plt.rcParams["font.family"] = "monospace"
+
 from numpy import arange
 
 import Shelegia_Motta_2021
 
 
 class BaseModel(Shelegia_Motta_2021.IModel):
-    tolerance: float = 10**(-8)
-    """Tolerance for the comparison of two floating numbers."""
+    """
+    There are two players in our base model: The Incumbent, which sells the primary product, denoted by Ip, and a start-up, called the Entrant, which sells a product Ec complementary to Ip. (One may think of Ip as a platform, and Ec as a service or product which can be accessed through the platform.) We are interested in studying the choice of E between developing a substitute to Ip, denoted by Ep, or another complement to Ip, denoted by Ẽc and the choice of I between copying E’s original complementary product Ec by creating a perfect substitute Ic, or not. Since E may not have enough assets to cover the development cost of its second product, copying its current product will affect the entrant’s ability to obtain funding for the development. We shall show that the incumbent has a strategic incentive to copy when the entrant plans to compete, and to abstain from copying when it plans to create another complement.
+    """
 
-    """
-    There are two players in our base model: the Incumbent, which sells the primary product, denoted
-    by Ip, and a start-up, that we call Entrant, which sells a product Ec complementary to Ip. (One may
-    think of Ip as a platform, and Ec as a service or product which can be accessed through the platform.)
-    We are interested in studying the choice of E between developing a substitute to Ip, denoted by
-    Ep, or another complement to Ip, denoted by E˜c;23 and the choice of I between copying E’s original
-    complementary product Ec by creating a perfect substitute Ic, or not.24 Since E may not have enough
-    assets to cover the development cost of its second product, copying its current product will a↵ect E’s
-    ability to obtain funding
-    """
+    tolerance: float = 10 ** (-8)
+    """Tolerance for the comparison of two floating numbers."""
 
     def __init__(self, u: float = 1, B: float = 0.5, small_delta: float = 0.5, delta: float = 0.51,
                  K: float = 0.2) -> None:
@@ -36,11 +30,11 @@ class BaseModel(Shelegia_Motta_2021.IModel):
         Parameters
         ----------
         u : float
-            Utility gained from consuming the primary product
+            Utility gained from consuming the primary product.
         B : float
-            Minimal difference between the return in case of a success and the return in case of failure of E. B is called the private benefit of E in case of failure.
+            Minimal difference between the return in case of a success and the return in case of failure of E. B is called the private benefit of the entrant in case of failure.
         small_delta : float
-            ($\delta$) Additional utility gained from from a complement combined with a primary product.
+            ($\delta$) Additional utility gained from a complement combined with a primary product.
         delta : float
             ($\Delta$) Additional utility gained from the substitute of the entrant compared to the primary product of the incumbent.
         K : float
@@ -384,7 +378,8 @@ class BaseModel(Shelegia_Motta_2021.IModel):
             [(self._assets['A-s'], 0), (x_max, 0), (x_max, self._copying_fixed_costs['F(YY)s']),
              (self._assets['A-s'], self._copying_fixed_costs['F(YY)s'])],
             # Square 3
-            [(0, max(self._copying_fixed_costs['F(YN)c'], 0)), (self._assets['A-s'], max(self._copying_fixed_costs['F(YN)c'], 0)),
+            [(0, max(self._copying_fixed_costs['F(YN)c'], 0)),
+             (self._assets['A-s'], max(self._copying_fixed_costs['F(YN)c'], 0)),
              (self._assets['A-s'], self._copying_fixed_costs['F(YN)s']), (0, self._copying_fixed_costs['F(YN)s'])],
             # Square 4
             [(self._assets['A-s'], self._copying_fixed_costs['F(YY)s']), (x_max, self._copying_fixed_costs['F(YY)s']),
@@ -523,7 +518,8 @@ class BaseModel(Shelegia_Motta_2021.IModel):
         self._draw_horizontal_line_with_label(axis, y=self._copying_fixed_costs['F(YY)c'], label="$F^{YY}_C$")
 
         if abs(self._copying_fixed_costs['F(YY)s'] - self._copying_fixed_costs['F(YN)c']) < BaseModel.tolerance:
-            self._draw_horizontal_line_with_label(axis, y=self._copying_fixed_costs['F(YY)s'], label="$F^{YY}_S=F^{YN}_C$")
+            self._draw_horizontal_line_with_label(axis, y=self._copying_fixed_costs['F(YY)s'],
+                                                  label="$F^{YY}_S=F^{YN}_C$")
         else:
             self._draw_horizontal_line_with_label(axis, y=self._copying_fixed_costs['F(YY)s'], label="$F^{YY}_S$")
             if self._copying_fixed_costs['F(YN)c'] >= 0:
@@ -644,8 +640,20 @@ class BaseModel(Shelegia_Motta_2021.IModel):
 
 
 class BargainingPowerModel(BaseModel):
+    """
+    Besides the parameters used in the paper, this class will introduce the parameter $\\beta$ in the models, called
+    the bargaining power of the incumbent. In the paper the default value 0.5 is used to derive the results.
+    """
     def __init__(self, u: float = 1, B: float = 0.5, small_delta: float = 0.5, delta: float = 0.51,
                  K: float = 0.2, beta: float = 0.5):
+        """
+        Besides $\\beta$ the parameters in this model do not change compared to Shelegia_Motta_2021.Models.BaseModel.
+
+        Parameters
+        ----------
+        beta: float
+            Bargaining power of the incumbent relative to the entrant ($0 < \\beta < 1$).
+        """
         assert 0 < beta < 1, 'Invalid bargaining power beta (has to be between 0 and 1).'
         self._beta: float = beta
         super(BargainingPowerModel, self).__init__(u=u, B=B, small_delta=small_delta, delta=delta, K=K)
@@ -708,26 +716,154 @@ class BargainingPowerModel(BaseModel):
                 'A-s': self._K + self._B - self._delta,
                 'A-c': self._K + self._B - self._small_delta * (1 - self._beta)}
 
+    def get_asset_values(self) -> Dict[str, float]:
+        """
+        Returns the asset thresholds of the entrant.
+
+        | Threshold $\:\:\:\:\:$ | Name $\:\:\:\:\:$ | Formula $\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:$ |
+        |----------------|:----------|:-----------|
+        | $A_S$ | A_s | $B + K - \Delta - \delta(2 - \\beta)$ |
+        | $A_C$ | A_c | $B + K - 3\delta(1 - \\beta)$ |
+        | $\overline{A}_S$ | A-s | $B + K - \Delta$ |
+        | $\overline{A}_C$ | A-c | $B + K - \delta(1 - \\beta)$ |
+        <br>
+        Returns
+        -------
+        Dict[str, float]
+            Includes the thresholds for the assets of the entrant.
+        """
+        return self._assets
+
+    def get_copying_fixed_costs_values(self) -> Dict[str, float]:
+        """
+        Returns the fixed costs for copying thresholds of the incumbent.
+
+        | Threshold $\:\:\:\:\:$ | Name $\:\:\:\:\:$ | Formula $\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:$ |
+        |----------|:-------|:--------|
+        | $F^{YY}_S$ | F(YY)s | $\delta(1 - \\beta)$ |
+        | $F^{YN}_S$ | F(YN)s | $u + \delta(2 - \\beta)$ |
+        | $F^{YY}_C$ | F(YY)c | $2\delta(1 - \\beta)$ |
+        | $F^{YN}_C$ | F(YN)c | $\delta(2 - \\beta)$ |
+        <br>
+        Returns
+        -------
+        Dict[str, float]
+            Includes the thresholds for the fixed costs for copying of the incumbent.
+        """
+        return self._copying_fixed_costs
+
+    def get_payoffs(self) -> Dict[str, Dict[str, float]]:
+        """
+        Returns the payoffs for different market configurations.
+
+        A market configuration can include:
+        - $I_P$ : Primary product sold by the incumbent.
+        - $I_C$ : Complementary product to $I_P$ potentially sold by the incumbent, which is copied from $E_C$.
+        - $E_P$ : Perfect substitute to $I_P$ potentially sold by the entrant.
+        - $E_C$ : Complementary product to $I_P$ currently sold by the entrant
+        - $\\tilde{E}_C$ : Complementary product to $I_P$ potentially sold by the entrant.
+        <br>
+
+        | Market Config. $\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:$ | $\pi(I) \:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:$ | $\pi(E) \:\:\:\:\:\:\:\:\:\:\:\:\:\:\:$ | CS $\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:$ | W $\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:$ |
+        |-----------------------|:--------|:--------|:--|:-|
+        | $I_P$ ; $E_C$         | $u + \delta\\beta$ | $\delta(1 - \\beta)$ | 0 | $u + \delta$ |
+        | $I_P + I_C$ ; $E_C$   | $u + \delta$ | 0 | 0 | $u + \delta$ |
+        | $I_P$ ; $E_P + E_C$   | 0 | $\Delta + \delta$ | $u$ | $u + \Delta + \delta$ |
+        | $I_P + I_C$ ; $E_P + E_C$ | 0 | $\Delta$ | $u + \delta$ | $u + \Delta + \delta$ |
+        | $I_P$ ; $E_C + \\tilde{E}_C$ | $u + 2\delta\\beta$ | $2\delta(1 - \\beta)$ | 0 | $u + 2\delta$ |
+        | $I_P + I_C$ ; $E_C + \\tilde{E}_C$ | $u + \delta(1 + \\beta)$ | $\delta(1 - \\beta)$ | 0 | $u + 2\delta$ |
+        <br>
+
+        Returns
+        -------
+        Dict[str, Dict[str, float]]
+            Contains the mentioned payoffs for different market configurations.
+        """
+        return self._payoffs
+
 
 class UnobservableModel(BargainingPowerModel):
-    pass
+    """
+    This model indicates that if the incumbent were not able to observe the entrant at the moment of choosing, the “kill zone” effect whereby the entrant stays away from the substitute in order to avoid being copied) would not take place. Intuitively, in the game as we studied it so far, the only reason why the entrant is choosing a trajectory leading to another complement is that it anticipates that if it chose one leading to a substitute, the incumbent would copy, making it an inefficient strategy for entering the market. However, if the incumbent cannot observe the entrant’s choice of strategy, the entrant could not hope to strategically affect the decision of the incumbent. This would lead to the entrant having a host of new opportunities when entering the market and it makes competing with a large company much more attractive.
+    """
+    def __init__(self, u: float = 1, B: float = 0.5, small_delta: float = 0.5, delta: float = 0.51,
+                 K: float = 0.2, beta: float = 0.5):
+        """
+        The parameters do not change compared to Shelegia_Motta_2021.Models.BargainingPowerModel.
+        """
+        super(UnobservableModel, self).__init__(u=u, B=B, small_delta=small_delta, delta=delta, K=K, beta=beta)
+
+    def plot_incumbent_best_answers(self, axis: matplotlib.axes.Axes = None) -> matplotlib.axes.Axes:
+        return self.plot_equilibrium(axis=axis)
+
+    def _create_choice_answer_label(self, entrant: Literal["complement", "substitute", "indifferent"],
+                                    incumbent: Literal["copy", "refrain"],
+                                    development: Literal["success", "failure"]) -> str:
+        return "{" + self.ENTRANT_CHOICES[entrant] + ", " + self.INCUMBENT_CHOICES[incumbent] + "} $\\rightarrow$ " + \
+               self.DEVELOPMENT_OUTCOME[development]
+
+    def _get_equilibrium_labels(self) -> List[str]:
+        """
+        Returns a list containing the labels for the squares in the plot of the equilibrium path.
+
+        For the order of the squares refer to the file devnotes.md.
+
+        Returns
+        -------
+        List containing the labels for the squares in the plot of the best answers of the equilibrium path.
+        """
+        return [
+            # Square 1
+            self._create_choice_answer_label(entrant="indifferent", incumbent="copy", development="failure"),
+            # Square 2
+            self._create_choice_answer_label(entrant="substitute", incumbent="copy", development="success"),
+            # Square 3
+            self._create_choice_answer_label(entrant="substitute", incumbent="copy", development="failure"),
+            # Square 4
+            self._create_choice_answer_label(entrant="substitute", incumbent="refrain", development="success")
+        ]
 
 
 class AcquisitionModel(BargainingPowerModel):
+    """
+    In order to explore how acquisitions may modify the entrant’s and the incumbent’s strategic choices, we extend the base model in order to allow an acquisition to take place after the incumbent commits to copying the entrant’s original complementary product (between t=1 and t=2, see table 2). We assume that the incumbent and the entrant share the gains (if any) attained from the acquisition equally.
+    """
     def __init__(self, u: float = 1, B: float = 0.5, small_delta: float = 0.5, delta: float = 0.51,
                  K: float = 0.2) -> None:
+        """
+        An additional constraint is added compared to Shelegia_Motta_2021.Models.BaseModel. Namely, $\Delta$ has to be bigger than $\delta$, meaning the innovation of the entrant is not too drastic.
+
+        Meanwhile, the parameters do not change compared to Shelegia_Motta_2021.Models.BargainingPowerModel.
+        """
         assert delta > small_delta, "Delta has to be smaller than small_delta, meaning the innovation of the entrant is not too drastic."
         super(AcquisitionModel, self).__init__(u=u, B=B, small_delta=small_delta, delta=delta, K=K)
 
     def _calculate_copying_fixed_costs_values(self) -> Dict[str, float]:
         copying_fixed_costs_values: Dict[str, float] = super()._calculate_copying_fixed_costs_values()
-        copying_fixed_costs_values.update({'F(ACQ)s': (self._u + (3 * self._small_delta) + self._delta - self._K) / 2,
-                                           'F(ACQ)c': self._small_delta - self._K / 2})
+        copying_fixed_costs_values.update({'F(ACQ)s': (self._u + self._delta - self._K) / 2 + self._small_delta * (2 - self._beta),
+                                           'F(ACQ)c': self._small_delta * (2.5 - 3*self._beta) - self._K / 2})
         return copying_fixed_costs_values
+
+    def get_copying_fixed_costs_values(self) -> Dict[str, float]:
+        """
+        Returns the fixed costs for copying thresholds of the incumbent.
+
+        Additional thresholds for the fixed cost of copying of the incumbent compared to the Shelegia_Motta_2021.Models.BargainingModel:
+
+        | Threshold $\:\:\:\:\:$ | Name $\:\:\:\:\:$ | Formula $\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:$ |
+        |----------|:-------|:--------|
+        | $F^{ACQ}_S$ | F(ACQ)s | $\\frac{(u + \Delta - K)}{2} + \delta(2 - \\beta)$ |
+        | $F^{ACQ}_C$ | F(ACQ)c | $\\frac{K}{2} + \delta(2.5 - 3\\beta)$ |
+        <br>
+        Returns
+        -------
+        Dict[str, float]
+            Includes the thresholds for the fixed costs for copying of the incumbent.
+        """
+        return self._copying_fixed_costs
 
 
 if __name__ == '__main__':
-    base_model = BargainingPowerModel(beta=0.7)
+    base_model = UnobservableModel(beta=0.6)
     base_model.plot_equilibrium()
-    base_model.plot_incumbent_best_answers()
     print(base_model)
