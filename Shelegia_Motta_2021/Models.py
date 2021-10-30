@@ -378,13 +378,13 @@ class BaseModel(Shelegia_Motta_2021.IModel):
         x_max: float = self._get_x_max()
         return [
             # Square 1
-            [(0, 0), (self._assets['A-s'], 0), (self._assets['A-s'], self._copying_fixed_costs['F(YY)s']),
-             (0, self._copying_fixed_costs['F(YY)s'])],
+            [(0, 0), (self._assets['A-s'], 0), (self._assets['A-s'], max(self._copying_fixed_costs['F(YN)c'], 0)),
+             (0, max(self._copying_fixed_costs['F(YN)c'], 0))],
             # Square 2
             [(self._assets['A-s'], 0), (x_max, 0), (x_max, self._copying_fixed_costs['F(YY)s']),
              (self._assets['A-s'], self._copying_fixed_costs['F(YY)s'])],
             # Square 3
-            [(0, self._copying_fixed_costs['F(YY)s']), (self._assets['A-s'], self._copying_fixed_costs['F(YY)s']),
+            [(0, max(self._copying_fixed_costs['F(YN)c'], 0)), (self._assets['A-s'], max(self._copying_fixed_costs['F(YN)c'], 0)),
              (self._assets['A-s'], self._copying_fixed_costs['F(YN)s']), (0, self._copying_fixed_costs['F(YN)s'])],
             # Square 4
             [(self._assets['A-s'], self._copying_fixed_costs['F(YY)s']), (x_max, self._copying_fixed_costs['F(YY)s']),
@@ -522,11 +522,12 @@ class BaseModel(Shelegia_Motta_2021.IModel):
         self._draw_horizontal_line_with_label(axis, y=self._copying_fixed_costs['F(YN)s'], label="$F^{YN}_S$")
         self._draw_horizontal_line_with_label(axis, y=self._copying_fixed_costs['F(YY)c'], label="$F^{YY}_C$")
 
-        if self._copying_fixed_costs['F(YY)s'] - self._copying_fixed_costs['F(YN)c'] < BaseModel.tolerance:
+        if abs(self._copying_fixed_costs['F(YY)s'] - self._copying_fixed_costs['F(YN)c']) < BaseModel.tolerance:
             self._draw_horizontal_line_with_label(axis, y=self._copying_fixed_costs['F(YY)s'], label="$F^{YY}_S=F^{YN}_C$")
         else:
             self._draw_horizontal_line_with_label(axis, y=self._copying_fixed_costs['F(YY)s'], label="$F^{YY}_S$")
-            self._draw_horizontal_line_with_label(axis, y=self._copying_fixed_costs['F(YN)c'], label="$F^{YN}_C$")
+            if self._copying_fixed_costs['F(YN)c'] >= 0:
+                self._draw_horizontal_line_with_label(axis, y=self._copying_fixed_costs['F(YN)c'], label="$F^{YN}_C$")
         # vertical lines (asset thresholds)
         self._draw_vertical_line_with_label(axis, x=self._assets['A-s'], label=r'$\bar{A}_S$')
         self._draw_vertical_line_with_label(axis, x=self._assets['A-c'], label=r'$\bar{A}_C$')
@@ -726,7 +727,7 @@ class AcquisitionModel(BargainingPowerModel):
 
 
 if __name__ == '__main__':
-    base_model = BargainingPowerModel(beta=0.6)
+    base_model = BargainingPowerModel(beta=0.7)
     base_model.plot_equilibrium()
     base_model.plot_incumbent_best_answers()
     print(base_model)
