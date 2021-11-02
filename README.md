@@ -94,5 +94,14 @@ Generate api-documentation with the following command:
 pdoc -o ./docs Shelegia_Motta_2021 --docformat "numpy" --math
 ```
 
+#### Dependencies
+
+| Package &emsp;| Version &emsp; | Annotation &emsp;                                     |
+|:-----------|:---------|:------------------------------------------------|
+| matplotlib | 3.4.3    | Always needed (includes numpy)                  |
+| jupyter    | 1.0.0    | Just for the demonstration in demo.ipynb        |
+| pdoc       | 8.0.1    | Only to generate the documentation from scratch |
+<br>
+
 #### Additional Notes
 For further information about the coordinates used in the code, see dev_notes.md.
