@@ -159,7 +159,7 @@ class IModel:
         pass
 
     @abc.abstractmethod
-    def plot_incumbent_best_answers(self, axis: matplotlib.axes.Axes = None) -> matplotlib.axes.Axes:
+    def plot_incumbent_best_answers(self, axis: matplotlib.axes.Axes = None, **kwargs) -> matplotlib.axes.Axes:
         """
         Plots the best answers of the incumbent to all possible actions of the entrant.
 
@@ -167,6 +167,10 @@ class IModel:
         ----------
         axis : matplotlib.axes.Axes
             Axis to draw the plot on. (optional)
+        **kwargs
+            Optional key word arguments for the best answers plot.<br>
+            - title: title on top of the plot, instead of the default title.<br>
+            - options_legend: If true, an additional legend, explaining the options of the entrant and the incumbent, will be added to the plot.<br>
 
         Returns
         -------
@@ -176,7 +180,7 @@ class IModel:
         pass
 
     @abc.abstractmethod
-    def plot_equilibrium(self, axis: matplotlib.axes.Axes = None) -> matplotlib.axes.Axes:
+    def plot_equilibrium(self, axis: matplotlib.axes.Axes = None, **kwargs) -> matplotlib.axes.Axes:
         """
         Plots the equilibrium path based on the choices of the entrant and incumbent.
 
@@ -184,6 +188,10 @@ class IModel:
         ----------
         axis : matplotlib.axes.Axes
             Axis to draw the plot on. (optional)
+        **kwargs
+            Optional key word arguments for the equilibrium plot.<br>
+            - title: title on top of the plot, instead of the default title.<br>
+            - options_legend: If true, an additional legend, explaining the options of the entrant and the incumbent, will be added to the plot.<br>
 
         Returns
         -------

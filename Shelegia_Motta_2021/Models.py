@@ -1,4 +1,4 @@
-from typing import Dict, List, Tuple, Literal
+from typing import Dict, List, Tuple, Literal, Final
 
 import matplotlib.axes
 import matplotlib.pyplot as plt
@@ -15,7 +15,7 @@ class BaseModel(Shelegia_Motta_2021.IModel):
     There are two players in our base model: The Incumbent, which sells the primary product, denoted by Ip, and a start-up, called the Entrant, which sells a product Ec complementary to Ip. (One may think of Ip as a platform, and Ec as a service or product which can be accessed through the platform.) We are interested in studying the choice of E between developing a substitute to Ip, denoted by Ep, or another complement to Ip, denoted by Ẽc and the choice of I between copying E’s original complementary product Ec by creating a perfect substitute Ic, or not. Since E may not have enough assets to cover the development cost of its second product, copying its current product will affect the entrant’s ability to obtain funding for the development. We shall show that the incumbent has a strategic incentive to copy when the entrant plans to compete, and to abstain from copying when it plans to create another complement.
     """
 
-    tolerance: float = 10 ** (-8)
+    TOLERANCE: Final[float] = 10 ** (-8)
     """Tolerance for the comparison of two floating numbers."""
 
     def __init__(self, u: float = 1, B: float = 0.5, small_delta: float = 0.5, delta: float = 0.51,
@@ -235,7 +235,7 @@ class BaseModel(Shelegia_Motta_2021.IModel):
         Axis containing the plot.
         """
         if axis is None:
-            fig, axis = plt.subplots()
+            figure, axis = plt.subplots()
         self._draw_thresholds(axis)
 
         for i, coordinates in enumerate(coordinates):
@@ -243,18 +243,19 @@ class BaseModel(Shelegia_Motta_2021.IModel):
             axis.add_patch(poly)
 
         axis.legend(bbox_to_anchor=(1.3, 1), loc="upper left")
+        if kwargs.get('options_legend', False):
+            axis.text(-0.05, -0.4, self._create_options_legend(), verticalalignment='top')
         BaseModel._set_axis_labels(axis, title=kwargs.get('title', ''),
                                    x_label=kwargs.get('xlabel', 'Assets of the entrant'),
                                    y_label=kwargs.get('ylabel', 'Fixed costs of copying for the incumbent'))
         BaseModel._set_axis(axis)
-        plt.show()
         return axis
 
-    def plot_incumbent_best_answers(self, axis: matplotlib.axes.Axes = None) -> matplotlib.axes.Axes:
+    def plot_incumbent_best_answers(self, axis: matplotlib.axes.Axes = None, **kwargs) -> matplotlib.axes.Axes:
         poly_coordinates: List[List[Tuple[float, float]]] = self._get_incumbent_best_answer_coordinates()
         poly_labels: List[str] = self._get_incumbent_best_answer_labels()
-        axis: matplotlib.axes.Axes = self._plot(title="Best Answers of the incumbent to the choices of the entrant",
-                                                coordinates=poly_coordinates, labels=poly_labels, axis=axis)
+        axis: matplotlib.axes.Axes = self._plot(title=kwargs.get("title", "Best Answers of the incumbent to the choices of the entrant"),
+                                                coordinates=poly_coordinates, labels=poly_labels, axis=axis, options_legend=kwargs.get('options_legend', False))
         return axis
 
     def _create_choice_answer_label(self, entrant: Literal["complement", "substitute", "indifferent"],
@@ -267,7 +268,7 @@ class BaseModel(Shelegia_Motta_2021.IModel):
         """
         Returns a list containing the labels for the squares in the plot of the best answers of the incumbent to the choice of the entrant.
 
-        For the order of the labels refer to the file devnotes.md.
+        For the order of the labels refer to the file resources/dev_notes.md.
 
         Returns
         -------
@@ -298,7 +299,7 @@ class BaseModel(Shelegia_Motta_2021.IModel):
         """
         Returns a list containing the coordinates for the squares in the plot of the best answers of the incumbent to the choice of the entrant.
 
-        For the order of the squares refer to the file devnotes.md.
+        For the order of the squares refer to the file resources/dev_notes.md.
 
         Returns
         -------
@@ -330,18 +331,18 @@ class BaseModel(Shelegia_Motta_2021.IModel):
              (x_max, y_max), (0, y_max),
              (0, self._copying_fixed_costs['F(YN)s']), (self._assets['A-s'], self._copying_fixed_costs['F(YN)s'])]]
 
-    def plot_equilibrium(self, axis: matplotlib.axes.Axes = None) -> matplotlib.axes.Axes:
+    def plot_equilibrium(self, axis: matplotlib.axes.Axes = None, **kwargs) -> matplotlib.axes.Axes:
         poly_coordinates: List[List[Tuple[float, float]]] = self._get_equilibrium_coordinates()
         poly_labels: List[str] = self._get_equilibrium_labels()
-        axis: matplotlib.axes.Axes = self._plot(title='Equilibrium Path in the base Model',
-                                                coordinates=poly_coordinates, labels=poly_labels, axis=axis)
+        axis: matplotlib.axes.Axes = self._plot(title=kwargs.get("title", "Equilibrium Path"),
+                                                coordinates=poly_coordinates, labels=poly_labels, axis=axis, options_legend=kwargs.get('options_legend', False))
         return axis
 
     def _get_equilibrium_labels(self) -> List[str]:
         """
         Returns a list containing the labels for the squares in the plot of the equilibrium path.
 
-        For the order of the squares refer to the file devnotes.md.
+        For the order of the squares refer to the file resources/dev_notes.md.
 
         Returns
         -------
@@ -362,7 +363,7 @@ class BaseModel(Shelegia_Motta_2021.IModel):
         """
         Returns a list containing the coordinates for the squares in the plot of the equilibrium path.
 
-        For the order of the squares refer to the file devnotes.md.
+        For the order of the squares refer to the file resources/dev_notes.md.
 
         Returns
         -------
@@ -388,7 +389,7 @@ class BaseModel(Shelegia_Motta_2021.IModel):
 
     def plot_payoffs(self, axis: matplotlib.axes.Axes = None) -> matplotlib.axes.Axes:
         if axis is None:
-            fig, axis = plt.subplots()
+            figure, axis = plt.subplots()
         index = arange(0, len(self._payoffs) * 2, 2)
         bar_width = 0.35
         opacity = 0.8
@@ -517,7 +518,7 @@ class BaseModel(Shelegia_Motta_2021.IModel):
         self._draw_horizontal_line_with_label(axis, y=self._copying_fixed_costs['F(YN)s'], label="$F^{YN}_S$")
         self._draw_horizontal_line_with_label(axis, y=self._copying_fixed_costs['F(YY)c'], label="$F^{YY}_C$")
 
-        if abs(self._copying_fixed_costs['F(YY)s'] - self._copying_fixed_costs['F(YN)c']) < BaseModel.tolerance:
+        if abs(self._copying_fixed_costs['F(YY)s'] - self._copying_fixed_costs['F(YN)c']) < BaseModel.TOLERANCE:
             self._draw_horizontal_line_with_label(axis, y=self._copying_fixed_costs['F(YY)s'],
                                                   label="$F^{YY}_S=F^{YN}_C$")
         else:
@@ -563,6 +564,19 @@ class BaseModel(Shelegia_Motta_2021.IModel):
         axis.axvline(x, linestyle='--', color='k')
         if label is not None:
             axis.text(x, label_y, label)
+
+    def _create_options_legend(self, latex: bool = True) -> str:
+        space: str = "$\quad$" if latex else "\t"
+        return "Options of the entrant:\n" + \
+            space + self.ENTRANT_CHOICES['complement'] + ": Tries to develop an additional complementary product to a primary product.\n" + \
+            space + self.ENTRANT_CHOICES['substitute'] + ": Tries to develop an substitute to the primary product of the incumbent.\n" + \
+            space + self.ENTRANT_CHOICES['indifferent'] + " : Indifferent between the options mentioned above.\n" + \
+            "Options of the incumbent:\n" + \
+            space + self.INCUMBENT_CHOICES['copy'] + " : Tries to develop an additional complementary product to a primary product.\n" + \
+            space + self.INCUMBENT_CHOICES['refrain'] + " : Tries to develop an additional complementary product to a primary product.\n" + \
+            "Outcomes of the development:\n" + \
+            space + self.DEVELOPMENT_OUTCOME['success'] + " : The additional product can be developed, since the entrant has sufficient assets.\n" + \
+            space + self.DEVELOPMENT_OUTCOME['failure'] + " : The additional product can not be developed, since the entrant has not enough assets."
 
     @staticmethod
     def _get_color(i: int) -> str:
@@ -793,8 +807,8 @@ class UnobservableModel(BargainingPowerModel):
         """
         super(UnobservableModel, self).__init__(u=u, B=B, small_delta=small_delta, delta=delta, K=K, beta=beta)
 
-    def plot_incumbent_best_answers(self, axis: matplotlib.axes.Axes = None) -> matplotlib.axes.Axes:
-        return self.plot_equilibrium(axis=axis)
+    def plot_incumbent_best_answers(self, axis: matplotlib.axes.Axes = None, **kwargs) -> matplotlib.axes.Axes:
+        return self.plot_equilibrium(axis=axis, kwargs=kwargs)
 
     def _create_choice_answer_label(self, entrant: Literal["complement", "substitute", "indifferent"],
                                     incumbent: Literal["copy", "refrain"],
@@ -806,7 +820,7 @@ class UnobservableModel(BargainingPowerModel):
         """
         Returns a list containing the labels for the squares in the plot of the equilibrium path.
 
-        For the order of the squares refer to the file devnotes.md.
+        For the order of the squares refer to the file resources/dev_notes.md.
 
         Returns
         -------
@@ -822,6 +836,13 @@ class UnobservableModel(BargainingPowerModel):
             # Square 4
             self._create_choice_answer_label(entrant="substitute", incumbent="refrain", development="success")
         ]
+
+    def get_optimal_choice(self, A: float, F: float) -> Dict[str, str]:
+        result: Dict = super().get_optimal_choice(A, F)
+        # adjust the different choices in area three -> since the kill zone does not exist in this model.
+        if result["entrant"] == self.ENTRANT_CHOICES["complement"]:
+            result = {"entrant": self.ENTRANT_CHOICES["substitute"], "incumbent": self.INCUMBENT_CHOICES["copy"], "development": self.DEVELOPMENT_OUTCOME["failure"]}
+        return result
 
 
 class AcquisitionModel(BargainingPowerModel):
@@ -864,6 +885,6 @@ class AcquisitionModel(BargainingPowerModel):
 
 
 if __name__ == '__main__':
-    base_model = UnobservableModel(beta=0.6)
-    base_model.plot_equilibrium()
-    print(base_model)
+    bargaining_power_model = Shelegia_Motta_2021.BargainingPowerModel(beta=0.6)
+    bargaining_power_model.plot_equilibrium()
+    plt.show()

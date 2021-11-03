@@ -7,9 +7,9 @@ The number of the square is denoted in brackets (i.e. (1)).
 
 ### BaseModel
 - Best Answer of the incumbent to the choices of the entrant
-![](images/plots-best_base.png)
+![](plots-best_base.png)
 - Equilibrium path
-![](images/plots-eq_base.png)
+![](plots-eq_base.png)
 
 ### BargainingPowerModel
 

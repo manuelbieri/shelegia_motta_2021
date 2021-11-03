@@ -1,4 +1,4 @@
-This package implements the models of [Shelegia and Motta (2021)](shelegia_motta_2021.pdf).
+This package implements the models of [Shelegia and Motta (2021)](resources/shelegia_motta_2021.pdf).
 
 ![GitHub](https://img.shields.io/github/license/manuelbieri/shelegia_motta_2021)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/Shelegia-Motta-2021)
@@ -94,14 +94,5 @@ Generate api-documentation with the following command:
 pdoc -o ./docs Shelegia_Motta_2021 --docformat "numpy" --math
 ```
 
-#### Dependencies
-
-| Package &emsp;| Version &emsp; | Annotation &emsp;                                     |
-|:-----------|:---------|:------------------------------------------------|
-| matplotlib | 3.4.3    | Always needed (includes numpy)                  |
-| jupyter    | 1.0.0    | Just for the demonstration in demo.ipynb        |
-| pdoc       | 8.0.1    | Only to generate the documentation from scratch |
-<br>
-
 #### Additional Notes
-For further information about the coordinates used in the code, see dev_notes.md.
+For further information about the coordinates used in the code, see resources/dev_notes.md.
