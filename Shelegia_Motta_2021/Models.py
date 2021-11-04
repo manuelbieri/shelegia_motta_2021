@@ -808,7 +808,7 @@ class UnobservableModel(BargainingPowerModel):
         super(UnobservableModel, self).__init__(u=u, B=B, small_delta=small_delta, delta=delta, K=K, beta=beta)
 
     def plot_incumbent_best_answers(self, axis: matplotlib.axes.Axes = None, **kwargs) -> matplotlib.axes.Axes:
-        return self.plot_equilibrium(axis=axis, kwargs=kwargs)
+        return self.plot_equilibrium(axis=axis, **kwargs)
 
     def _create_choice_answer_label(self, entrant: Literal["complement", "substitute", "indifferent"],
                                     incumbent: Literal["copy", "refrain"],
@@ -885,6 +885,6 @@ class AcquisitionModel(BargainingPowerModel):
 
 
 if __name__ == '__main__':
-    bargaining_power_model = Shelegia_Motta_2021.BargainingPowerModel(beta=0.6)
-    bargaining_power_model.plot_equilibrium()
+    bargaining_power_model = Shelegia_Motta_2021.UnobservableModel(beta=0.6)
+    bargaining_power_model.plot_incumbent_best_answers(options_legend=True)
     plt.show()
