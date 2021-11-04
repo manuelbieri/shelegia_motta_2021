@@ -7,6 +7,8 @@ from Shelegia_Motta_2021.Models import BaseModel, BargainingPowerModel, Unobserv
 
 class BaseModelTest(unittest.TestCase):
     """
+    Tests the constraints and the optimal choice method in the base model.
+
     See dev_notes.md for the enumeration of the areas used in the testcases.
     """
     @staticmethod
@@ -88,6 +90,11 @@ class BaseModelTest(unittest.TestCase):
 
 
 class BargainingPowerModelTestBeta6(BaseModelTest):
+    """
+    Tests the constraints and the optimal choice method in the BargainingPowerModel with beta=0.6.
+
+    See dev_notes.md for the enumeration of the areas used in the testcases.
+    """
     @staticmethod
     def setUpModel() -> IModel:
         return BargainingPowerModel(beta=0.6)
@@ -98,6 +105,11 @@ class BargainingPowerModelTestBeta6(BaseModelTest):
 
 
 class BargainingPowerModelTestBeta4(BaseModelTest):
+    """
+    Tests the constraints and the optimal choice method in the BargainingPowerModel with beta=0.4.
+
+    See dev_notes.md for the enumeration of the areas used in the testcases.
+    """
     @staticmethod
     def setUpModel() -> IModel:
         return BargainingPowerModel(beta=0.4)
@@ -108,6 +120,11 @@ class BargainingPowerModelTestBeta4(BaseModelTest):
 
 
 class UnobservableModelTestBeta6(BargainingPowerModelTestBeta6):
+    """
+    Tests the constraints and the optimal choice method in the UnobservableModel with beta=0.6.
+
+    See dev_notes.md for the enumeration of the areas used in the testcases.
+    """
     @staticmethod
     def setUpModel() -> IModel:
         return UnobservableModel(beta=0.6)
@@ -119,6 +136,11 @@ class UnobservableModelTestBeta6(BargainingPowerModelTestBeta6):
 
 
 class UnobservableModelTestBeta4(BargainingPowerModelTestBeta4):
+    """
+    Tests the constraints and the optimal choice method in the UnobservableModel with beta=0.4.
+
+    See dev_notes.md for the enumeration of the areas used in the testcases.
+    """
     @staticmethod
     def setUpModel() -> IModel:
         return UnobservableModel(beta=0.4)

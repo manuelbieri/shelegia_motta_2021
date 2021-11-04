@@ -309,8 +309,8 @@ class BaseModel(Shelegia_Motta_2021.IModel):
         x_max: float = self._get_x_max()
         return [
             # Square 1
-            [(0, 0), (self._assets['A-s'], 0), (self._assets['A-s'], self._copying_fixed_costs['F(YY)s']),
-             (0, self._copying_fixed_costs['F(YY)s'])],
+            [(0, 0), (self._assets['A-s'], 0), (self._assets['A-s'], max(self._copying_fixed_costs['F(YN)c'], 0)),
+             (0, max(self._copying_fixed_costs['F(YN)c'], 0))],
             # Square 2
             [(self._assets['A-s'], 0), (self._assets['A-c'], 0),
              (self._assets['A-c'], self._copying_fixed_costs['F(YY)s']),
@@ -319,7 +319,7 @@ class BaseModel(Shelegia_Motta_2021.IModel):
             [(self._assets['A-c'], 0), (x_max, 0), (x_max, self._copying_fixed_costs['F(YY)s']),
              (self._assets['A-c'], self._copying_fixed_costs['F(YY)s'])],
             # Square 4
-            [(0, self._copying_fixed_costs['F(YY)s']), (self._assets['A-s'], self._copying_fixed_costs['F(YY)s']),
+            [(0, max(self._copying_fixed_costs['F(YN)c'], 0)), (self._assets['A-s'], max(self._copying_fixed_costs['F(YN)c'], 0)),
              (self._assets['A-s'], self._copying_fixed_costs['F(YN)s']), (0, self._copying_fixed_costs['F(YN)s'])],
             # Square 5
             [(self._assets['A-c'], self._copying_fixed_costs['F(YY)s']), (x_max, self._copying_fixed_costs['F(YY)s']),
@@ -795,6 +795,30 @@ class BargainingPowerModel(BaseModel):
         """
         return self._payoffs
 
+    def _get_incumbent_best_answer_coordinates(self) -> List[List[Tuple[float, float]]]:
+        coordinates: List[List[Tuple[float, float]]] = super(BargainingPowerModel, self)._get_incumbent_best_answer_coordinates()
+        if self._copying_fixed_costs["F(YY)s"] != self._copying_fixed_costs["F(YN)c"]:
+            coordinates.append([(self._assets['A-s'], self._copying_fixed_costs['F(YY)s']), (self._assets['A-c'], self._copying_fixed_costs['F(YY)s']),
+                                (self._assets['A-c'], max(self._copying_fixed_costs['F(YN)c'], 0)), (self._assets['A-s'], max(self._copying_fixed_costs['F(YN)c'], 0))])
+        return coordinates
+
+    def _get_incumbent_best_answer_labels(self) -> List[str]:
+        labels: List[str] = super(BargainingPowerModel, self)._get_incumbent_best_answer_labels()
+        if self._copying_fixed_costs["F(YY)s"] != self._copying_fixed_costs["F(YN)c"]:
+            if self._copying_fixed_costs["F(YY)s"] > self._copying_fixed_costs["F(YN)c"]:
+                labels.append(
+                    # Square 7
+                    self._create_choice_answer_label(entrant="substitute", incumbent="copy", development="success") + " \n" +
+                    self._create_choice_answer_label(entrant="complement", incumbent="refrain", development="success"),
+                )
+            else:
+                labels.append(
+                    # Square 7
+                    self._create_choice_answer_label(entrant="substitute", incumbent="refrain", development="success") + " \n" +
+                    self._create_choice_answer_label(entrant="complement", incumbent="copy", development="failure"),
+                )
+        return labels
+
 
 class UnobservableModel(BargainingPowerModel):
     """
@@ -885,6 +909,8 @@ class AcquisitionModel(BargainingPowerModel):
 
 
 if __name__ == '__main__':
-    bargaining_power_model = Shelegia_Motta_2021.UnobservableModel(beta=0.6)
-    bargaining_power_model.plot_incumbent_best_answers(options_legend=True)
+    bargaining_power_model = Shelegia_Motta_2021.BargainingPowerModel(beta=0.8)
+    fig, (axis_eq, axis_best) = plt.subplots(ncols=2, figsize=(14, 9))
+    bargaining_power_model.plot_equilibrium(axis=axis_eq, options_legend=True)
+    bargaining_power_model.plot_incumbent_best_answers(axis=axis_best)
     plt.show()
