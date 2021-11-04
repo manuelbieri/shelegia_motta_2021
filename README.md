@@ -5,10 +5,12 @@ This package implements the models of [Shelegia and Motta (2021)](resources/shel
 ![GitHub repo size](https://img.shields.io/github/repo-size/manuelbieri/shelegia_motta_2021)
 ![GitHub last commit](https://img.shields.io/github/last-commit/manuelbieri/shelegia_motta_2021)
 ![CI](https://github.com/manuelbieri/shelegia_motta_2021/actions/workflows/ci.yml/badge.svg)
+![CodeQL](https://github.com/manuelbieri/shelegia_motta_2021/actions/workflows/codeql-analysis.yml/badge.svg)
+![OSSAR](https://github.com/manuelbieri/shelegia_motta_2021/actions/workflows/ossar-analysis.yml/badge.svg)
+![GitHub Release Date](https://img.shields.io/github/release-date/manuelbieri/shelegia_motta_2021)
 ![PyPi](https://github.com/manuelbieri/shelegia_motta_2021/actions/workflows/pypi.yml/badge.svg)
 ![PyPI](https://img.shields.io/pypi/v/Shelegia-Motta-2021)
 ![PyPI - Status](https://img.shields.io/pypi/status/Shelegia-Motta-2021)
-![GitHub Release Date](https://img.shields.io/github/release-date/manuelbieri/shelegia_motta_2021)
 ![GitHub deployments](https://img.shields.io/github/deployments/manuelbieri/shelegia_motta_2021/github-pages?label=Documentation)
 
 ### Installation
