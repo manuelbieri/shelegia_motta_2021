@@ -1,21 +1,25 @@
-## Additional Notes
+# Additional Notes
+
+## Class Hierarchy
+![](plots-uml_class.png)
 
 ## Enumeration of the squares in the code
 
-The following images will show, which square in the code corresponds to which area in the images in the paper.
+The following images will show, which area in the code corresponds to which area in the images in the paper.
 The number of the square is denoted in brackets (i.e. (1)).
 
+Additionally, the points used in the testcases are denoted.
+
 ### BaseModel
-- Best Answer of the incumbent to the choices of the entrant
-![](plots-best_base.png)
-- Equilibrium path
-![](plots-eq_base.png)
+![](plots-base.png)
 
 ### BargainingPowerModel
+![](plots-bargaining_power.png)
 
+### UnobservableModel
+![](plots-unobservable.png)
 
 ### AcquisitionModel
 
 
-### UnobservableModel
 

@@ -936,6 +936,12 @@ class AcquisitionModel(BargainingPowerModel):
         """
         assert delta > small_delta, "Delta has to be smaller than small_delta, meaning the innovation of the entrant is not too drastic."
         super(AcquisitionModel, self).__init__(u=u, B=B, small_delta=small_delta, delta=delta, K=K)
+        self.ACQUISITION_OUTCOMES: Final[Dict[str, str]] = {"merged": "M", "apart": "E"}
+        """
+        Contains the options for an acquisition or not.
+        - merged (M): The incumbent acquired the entrant.
+        - apart (E): The incumbent did not acquired the entrant.
+        """
 
     def _calculate_copying_fixed_costs_values(self) -> Dict[str, float]:
         copying_fixed_costs_values: Dict[str, float] = super()._calculate_copying_fixed_costs_values()
@@ -962,10 +968,32 @@ class AcquisitionModel(BargainingPowerModel):
         """
         return self._copying_fixed_costs
 
+    def get_optimal_choice(self, A: float, F: float) -> Dict[str, str]:
+        result: Dict[str, str] = {"entrant": "", "incumbent": "", "development": "", "acquisition": ""}
+        if self._copying_fixed_costs["F(ACQ)c"] <= F <= self._copying_fixed_costs["F(ACQ)s"] and A < self._assets["A-s"]:
+            result.update({"entrant": self.ENTRANT_CHOICES["complement"]})
+            result.update({"incumbent": self.INCUMBENT_CHOICES["refrain"]})
+            result.update({"development": self.DEVELOPMENT_OUTCOME["success"]})
+            result.update({"acquisition": self.ACQUISITION_OUTCOMES["apart"]})
+        elif F < self._copying_fixed_costs["F(ACQ)c"] and A < self._assets["A-s"]:
+            # since delta will always be bigger than small_delta, the entrant will choose to develop a substitute
+            result.update({"entrant": self.ENTRANT_CHOICES["substitute"]})
+            result.update({"incumbent": self.INCUMBENT_CHOICES["copy"]})
+            result.update({"development": self.DEVELOPMENT_OUTCOME["success"]})
+            result.update({"acquisition": self.ACQUISITION_OUTCOMES["merged"]})
+        else:
+            result.update({"entrant": self.ENTRANT_CHOICES["substitute"]})
+            result.update({"development": self.DEVELOPMENT_OUTCOME["success"]})
+            result.update({"acquisition": self.ACQUISITION_OUTCOMES["merged"]})
+            if F <= self._copying_fixed_costs["F(YY)c"]:
+                result.update({"incumbent": self.INCUMBENT_CHOICES["copy"]})
+            else:
+                result.update({"incumbent": self.INCUMBENT_CHOICES["refrain"]})
+        return result
+
 
 if __name__ == '__main__':
-    bargaining_power_model = Shelegia_Motta_2021.BargainingPowerModel(beta=0.6)
-    fig, (axis_eq, axis_best) = plt.subplots(ncols=2, figsize=(14, 9))
-    bargaining_power_model.plot_equilibrium(axis=axis_eq, options_legend=True)
-    bargaining_power_model.plot_incumbent_best_answers(axis=axis_best, thresholds_legend=True)
+    model = Shelegia_Motta_2021.UnobservableModel(beta=0.6)
+    a2 = model.plot_incumbent_best_answers()
+    a2.get_figure().savefig('../resources/bargaining_power_beta4_best.png')
     plt.show()

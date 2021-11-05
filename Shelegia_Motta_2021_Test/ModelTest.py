@@ -2,7 +2,7 @@ import unittest
 from typing import Dict
 
 from Shelegia_Motta_2021.IModel import IModel
-from Shelegia_Motta_2021.Models import BaseModel, BargainingPowerModel, UnobservableModel
+from Shelegia_Motta_2021.Models import BaseModel, BargainingPowerModel, UnobservableModel, AcquisitionModel
 
 
 class BaseModelTest(unittest.TestCase):
@@ -11,15 +11,34 @@ class BaseModelTest(unittest.TestCase):
 
     See dev_notes.md for the enumeration of the areas used in the testcases.
     """
+
+    class TestPoint:
+        """
+        Represents a point consisting of assets of the entrant and fixed costs of copying for the incumbent.
+        """
+        def __init__(self, A: float, F: float):
+            self.A: float = A
+            self.F: float = F
+
     @staticmethod
     def setUpModel() -> IModel:
         return BaseModel()
 
-    def setUp(self) -> None:
-        self.model: IModel = self.setUpModel()
-        self.copying_fixed_costs: Dict[str, float] = self.model.get_copying_fixed_costs_values()
+    def setUpTestPoints(self):
+        self.costs: Dict[str, float] = self.model.get_copying_fixed_costs_values()
         self.assets: Dict[str, float] = self.model.get_asset_values()
         self.utility: Dict[str, Dict[str, float]] = self.model.get_payoffs()
+        self.a = BaseModelTest.TestPoint(self.assets["A-s"]/2, self.costs["F(YN)c"])
+        self.b = BaseModelTest.TestPoint(self.assets["A-s"], min(self.costs["F(YN)c"], self.costs["F(YY)s"])*0.9)
+        self.c = BaseModelTest.TestPoint(self.assets["A-s"], self.costs["F(YY)s"])
+        self.d = BaseModelTest.TestPoint(self.assets["A-c"], self.costs["F(YY)s"])
+        self.e = BaseModelTest.TestPoint(self.assets["A-s"]/2, self.costs["F(YN)s"])
+        self.f = BaseModelTest.TestPoint(self.assets["A-s"], self.costs["F(YN)s"])
+        self.g = BaseModelTest.TestPoint(self.assets["A-s"], (self.costs["F(YN)c"] + self.costs["F(YY)s"])/2)
+
+    def setUp(self) -> None:
+        self.model: IModel = self.setUpModel()
+        self.setUpTestPoints()
 
     def assert_area_one(self, choice: Dict[str, str]):
         self.assertEqual(choice["entrant"], self.model.ENTRANT_CHOICES["indifferent"])
@@ -48,48 +67,48 @@ class BaseModelTest(unittest.TestCase):
     def test_invalid_A2(self):
         self.assertRaises(AssertionError, BaseModel, K=0.3)
 
-    def test_path_indifferent_copy(self):
-        choice: Dict[str, str] = self.model.get_optimal_choice(A=self.assets["A-s"]*0.9, F=self.copying_fixed_costs["F(YN)c"]*0.9)
+    def test_path_area_one(self):
+        choice: Dict[str, str] = self.model.get_optimal_choice(A=self.a.A, F=self.a.F * 0.9)
         self.assert_area_one(choice)
 
-    def test_path_kill_zone(self):
-        choice: Dict[str, str] = self.model.get_optimal_choice(A=self.assets["A-s"]*0.9, F=self.copying_fixed_costs["F(YN)c"]*1.1)
+    def test_path_area_three(self):
+        choice: Dict[str, str] = self.model.get_optimal_choice(A=self.e.A, F=self.e.F * 0.9)
         self.assert_area_three(choice)
 
-    def test_path_substitute_refrain(self):
-        choice: Dict[str, str] = self.model.get_optimal_choice(A=self.assets["A-s"]*1.1, F=self.copying_fixed_costs["F(YY)s"]*1.1)
+    def test_path_area_four(self):
+        choice: Dict[str, str] = self.model.get_optimal_choice(A=self.d.A, F=self.d.F * 1.1)
         self.assert_area_four(choice)
 
-    def test_path_substitute_copy(self):
-        choice: Dict[str, str] = self.model.get_optimal_choice(A=self.assets["A-s"]*1.1, F=self.copying_fixed_costs["F(YY)s"]*0.9)
+    def test_path_area_two(self):
+        choice: Dict[str, str] = self.model.get_optimal_choice(A=self.d.A, F=self.d.F * 0.9)
         self.assert_area_two(choice)
 
     def test_path_four_areas_corner(self):
-        choice: Dict[str, str] = self.model.get_optimal_choice(A=self.assets["A-s"], F=self.copying_fixed_costs["F(YY)s"])
+        choice: Dict[str, str] = self.model.get_optimal_choice(A=self.c.A, F=self.c.F)
         self.assert_area_two(choice)
 
     def test_path_area_three_area_four_corner(self):
-        choice: Dict[str, str] = self.model.get_optimal_choice(A=self.assets["A-s"], F=self.copying_fixed_costs["F(YN)s"])
+        choice: Dict[str, str] = self.model.get_optimal_choice(A=self.f.A, F=self.f.F)
         self.assert_area_four(choice)
 
     def test_path_area_three_area_four(self):
-        choice: Dict[str, str] = self.model.get_optimal_choice(A=self.assets["A-s"]*0.9, F=self.copying_fixed_costs["F(YN)s"])
+        choice: Dict[str, str] = self.model.get_optimal_choice(A=self.e.A, F=self.e.F)
         self.assert_area_three(choice)
 
     def test_path_area_one_area_two(self):
-        choice: Dict[str, str] = self.model.get_optimal_choice(A=self.assets["A-s"], F=min(self.copying_fixed_costs["F(YY)s"], self.copying_fixed_costs["F(YN)c"])*0.9)
+        choice: Dict[str, str] = self.model.get_optimal_choice(A=self.b.A, F=self.b.F)
         self.assert_area_two(choice)
 
     def test_path_area_one_area_three(self):
-        choice: Dict[str, str] = self.model.get_optimal_choice(A=self.assets["A-s"]*0.9, F=self.copying_fixed_costs["F(YN)c"])
+        choice: Dict[str, str] = self.model.get_optimal_choice(A=self.a.A, F=self.a.F)
         self.assert_area_three(choice)
 
     def test_path_area_two_area_four(self):
-        choice: Dict[str, str] = self.model.get_optimal_choice(A=self.assets["A-s"]*1.1, F=self.copying_fixed_costs["F(YY)s"])
+        choice: Dict[str, str] = self.model.get_optimal_choice(A=self.d.A, F=self.d.F)
         self.assert_area_two(choice)
 
 
-class BargainingPowerModelTestBeta6(BaseModelTest):
+class BargainingPowerModelTest(BaseModelTest):
     """
     Tests the constraints and the optimal choice method in the BargainingPowerModel with beta=0.6.
 
@@ -99,27 +118,22 @@ class BargainingPowerModelTestBeta6(BaseModelTest):
     def setUpModel() -> IModel:
         return BargainingPowerModel(beta=0.6)
 
-    def test_path_area_two_area_three(self):
-        choice: Dict[str, str] = self.model.get_optimal_choice(A=self.assets["A-s"], F=(self.copying_fixed_costs["F(YY)s"] + self.copying_fixed_costs["F(YN)c"])/2)
-        self.assert_area_two(choice)
-
-
-class BargainingPowerModelTestBeta4(BaseModelTest):
-    """
-    Tests the constraints and the optimal choice method in the BargainingPowerModel with beta=0.4.
-
-    See dev_notes.md for the enumeration of the areas used in the testcases.
-    """
     @staticmethod
-    def setUpModel() -> IModel:
+    def setUpModelLowBeta() -> IModel:
         return BargainingPowerModel(beta=0.4)
 
+    def test_path_area_two_area_three(self):
+        choice: Dict[str, str] = self.model.get_optimal_choice(A=self.g.A, F=self.g.F)
+        self.assert_area_two(choice)
+
     def test_path_area_one_area_four(self):
-        choice: Dict[str, str] = self.model.get_optimal_choice(A=self.assets["A-s"], F=(self.copying_fixed_costs["F(YY)s"] + self.copying_fixed_costs["F(YN)c"])/2)
+        self.model = self.setUpModelLowBeta()
+        self.setUpTestPoints()
+        choice: Dict[str, str] = self.model.get_optimal_choice(A=self.g.A, F=self.g.F)
         self.assert_area_four(choice)
 
 
-class UnobservableModelTestBeta6(BargainingPowerModelTestBeta6):
+class UnobservableModelTest(BargainingPowerModelTest):
     """
     Tests the constraints and the optimal choice method in the UnobservableModel with beta=0.6.
 
@@ -135,17 +149,35 @@ class UnobservableModelTestBeta6(BargainingPowerModelTestBeta6):
         self.assertEqual(choice["development"], self.model.DEVELOPMENT_OUTCOME["failure"])
 
 
-class UnobservableModelTestBeta4(BargainingPowerModelTestBeta4):
-    """
-    Tests the constraints and the optimal choice method in the UnobservableModel with beta=0.4.
-
-    See dev_notes.md for the enumeration of the areas used in the testcases.
-    """
+class AcquisitionModelTest(BaseModelTest):
     @staticmethod
     def setUpModel() -> IModel:
-        return UnobservableModel(beta=0.4)
+        return AcquisitionModel()
 
-    def assert_area_three(self, choice: Dict[str, str]):
+    def assert_area_one(self, choice: Dict[str, str]):
         self.assertEqual(choice["entrant"], self.model.ENTRANT_CHOICES["substitute"])
         self.assertEqual(choice["incumbent"], self.model.INCUMBENT_CHOICES["copy"])
-        self.assertEqual(choice["development"], self.model.DEVELOPMENT_OUTCOME["failure"])
+        self.assertEqual(choice["development"], self.model.DEVELOPMENT_OUTCOME["success"])
+        self.assertEqual(choice["acquisition"], self.model.ACQUISITION_OUTCOMES["merged"])
+
+    def assert_area_two(self, choice: Dict[str, str]):
+        super(AcquisitionModelTest, self).assert_area_two(choice)
+        self.assertEqual(choice["acquisition"], self.model.ACQUISITION_OUTCOMES["merged"])
+
+    def assert_area_three(self, choice: Dict[str, str]):
+        super(AcquisitionModelTest, self).assert_area_three(choice)
+        self.assertEqual(choice["acquisition"], self.model.ACQUISITION_OUTCOMES["apart"])
+
+    def assert_area_four(self, choice: Dict[str, str]):
+        super(AcquisitionModelTest, self).assert_area_four(choice)
+        self.assertEqual(choice["acquisition"], self.model.ACQUISITION_OUTCOMES["merged"])
+
+    def setUpTestPoints(self):
+        super(AcquisitionModelTest, self).setUpTestPoints()
+        self.a = BaseModelTest.TestPoint(self.assets["A-s"]/2, self.costs["F(ACQ)c"])
+        self.b = BaseModelTest.TestPoint(self.assets["A-s"], self.costs["F(ACQ)c"])
+        self.c = BaseModelTest.TestPoint(self.assets["A-s"], self.costs["F(YY)c"])
+        self.d = BaseModelTest.TestPoint(self.assets["A-c"], self.costs["F(YY)c"])
+        self.e = BaseModelTest.TestPoint(self.assets["A-s"]/2, self.costs["F(ACQ)s"])
+        self.f = BaseModelTest.TestPoint(self.assets["A-s"], self.costs["F(ACQ)s"])
+        self.g = BaseModelTest.TestPoint(self.assets["A-s"], (self.costs["F(ACQ)c"] + self.costs["F(YY)s"])/2)

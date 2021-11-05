@@ -12,21 +12,21 @@ class IModel:
         self.ENTRANT_CHOICES: Final[Dict[str, str]] = {"complement": "C", "substitute": "S", "indifferent": "I"}
         """
         Contains all the possible product choices of the entrant.
-        - complement (C)
-        - substitute (S)
-        - indifferent (I)
+        - complement (C): The entrant develops another complement for the primary product of the incumbent.
+        - substitute (S): The entrant develops a perfect substitute to the primary product of the incumbent.
+        - indifferent (I): The entrant is indifferent between the two options, mentioned above.
         """
         self.INCUMBENT_CHOICES: Final[Dict[str, str]] = {"copy": "©", "refrain": "Ø"}
         """
         Contains all the possible answers of the incumbent to the choice of the entrant.
-        - copy (©)
-        - refrain (Ø)
+        - copy (©): The incumbent copies the complement of the entrant.
+        - refrain (Ø): The incumbent does not take any action.
         """
         self.DEVELOPMENT_OUTCOME: Final[Dict[str, str]] = {"success": "Y", "failure": "N"}
         """
         Contains all the possible outcomes of the development for the chosen product of the entrant or the merged entity.
-        - success (Y)
-        - failure (N)
+        - success (Y): The entrant has sufficient assets to develop the second product.
+        - failure (N): The entrant has not sufficient assets to develop the second product.
         """
 
     @abc.abstractmethod
