@@ -171,6 +171,7 @@ class IModel:
             Optional key word arguments for the best answers plot.<br>
             - title: title on top of the plot, instead of the default title.<br>
             - options_legend: If true, an additional legend, explaining the options of the entrant and the incumbent, will be added to the plot.<br>
+            - thresholds_legend: If true, an additional legend explaining the thresholds of the entrant and the incumbent will be added to the plot.<br>
 
         Returns
         -------
@@ -192,6 +193,7 @@ class IModel:
             Optional key word arguments for the equilibrium plot.<br>
             - title: title on top of the plot, instead of the default title.<br>
             - options_legend: If true, an additional legend, explaining the options of the entrant and the incumbent, will be added to the plot.<br>
+            - thresholds_legend: If true, an additional legend explaining the thresholds of the entrant and the incumbent will be added to the plot.<br>
 
         Returns
         -------

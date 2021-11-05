@@ -243,8 +243,9 @@ class BaseModel(Shelegia_Motta_2021.IModel):
             axis.add_patch(poly)
 
         axis.legend(bbox_to_anchor=(1.3, 1), loc="upper left")
-        if kwargs.get('options_legend', False):
-            axis.text(-0.05, -0.4, self._create_options_legend(), verticalalignment='top')
+        additional_legend: str = self._create_additional_legend(options_legend=kwargs.get('options_legend', False), thresholds_legend=kwargs.get('thresholds_legend', False))
+        if additional_legend != "":
+            axis.text(-0.1, -0.6, additional_legend, verticalalignment='top', linespacing=1)
         BaseModel._set_axis_labels(axis, title=kwargs.get('title', ''),
                                    x_label=kwargs.get('xlabel', 'Assets of the entrant'),
                                    y_label=kwargs.get('ylabel', 'Fixed costs of copying for the incumbent'))
@@ -254,15 +255,18 @@ class BaseModel(Shelegia_Motta_2021.IModel):
     def plot_incumbent_best_answers(self, axis: matplotlib.axes.Axes = None, **kwargs) -> matplotlib.axes.Axes:
         poly_coordinates: List[List[Tuple[float, float]]] = self._get_incumbent_best_answer_coordinates()
         poly_labels: List[str] = self._get_incumbent_best_answer_labels()
-        axis: matplotlib.axes.Axes = self._plot(title=kwargs.get("title", "Best Answers of the incumbent to the choices of the entrant"),
-                                                coordinates=poly_coordinates, labels=poly_labels, axis=axis, options_legend=kwargs.get('options_legend', False))
+        axis: matplotlib.axes.Axes = self._plot(
+            title="Best Answers of the incumbent to the choices of the entrant",
+            coordinates=poly_coordinates, labels=poly_labels, axis=axis, **kwargs)
         return axis
 
     def _create_choice_answer_label(self, entrant: Literal["complement", "substitute", "indifferent"],
                                     incumbent: Literal["copy", "refrain"],
-                                    development: Literal["success", "failure"]) -> str:
+                                    development: Literal["success", "failure"],
+                                    kill_zone: bool = False) -> str:
         return self.ENTRANT_CHOICES[entrant] + " $\\rightarrow$ " + self.INCUMBENT_CHOICES[
-            incumbent] + " $\\rightarrow$ " + self.DEVELOPMENT_OUTCOME[development]
+            incumbent] + " $\\rightarrow$ " + self.DEVELOPMENT_OUTCOME[development] + (
+                   "\n(Kill Zone)" if kill_zone else "")
 
     def _get_incumbent_best_answer_labels(self) -> List[str]:
         """
@@ -319,7 +323,8 @@ class BaseModel(Shelegia_Motta_2021.IModel):
             [(self._assets['A-c'], 0), (x_max, 0), (x_max, self._copying_fixed_costs['F(YY)s']),
              (self._assets['A-c'], self._copying_fixed_costs['F(YY)s'])],
             # Square 4
-            [(0, max(self._copying_fixed_costs['F(YN)c'], 0)), (self._assets['A-s'], max(self._copying_fixed_costs['F(YN)c'], 0)),
+            [(0, max(self._copying_fixed_costs['F(YN)c'], 0)),
+             (self._assets['A-s'], max(self._copying_fixed_costs['F(YN)c'], 0)),
              (self._assets['A-s'], self._copying_fixed_costs['F(YN)s']), (0, self._copying_fixed_costs['F(YN)s'])],
             # Square 5
             [(self._assets['A-c'], self._copying_fixed_costs['F(YY)s']), (x_max, self._copying_fixed_costs['F(YY)s']),
@@ -334,8 +339,9 @@ class BaseModel(Shelegia_Motta_2021.IModel):
     def plot_equilibrium(self, axis: matplotlib.axes.Axes = None, **kwargs) -> matplotlib.axes.Axes:
         poly_coordinates: List[List[Tuple[float, float]]] = self._get_equilibrium_coordinates()
         poly_labels: List[str] = self._get_equilibrium_labels()
-        axis: matplotlib.axes.Axes = self._plot(title=kwargs.get("title", "Equilibrium Path"),
-                                                coordinates=poly_coordinates, labels=poly_labels, axis=axis, options_legend=kwargs.get('options_legend', False))
+        axis: matplotlib.axes.Axes = self._plot(title="Equilibrium Path", coordinates=poly_coordinates,
+                                                labels=poly_labels,
+                                                axis=axis, **kwargs)
         return axis
 
     def _get_equilibrium_labels(self) -> List[str]:
@@ -354,7 +360,8 @@ class BaseModel(Shelegia_Motta_2021.IModel):
             # Square 2
             self._create_choice_answer_label(entrant="substitute", incumbent="copy", development="success"),
             # Square 3
-            self._create_choice_answer_label(entrant="complement", incumbent="refrain", development="success"),
+            self._create_choice_answer_label(entrant="complement", incumbent="refrain", development="success",
+                                             kill_zone=True),
             # Square 4
             self._create_choice_answer_label(entrant="substitute", incumbent="refrain", development="success")
         ]
@@ -565,18 +572,55 @@ class BaseModel(Shelegia_Motta_2021.IModel):
         if label is not None:
             axis.text(x, label_y, label)
 
+    def _create_additional_legend(self, options_legend: bool, thresholds_legend: bool) -> str:
+        legend: str = ""
+        if options_legend:
+            legend += self._create_options_legend()
+        if thresholds_legend:
+            legend += self._create_thresholds_legend()
+        return legend
+
     def _create_options_legend(self, latex: bool = True) -> str:
         space: str = "$\quad$" if latex else "\t"
         return "Options of the entrant:\n" + \
-            space + self.ENTRANT_CHOICES['complement'] + ": Tries to develop an additional complementary product to a primary product.\n" + \
-            space + self.ENTRANT_CHOICES['substitute'] + ": Tries to develop an substitute to the primary product of the incumbent.\n" + \
-            space + self.ENTRANT_CHOICES['indifferent'] + " : Indifferent between the options mentioned above.\n" + \
-            "Options of the incumbent:\n" + \
-            space + self.INCUMBENT_CHOICES['copy'] + " : Tries to develop an additional complementary product to a primary product.\n" + \
-            space + self.INCUMBENT_CHOICES['refrain'] + " : Tries to develop an additional complementary product to a primary product.\n" + \
-            "Outcomes of the development:\n" + \
-            space + self.DEVELOPMENT_OUTCOME['success'] + " : The additional product can be developed, since the entrant has sufficient assets.\n" + \
-            space + self.DEVELOPMENT_OUTCOME['failure'] + " : The additional product can not be developed, since the entrant has not enough assets."
+               space + self.ENTRANT_CHOICES[
+                   'complement'] + ": Develop an additional complementary product to a primary product.\n" + \
+               space + self.ENTRANT_CHOICES[
+                   'substitute'] + ": Develop an substitute to the primary product of the incumbent.\n" + \
+               space + self.ENTRANT_CHOICES['indifferent'] + " : Indifferent between the options mentioned above.\n" + \
+               "Options of the incumbent:\n" + \
+               space + self.INCUMBENT_CHOICES[
+                   'copy'] + " : Copy the original complement of the entrant.\n" + \
+               space + self.INCUMBENT_CHOICES[
+                   'refrain'] + " : Do not copy the original complement of the entrant.\n" + \
+               "Outcomes of the development:\n" + \
+               space + self.DEVELOPMENT_OUTCOME[
+                   'success'] + " : The entrant has sufficient assets to develop the product.\n" + \
+               space + self.DEVELOPMENT_OUTCOME[
+                   'failure'] + " : The entrant has not sufficient assets to develop the product."
+
+    @staticmethod
+    def _create_thresholds_legend() -> str:
+        space: str = "$\quad$"
+        return "Thresholds for the assets of the entrant:\n" + \
+               space + r'$\bar{A}_S$' + ": Minimum level of assets to ensure a perfect substitute\n" + \
+               space + space + space + " gets funded if the incumbent copies.\n" + \
+               space + r'$\bar{A}_C$' + ": Minimum level of assets to ensure another complement\n" + \
+               space + space + space + " gets funded if the incumbent copies.\n" + \
+               "If the incumbent does not copy, the entrant will have sufficient assets.\n\n" + \
+               "Thresholds for the fixed costs of copying for the incumbent:\n" + \
+               space + r'$F^{YY}_S$' + ": Maximum costs of copying that ensure that the incumbent\n" + \
+               space + space + space + space + "copies the entrant if the entrant is guaranteed to invest\n" + \
+               space + space + space + space + "in a perfect substitute.\n" + \
+               space + r'$F^{YN}_S$' + ": Maximum costs of copying that ensure that the incumbent\n" + \
+               space + space + space + space + "copies the entrant if the copying prevents the entrant\n" + \
+               space + space + space + space + " from developing a perfect substitute.\n" + \
+               space + r'$F^{YY}_C$' + ": Maximum costs of copying that ensure that the incumbent\n" + \
+               space + space + space + space + "copies the entrant if the entrant is guaranteed to invest\n" + \
+               space + space + space + space + "in another complement.\n" + \
+               space + r'$F^{YN}_C$' + ": Maximum costs of copying that ensure that the incumbent\n" + \
+               space + space + space + space + "copies the entrant if the copying prevents the entrant\n" + \
+               space + space + space + space + "from developing another complement.\n"
 
     @staticmethod
     def _get_color(i: int) -> str:
@@ -658,6 +702,7 @@ class BargainingPowerModel(BaseModel):
     Besides the parameters used in the paper, this class will introduce the parameter $\\beta$ in the models, called
     the bargaining power of the incumbent. In the paper the default value 0.5 is used to derive the results.
     """
+
     def __init__(self, u: float = 1, B: float = 0.5, small_delta: float = 0.5, delta: float = 0.51,
                  K: float = 0.2, beta: float = 0.5):
         """
@@ -796,10 +841,13 @@ class BargainingPowerModel(BaseModel):
         return self._payoffs
 
     def _get_incumbent_best_answer_coordinates(self) -> List[List[Tuple[float, float]]]:
-        coordinates: List[List[Tuple[float, float]]] = super(BargainingPowerModel, self)._get_incumbent_best_answer_coordinates()
+        coordinates: List[List[Tuple[float, float]]] = super(BargainingPowerModel,
+                                                             self)._get_incumbent_best_answer_coordinates()
         if self._copying_fixed_costs["F(YY)s"] != self._copying_fixed_costs["F(YN)c"]:
-            coordinates.append([(self._assets['A-s'], self._copying_fixed_costs['F(YY)s']), (self._assets['A-c'], self._copying_fixed_costs['F(YY)s']),
-                                (self._assets['A-c'], max(self._copying_fixed_costs['F(YN)c'], 0)), (self._assets['A-s'], max(self._copying_fixed_costs['F(YN)c'], 0))])
+            coordinates.append([(self._assets['A-s'], self._copying_fixed_costs['F(YY)s']),
+                                (self._assets['A-c'], self._copying_fixed_costs['F(YY)s']),
+                                (self._assets['A-c'], max(self._copying_fixed_costs['F(YN)c'], 0)),
+                                (self._assets['A-s'], max(self._copying_fixed_costs['F(YN)c'], 0))])
         return coordinates
 
     def _get_incumbent_best_answer_labels(self) -> List[str]:
@@ -808,13 +856,15 @@ class BargainingPowerModel(BaseModel):
             if self._copying_fixed_costs["F(YY)s"] > self._copying_fixed_costs["F(YN)c"]:
                 labels.append(
                     # Square 7
-                    self._create_choice_answer_label(entrant="substitute", incumbent="copy", development="success") + " \n" +
+                    self._create_choice_answer_label(entrant="substitute", incumbent="copy",
+                                                     development="success") + " \n" +
                     self._create_choice_answer_label(entrant="complement", incumbent="refrain", development="success"),
                 )
             else:
                 labels.append(
                     # Square 7
-                    self._create_choice_answer_label(entrant="substitute", incumbent="refrain", development="success") + " \n" +
+                    self._create_choice_answer_label(entrant="substitute", incumbent="refrain",
+                                                     development="success") + " \n" +
                     self._create_choice_answer_label(entrant="complement", incumbent="copy", development="failure"),
                 )
         return labels
@@ -824,6 +874,7 @@ class UnobservableModel(BargainingPowerModel):
     """
     This model indicates that if the incumbent were not able to observe the entrant at the moment of choosing, the “kill zone” effect whereby the entrant stays away from the substitute in order to avoid being copied) would not take place. Intuitively, in the game as we studied it so far, the only reason why the entrant is choosing a trajectory leading to another complement is that it anticipates that if it chose one leading to a substitute, the incumbent would copy, making it an inefficient strategy for entering the market. However, if the incumbent cannot observe the entrant’s choice of strategy, the entrant could not hope to strategically affect the decision of the incumbent. This would lead to the entrant having a host of new opportunities when entering the market and it makes competing with a large company much more attractive.
     """
+
     def __init__(self, u: float = 1, B: float = 0.5, small_delta: float = 0.5, delta: float = 0.51,
                  K: float = 0.2, beta: float = 0.5):
         """
@@ -836,7 +887,8 @@ class UnobservableModel(BargainingPowerModel):
 
     def _create_choice_answer_label(self, entrant: Literal["complement", "substitute", "indifferent"],
                                     incumbent: Literal["copy", "refrain"],
-                                    development: Literal["success", "failure"]) -> str:
+                                    development: Literal["success", "failure"],
+                                    kill_zone: bool = False) -> str:
         return "{" + self.ENTRANT_CHOICES[entrant] + ", " + self.INCUMBENT_CHOICES[incumbent] + "} $\\rightarrow$ " + \
                self.DEVELOPMENT_OUTCOME[development]
 
@@ -865,7 +917,8 @@ class UnobservableModel(BargainingPowerModel):
         result: Dict = super().get_optimal_choice(A, F)
         # adjust the different choices in area three -> since the kill zone does not exist in this model.
         if result["entrant"] == self.ENTRANT_CHOICES["complement"]:
-            result = {"entrant": self.ENTRANT_CHOICES["substitute"], "incumbent": self.INCUMBENT_CHOICES["copy"], "development": self.DEVELOPMENT_OUTCOME["failure"]}
+            result = {"entrant": self.ENTRANT_CHOICES["substitute"], "incumbent": self.INCUMBENT_CHOICES["copy"],
+                      "development": self.DEVELOPMENT_OUTCOME["failure"]}
         return result
 
 
@@ -873,6 +926,7 @@ class AcquisitionModel(BargainingPowerModel):
     """
     In order to explore how acquisitions may modify the entrant’s and the incumbent’s strategic choices, we extend the base model in order to allow an acquisition to take place after the incumbent commits to copying the entrant’s original complementary product (between t=1 and t=2, see table 2). We assume that the incumbent and the entrant share the gains (if any) attained from the acquisition equally.
     """
+
     def __init__(self, u: float = 1, B: float = 0.5, small_delta: float = 0.5, delta: float = 0.51,
                  K: float = 0.2) -> None:
         """
@@ -885,8 +939,9 @@ class AcquisitionModel(BargainingPowerModel):
 
     def _calculate_copying_fixed_costs_values(self) -> Dict[str, float]:
         copying_fixed_costs_values: Dict[str, float] = super()._calculate_copying_fixed_costs_values()
-        copying_fixed_costs_values.update({'F(ACQ)s': (self._u + self._delta - self._K) / 2 + self._small_delta * (2 - self._beta),
-                                           'F(ACQ)c': self._small_delta * (2.5 - 3*self._beta) - self._K / 2})
+        copying_fixed_costs_values.update(
+            {'F(ACQ)s': (self._u + self._delta - self._K) / 2 + self._small_delta * (2 - self._beta),
+             'F(ACQ)c': self._small_delta * (2.5 - 3 * self._beta) - self._K / 2})
         return copying_fixed_costs_values
 
     def get_copying_fixed_costs_values(self) -> Dict[str, float]:
@@ -909,8 +964,8 @@ class AcquisitionModel(BargainingPowerModel):
 
 
 if __name__ == '__main__':
-    bargaining_power_model = Shelegia_Motta_2021.BargainingPowerModel(beta=0.8)
+    bargaining_power_model = Shelegia_Motta_2021.BargainingPowerModel(beta=0.6)
     fig, (axis_eq, axis_best) = plt.subplots(ncols=2, figsize=(14, 9))
     bargaining_power_model.plot_equilibrium(axis=axis_eq, options_legend=True)
-    bargaining_power_model.plot_incumbent_best_answers(axis=axis_best)
+    bargaining_power_model.plot_incumbent_best_answers(axis=axis_best, thresholds_legend=True)
     plt.show()

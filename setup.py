@@ -10,7 +10,7 @@ with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
 setup(
     name='Shelegia_Motta_2021',
     packages=find_packages(),
-    version='0.0.3',
+    version='0.0.4',
     license='MIT',
     description='Implements the model presented in Shelegia and Motta (2021)',
     long_description=long_description,
@@ -21,7 +21,7 @@ setup(
     download_url='https://github.com/manuelbieri/Shelegia_Motta_2021/archive/refs/tags/v0.0.2.tar.gz',
     keywords=['Acquisition', 'Kill Zone', 'Start-up'],
     classifiers=[
-        'Development Status :: 3 - Alpha',  # "3 - Alpha" / "4 - Beta" / "5 - Production/Stable"
+        'Development Status :: 4 - Beta',  # "3 - Alpha" / "4 - Beta" / "5 - Production/Stable"
         'Intended Audience :: Developers',
         'Topic :: Software Development',
         'License :: OSI Approved :: MIT License',
