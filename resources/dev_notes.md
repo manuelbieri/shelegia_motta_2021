@@ -1,5 +1,7 @@
 # Additional Notes
 
+Here you can find some helpful information about the code.
+
 ## Class Hierarchy
 ![](plots-uml_class.png)
 
@@ -20,6 +22,4 @@ Additionally, the points used in the testcases are denoted.
 ![](plots-unobservable.png)
 
 ### AcquisitionModel
-
-
-
+![](plots-acquisition.png)

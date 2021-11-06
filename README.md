@@ -1,4 +1,4 @@
-This package implements the models of [Shelegia and Motta (2021)](resources/shelegia_motta_2021.pdf).
+This package implements the models of [Shelegia and Motta (2021)](shelegia_motta_2021.pdf).
 
 ![GitHub](https://img.shields.io/github/license/manuelbieri/shelegia_motta_2021)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/Shelegia-Motta-2021)

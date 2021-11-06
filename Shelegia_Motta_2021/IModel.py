@@ -144,6 +144,8 @@ class IModel:
         - "incumbent": choice of the incumbent (possible choices listed in Shelegia_Motta_2021.IModel.IModel.INCUMBENT_CHOICES)
         - "development": outcome of the development (possible outcomes listed in Shelegia_Motta_2021.IModel.IModel.DEVELOPMENT_OUTCOME)
 
+        To understand the details of the logic implemented, consult the chapter in Shelegia and Motta (2021) corresponding to the model.
+
         Parameters
         ----------
         A : float
@@ -172,6 +174,8 @@ class IModel:
             - title: title on top of the plot, instead of the default title.<br>
             - options_legend: If true, an additional legend, explaining the options of the entrant and the incumbent, will be added to the plot.<br>
             - thresholds_legend: If true, an additional legend explaining the thresholds of the entrant and the incumbent will be added to the plot.<br>
+            - x_max : Maximum number plotted on the x - axis.<br>
+            - y_max : Maximum number plotted on the y - axis.<br>
 
         Returns
         -------
@@ -194,6 +198,8 @@ class IModel:
             - title: title on top of the plot, instead of the default title.<br>
             - options_legend: If true, an additional legend, explaining the options of the entrant and the incumbent, will be added to the plot.<br>
             - thresholds_legend: If true, an additional legend explaining the thresholds of the entrant and the incumbent will be added to the plot.<br>
+            - x_max : Maximum number plotted on the x - axis.<br>
+            - y_max : Maximum number plotted on the y - axis.<br>
 
         Returns
         -------
@@ -227,7 +233,7 @@ class IModel:
         Includes:
         - Asset thresholds of the entrant
         - Fixed costs for copying thresholds of the incumbent.
-        - Utilities for different market configurations
+        - Payoffs for different market configurations for all stakeholders
 
         Returns
         -------
