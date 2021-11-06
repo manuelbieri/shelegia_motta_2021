@@ -243,7 +243,7 @@ class BaseModel(Shelegia_Motta_2021.IModel):
         self._draw_thresholds(axis, x_horizontal=kwargs.get("x_max", 0), y_vertical=kwargs.get("y_max", 0))
 
         for i, coordinates in enumerate(coordinates):
-            poly = plt.Polygon(coordinates, ec="k", color=self._get_color(i), label=labels[i])
+            poly = plt.Polygon(coordinates, linewidth=0, color=self._get_color(i), label=labels[i])
             axis.add_patch(poly)
 
         axis.legend(bbox_to_anchor=(1.3, 1), loc="upper left")
@@ -722,7 +722,7 @@ class BaseModel(Shelegia_Motta_2021.IModel):
         str
             A string corresponding to a matplotlib - color for a given index.
         """
-        return ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'w'][i]
+        return ['salmon', 'khaki', 'limegreen', 'turquoise', 'powderblue', 'thistle', 'pink'][i]
 
     @staticmethod
     def _set_axis(axis: matplotlib.axes.Axes) -> None:
@@ -1166,8 +1166,5 @@ class AcquisitionModel(BargainingPowerModel):
 
 
 if __name__ == '__main__':
-    a1 = Shelegia_Motta_2021.AcquisitionModel().plot_incumbent_best_answers()
-    a2 = Shelegia_Motta_2021.AcquisitionModel().plot_equilibrium()
-    a1.get_figure().savefig("../resources/acqui_best.png")
-    a2.get_figure().savefig("../resources/acqui_eq.png")
+    a1 = Shelegia_Motta_2021.BargainingPowerModel().plot_incumbent_best_answers()
     plt.show()
