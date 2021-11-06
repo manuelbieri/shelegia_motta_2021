@@ -119,21 +119,21 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ENTRANT_CHOICES</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;complement&quot;</span><span class="p">:</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;substitute&quot;</span><span class="p">:</span> <span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="s2">&quot;indifferent&quot;</span><span class="p">:</span> <span class="s2">&quot;I&quot;</span><span class="p">}</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Contains all the possible product choices of the entrant.</span>
-<span class="sd">        - complement (C)</span>
-<span class="sd">        - substitute (S)</span>
-<span class="sd">        - indifferent (I)</span>
+<span class="sd">        - complement (C): The entrant develops another complement for the primary product of the incumbent.</span>
+<span class="sd">        - substitute (S): The entrant develops a perfect substitute to the primary product of the incumbent.</span>
+<span class="sd">        - indifferent (I): The entrant is indifferent between the two options, mentioned above.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">INCUMBENT_CHOICES</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;copy&quot;</span><span class="p">:</span> <span class="s2">&quot;©&quot;</span><span class="p">,</span> <span class="s2">&quot;refrain&quot;</span><span class="p">:</span> <span class="s2">&quot;Ø&quot;</span><span class="p">}</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Contains all the possible answers of the incumbent to the choice of the entrant.</span>
-<span class="sd">        - copy (©)</span>
-<span class="sd">        - refrain (Ø)</span>
+<span class="sd">        - copy (©): The incumbent copies the complement of the entrant.</span>
+<span class="sd">        - refrain (Ø): The incumbent does not take any action.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">DEVELOPMENT_OUTCOME</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;failure&quot;</span><span class="p">:</span> <span class="s2">&quot;N&quot;</span><span class="p">}</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Contains all the possible outcomes of the development for the chosen product of the entrant or the merged entity.</span>
-<span class="sd">        - success (Y)</span>
-<span class="sd">        - failure (N)</span>
+<span class="sd">        - success (Y): The entrant has sufficient assets to develop the second product.</span>
+<span class="sd">        - failure (N): The entrant has not sufficient assets to develop the second product.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -251,6 +251,8 @@
 <span class="sd">        - &quot;incumbent&quot;: choice of the incumbent (possible choices listed in Shelegia_Motta_2021.IModel.IModel.INCUMBENT_CHOICES)</span>
 <span class="sd">        - &quot;development&quot;: outcome of the development (possible outcomes listed in Shelegia_Motta_2021.IModel.IModel.DEVELOPMENT_OUTCOME)</span>
 
+<span class="sd">        To understand the details of the logic implemented, consult the chapter in Shelegia and Motta (2021) corresponding to the model.</span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        A : float</span>
@@ -279,6 +281,8 @@
 <span class="sd">            - title: title on top of the plot, instead of the default title.&lt;br&gt;</span>
 <span class="sd">            - options_legend: If true, an additional legend, explaining the options of the entrant and the incumbent, will be added to the plot.&lt;br&gt;</span>
 <span class="sd">            - thresholds_legend: If true, an additional legend explaining the thresholds of the entrant and the incumbent will be added to the plot.&lt;br&gt;</span>
+<span class="sd">            - x_max : Maximum number plotted on the x - axis.&lt;br&gt;</span>
+<span class="sd">            - y_max : Maximum number plotted on the y - axis.&lt;br&gt;</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -301,6 +305,8 @@
 <span class="sd">            - title: title on top of the plot, instead of the default title.&lt;br&gt;</span>
 <span class="sd">            - options_legend: If true, an additional legend, explaining the options of the entrant and the incumbent, will be added to the plot.&lt;br&gt;</span>
 <span class="sd">            - thresholds_legend: If true, an additional legend explaining the thresholds of the entrant and the incumbent will be added to the plot.&lt;br&gt;</span>
+<span class="sd">            - x_max : Maximum number plotted on the x - axis.&lt;br&gt;</span>
+<span class="sd">            - y_max : Maximum number plotted on the y - axis.&lt;br&gt;</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -334,7 +340,7 @@
 <span class="sd">        Includes:</span>
 <span class="sd">        - Asset thresholds of the entrant</span>
 <span class="sd">        - Fixed costs for copying thresholds of the incumbent.</span>
-<span class="sd">        - Utilities for different market configurations</span>
+<span class="sd">        - Payoffs for different market configurations for all stakeholders</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -366,21 +372,21 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ENTRANT_CHOICES</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;complement&quot;</span><span class="p">:</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;substitute&quot;</span><span class="p">:</span> <span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="s2">&quot;indifferent&quot;</span><span class="p">:</span> <span class="s2">&quot;I&quot;</span><span class="p">}</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Contains all the possible product choices of the entrant.</span>
-<span class="sd">        - complement (C)</span>
-<span class="sd">        - substitute (S)</span>
-<span class="sd">        - indifferent (I)</span>
+<span class="sd">        - complement (C): The entrant develops another complement for the primary product of the incumbent.</span>
+<span class="sd">        - substitute (S): The entrant develops a perfect substitute to the primary product of the incumbent.</span>
+<span class="sd">        - indifferent (I): The entrant is indifferent between the two options, mentioned above.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">INCUMBENT_CHOICES</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;copy&quot;</span><span class="p">:</span> <span class="s2">&quot;©&quot;</span><span class="p">,</span> <span class="s2">&quot;refrain&quot;</span><span class="p">:</span> <span class="s2">&quot;Ø&quot;</span><span class="p">}</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Contains all the possible answers of the incumbent to the choice of the entrant.</span>
-<span class="sd">        - copy (©)</span>
-<span class="sd">        - refrain (Ø)</span>
+<span class="sd">        - copy (©): The incumbent copies the complement of the entrant.</span>
+<span class="sd">        - refrain (Ø): The incumbent does not take any action.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">DEVELOPMENT_OUTCOME</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;failure&quot;</span><span class="p">:</span> <span class="s2">&quot;N&quot;</span><span class="p">}</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Contains all the possible outcomes of the development for the chosen product of the entrant or the merged entity.</span>
-<span class="sd">        - success (Y)</span>
-<span class="sd">        - failure (N)</span>
+<span class="sd">        - success (Y): The entrant has sufficient assets to develop the second product.</span>
+<span class="sd">        - failure (N): The entrant has not sufficient assets to develop the second product.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -498,6 +504,8 @@
 <span class="sd">        - &quot;incumbent&quot;: choice of the incumbent (possible choices listed in Shelegia_Motta_2021.IModel.IModel.INCUMBENT_CHOICES)</span>
 <span class="sd">        - &quot;development&quot;: outcome of the development (possible outcomes listed in Shelegia_Motta_2021.IModel.IModel.DEVELOPMENT_OUTCOME)</span>
 
+<span class="sd">        To understand the details of the logic implemented, consult the chapter in Shelegia and Motta (2021) corresponding to the model.</span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        A : float</span>
@@ -526,6 +534,8 @@
 <span class="sd">            - title: title on top of the plot, instead of the default title.&lt;br&gt;</span>
 <span class="sd">            - options_legend: If true, an additional legend, explaining the options of the entrant and the incumbent, will be added to the plot.&lt;br&gt;</span>
 <span class="sd">            - thresholds_legend: If true, an additional legend explaining the thresholds of the entrant and the incumbent will be added to the plot.&lt;br&gt;</span>
+<span class="sd">            - x_max : Maximum number plotted on the x - axis.&lt;br&gt;</span>
+<span class="sd">            - y_max : Maximum number plotted on the y - axis.&lt;br&gt;</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -548,6 +558,8 @@
 <span class="sd">            - title: title on top of the plot, instead of the default title.&lt;br&gt;</span>
 <span class="sd">            - options_legend: If true, an additional legend, explaining the options of the entrant and the incumbent, will be added to the plot.&lt;br&gt;</span>
 <span class="sd">            - thresholds_legend: If true, an additional legend explaining the thresholds of the entrant and the incumbent will be added to the plot.&lt;br&gt;</span>
+<span class="sd">            - x_max : Maximum number plotted on the x - axis.&lt;br&gt;</span>
+<span class="sd">            - y_max : Maximum number plotted on the y - axis.&lt;br&gt;</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -581,7 +593,7 @@
 <span class="sd">        Includes:</span>
 <span class="sd">        - Asset thresholds of the entrant</span>
 <span class="sd">        - Fixed costs for copying thresholds of the incumbent.</span>
-<span class="sd">        - Utilities for different market configurations</span>
+<span class="sd">        - Payoffs for different market configurations for all stakeholders</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -610,21 +622,21 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ENTRANT_CHOICES</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;complement&quot;</span><span class="p">:</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;substitute&quot;</span><span class="p">:</span> <span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="s2">&quot;indifferent&quot;</span><span class="p">:</span> <span class="s2">&quot;I&quot;</span><span class="p">}</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Contains all the possible product choices of the entrant.</span>
-<span class="sd">        - complement (C)</span>
-<span class="sd">        - substitute (S)</span>
-<span class="sd">        - indifferent (I)</span>
+<span class="sd">        - complement (C): The entrant develops another complement for the primary product of the incumbent.</span>
+<span class="sd">        - substitute (S): The entrant develops a perfect substitute to the primary product of the incumbent.</span>
+<span class="sd">        - indifferent (I): The entrant is indifferent between the two options, mentioned above.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">INCUMBENT_CHOICES</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;copy&quot;</span><span class="p">:</span> <span class="s2">&quot;©&quot;</span><span class="p">,</span> <span class="s2">&quot;refrain&quot;</span><span class="p">:</span> <span class="s2">&quot;Ø&quot;</span><span class="p">}</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Contains all the possible answers of the incumbent to the choice of the entrant.</span>
-<span class="sd">        - copy (©)</span>
-<span class="sd">        - refrain (Ø)</span>
+<span class="sd">        - copy (©): The incumbent copies the complement of the entrant.</span>
+<span class="sd">        - refrain (Ø): The incumbent does not take any action.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">DEVELOPMENT_OUTCOME</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;failure&quot;</span><span class="p">:</span> <span class="s2">&quot;N&quot;</span><span class="p">}</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Contains all the possible outcomes of the development for the chosen product of the entrant or the merged entity.</span>
-<span class="sd">        - success (Y)</span>
-<span class="sd">        - failure (N)</span>
+<span class="sd">        - success (Y): The entrant has sufficient assets to develop the second product.</span>
+<span class="sd">        - failure (N): The entrant has not sufficient assets to develop the second product.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
@@ -642,9 +654,9 @@
             <div class="docstring"><p>Contains all the possible product choices of the entrant.</p>
 
 <ul>
-<li>complement (C)</li>
-<li>substitute (S)</li>
-<li>indifferent (I)</li>
+<li>complement (C): The entrant develops another complement for the primary product of the incumbent.</li>
+<li>substitute (S): The entrant develops a perfect substitute to the primary product of the incumbent.</li>
+<li>indifferent (I): The entrant is indifferent between the two options, mentioned above.</li>
 </ul>
 </div>
 
@@ -659,8 +671,8 @@
             <div class="docstring"><p>Contains all the possible answers of the incumbent to the choice of the entrant.</p>
 
 <ul>
-<li>copy (©)</li>
-<li>refrain (Ø)</li>
+<li>copy (©): The incumbent copies the complement of the entrant.</li>
+<li>refrain (Ø): The incumbent does not take any action.</li>
 </ul>
 </div>
 
@@ -675,8 +687,8 @@
             <div class="docstring"><p>Contains all the possible outcomes of the development for the chosen product of the entrant or the merged entity.</p>
 
 <ul>
-<li>success (Y)</li>
-<li>failure (N)</li>
+<li>success (Y): The entrant has sufficient assets to develop the second product.</li>
+<li>failure (N): The entrant has not sufficient assets to develop the second product.</li>
 </ul>
 </div>
 
@@ -911,6 +923,8 @@ The payoffs are specific to the models.</p>
 <span class="sd">        - &quot;incumbent&quot;: choice of the incumbent (possible choices listed in Shelegia_Motta_2021.IModel.IModel.INCUMBENT_CHOICES)</span>
 <span class="sd">        - &quot;development&quot;: outcome of the development (possible outcomes listed in Shelegia_Motta_2021.IModel.IModel.DEVELOPMENT_OUTCOME)</span>
 
+<span class="sd">        To understand the details of the logic implemented, consult the chapter in Shelegia and Motta (2021) corresponding to the model.</span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        A : float</span>
@@ -937,6 +951,8 @@ The payoffs are specific to the models.</p>
 <li>"incumbent": choice of the incumbent (possible choices listed in <a href="#IModel.INCUMBENT_CHOICES">Shelegia_Motta_2021.IModel.IModel.INCUMBENT_CHOICES</a>)</li>
 <li>"development": outcome of the development (possible outcomes listed in <a href="#IModel.DEVELOPMENT_OUTCOME">Shelegia_Motta_2021.IModel.IModel.DEVELOPMENT_OUTCOME</a>)</li>
 </ul>
+
+<p>To understand the details of the logic implemented, consult the chapter in Shelegia and Motta (2021) corresponding to the model.</p>
 
 <h6 id="parameters">Parameters</h6>
 
@@ -985,6 +1001,8 @@ Fixed costs for copying of the incumbent.</li>
 <span class="sd">            - title: title on top of the plot, instead of the default title.&lt;br&gt;</span>
 <span class="sd">            - options_legend: If true, an additional legend, explaining the options of the entrant and the incumbent, will be added to the plot.&lt;br&gt;</span>
 <span class="sd">            - thresholds_legend: If true, an additional legend explaining the thresholds of the entrant and the incumbent will be added to the plot.&lt;br&gt;</span>
+<span class="sd">            - x_max : Maximum number plotted on the x - axis.&lt;br&gt;</span>
+<span class="sd">            - y_max : Maximum number plotted on the y - axis.&lt;br&gt;</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1008,6 +1026,8 @@ Axis to draw the plot on. (optional)</li>
 <li>title: title on top of the plot, instead of the default title.<br></li>
 <li>options_legend: If true, an additional legend, explaining the options of the entrant and the incumbent, will be added to the plot.<br></li>
 <li>thresholds_legend: If true, an additional legend explaining the thresholds of the entrant and the incumbent will be added to the plot.<br></li>
+<li>x_max : Maximum number plotted on the x - axis.<br></li>
+<li>y_max : Maximum number plotted on the y - axis.<br></li>
 </ul></li>
 </ul>
 
@@ -1049,6 +1069,8 @@ Axis to draw the plot on. (optional)</li>
 <span class="sd">            - title: title on top of the plot, instead of the default title.&lt;br&gt;</span>
 <span class="sd">            - options_legend: If true, an additional legend, explaining the options of the entrant and the incumbent, will be added to the plot.&lt;br&gt;</span>
 <span class="sd">            - thresholds_legend: If true, an additional legend explaining the thresholds of the entrant and the incumbent will be added to the plot.&lt;br&gt;</span>
+<span class="sd">            - x_max : Maximum number plotted on the x - axis.&lt;br&gt;</span>
+<span class="sd">            - y_max : Maximum number plotted on the y - axis.&lt;br&gt;</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1072,6 +1094,8 @@ Axis to draw the plot on. (optional)</li>
 <li>title: title on top of the plot, instead of the default title.<br></li>
 <li>options_legend: If true, an additional legend, explaining the options of the entrant and the incumbent, will be added to the plot.<br></li>
 <li>thresholds_legend: If true, an additional legend explaining the thresholds of the entrant and the incumbent will be added to the plot.<br></li>
+<li>x_max : Maximum number plotted on the x - axis.<br></li>
+<li>y_max : Maximum number plotted on the y - axis.<br></li>
 </ul></li>
 </ul>
 

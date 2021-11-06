@@ -214,14 +214,14 @@ class BaseModel(Shelegia_Motta_2021.IModel):
     def _plot(self, coordinates: List[List[Tuple[float, float]]], labels: List[str],
               axis: matplotlib.axes.Axes = None, **kwargs) -> matplotlib.axes.Axes:
         """
-        Plots polygons containing the optimal choices and answers into a coordinate system.
+        Plots the areas containing the optimal choices and answers into a coordinate system.
 
         Parameters
         ----------
         coordinates : List[List[Tuple[float, float]]]
             List of all polygons (list of coordinates) to plot.
         labels: List[str]
-            List containing all the labels for the polygons.
+            List containing all the labels for the areas.
         axis : matplotlib.axes.Axes
             Axis to draw the plot on. (optional)
         **kwargs
@@ -229,6 +229,10 @@ class BaseModel(Shelegia_Motta_2021.IModel):
             - title: title of the plot.<br>
             - xlabel: label for the x - axis.<br>
             - ylabel: label for the y - axis.<br>
+            - options_legend: If true, an additional legend, explaining the options of the entrant and the incumbent, will be added to the plot.<br>
+            - thresholds_legend: If true, an additional legend explaining the thresholds of the entrant and the incumbent will be added to the plot.<br>
+            - x_max : Maximum number plotted on the x - axis.<br>
+            - y_max : Maximum number plotted on the y - axis.<br>
 
         Returns
         -------
@@ -236,7 +240,7 @@ class BaseModel(Shelegia_Motta_2021.IModel):
         """
         if axis is None:
             figure, axis = plt.subplots()
-        self._draw_thresholds(axis)
+        self._draw_thresholds(axis, x_horizontal=kwargs.get("x_max", 0), y_vertical=kwargs.get("y_max", 0))
 
         for i, coordinates in enumerate(coordinates):
             poly = plt.Polygon(coordinates, ec="k", color=self._get_color(i), label=labels[i])
@@ -253,7 +257,8 @@ class BaseModel(Shelegia_Motta_2021.IModel):
         return axis
 
     def plot_incumbent_best_answers(self, axis: matplotlib.axes.Axes = None, **kwargs) -> matplotlib.axes.Axes:
-        poly_coordinates: List[List[Tuple[float, float]]] = self._get_incumbent_best_answer_coordinates()
+        poly_coordinates: List[List[Tuple[float, float]]] = self._get_incumbent_best_answer_coordinates(kwargs.get("x_max", 0),
+                                                                                                        kwargs.get("y_max", 0))
         poly_labels: List[str] = self._get_incumbent_best_answer_labels()
         axis: matplotlib.axes.Axes = self._plot(
             title="Best Answers of the incumbent to the choices of the entrant",
@@ -263,9 +268,32 @@ class BaseModel(Shelegia_Motta_2021.IModel):
     def _create_choice_answer_label(self, entrant: Literal["complement", "substitute", "indifferent"],
                                     incumbent: Literal["copy", "refrain"],
                                     development: Literal["success", "failure"],
-                                    kill_zone: bool = False) -> str:
+                                    kill_zone: bool = False, acquisition: str = "") -> str:
+        """
+        Creates a label for the legend based on the choice of the entrant, the incumbent, the development outcome and additionally on possible acquisition.
+
+        Parameters
+        ----------
+        entrant: Literal["complement", "substitute", "indifferent"]
+            choice of the entrant.
+        incumbent: Literal["copy", "refrain"]
+            choice of the incumbent.
+        development: Literal["success", "failure"]
+            outcome of the development.
+        kill_zone: bool
+            If true, the label adds a "(Kill Zone)" tag.
+        acquisition: str
+            The entity, which develops the additional product chosen by the entrant.
+
+        Returns
+        -------
+        str
+            label based on the parameters mentioned above.
+        """
+        if acquisition != "":
+            acquisition = "_" + acquisition
         return self.ENTRANT_CHOICES[entrant] + " $\\rightarrow$ " + self.INCUMBENT_CHOICES[
-            incumbent] + " $\\rightarrow$ " + self.DEVELOPMENT_OUTCOME[development] + (
+            incumbent] + " $\\rightarrow " + self.DEVELOPMENT_OUTCOME[development] + acquisition + "$" + (
                    "\n(Kill Zone)" if kill_zone else "")
 
     def _get_incumbent_best_answer_labels(self) -> List[str]:
@@ -299,18 +327,19 @@ class BaseModel(Shelegia_Motta_2021.IModel):
             self._create_choice_answer_label(entrant="complement", incumbent="refrain", development="success"),
         ]
 
-    def _get_incumbent_best_answer_coordinates(self) -> List[List[Tuple[float, float]]]:
+    def _get_incumbent_best_answer_coordinates(self, x_max: float, y_max: float) -> List[List[Tuple[float, float]]]:
         """
-        Returns a list containing the coordinates for the squares in the plot of the best answers of the incumbent to the choice of the entrant.
+        Returns a list containing the coordinates for the areas in the plot of the best answers of the incumbent to the choice of the entrant.
 
-        For the order of the squares refer to the file resources/dev_notes.md.
+        For the order of the areas refer to the file resources/dev_notes.md.
 
         Returns
         -------
-        List containing the coordinates for the squares in the plot of the best answers of the incumbent to the choice of the entrant.
+        List[List[Tuple[float, float]]]
+            List containing the coordinates for the areas in the plot of the best answers of the incumbent to the choice of the entrant.
         """
-        y_max: float = self._get_y_max()
-        x_max: float = self._get_x_max()
+        y_max = self._get_y_max(y_max)
+        x_max = self._get_x_max(x_max)
         return [
             # Square 1
             [(0, 0), (self._assets['A-s'], 0), (self._assets['A-s'], max(self._copying_fixed_costs['F(YN)c'], 0)),
@@ -337,7 +366,8 @@ class BaseModel(Shelegia_Motta_2021.IModel):
              (0, self._copying_fixed_costs['F(YN)s']), (self._assets['A-s'], self._copying_fixed_costs['F(YN)s'])]]
 
     def plot_equilibrium(self, axis: matplotlib.axes.Axes = None, **kwargs) -> matplotlib.axes.Axes:
-        poly_coordinates: List[List[Tuple[float, float]]] = self._get_equilibrium_coordinates()
+        poly_coordinates: List[List[Tuple[float, float]]] = self._get_equilibrium_coordinates(kwargs.get("x_max", 0),
+                                                                                              kwargs.get("y_max", 0))
         poly_labels: List[str] = self._get_equilibrium_labels()
         axis: matplotlib.axes.Axes = self._plot(title="Equilibrium Path", coordinates=poly_coordinates,
                                                 labels=poly_labels,
@@ -352,7 +382,8 @@ class BaseModel(Shelegia_Motta_2021.IModel):
 
         Returns
         -------
-        List containing the labels for the squares in the plot of the best answers of the equilibrium path.
+        List[str]
+            List containing the labels for the squares in the plot of the best answers of the equilibrium path.
         """
         return [
             # Square 1
@@ -366,18 +397,19 @@ class BaseModel(Shelegia_Motta_2021.IModel):
             self._create_choice_answer_label(entrant="substitute", incumbent="refrain", development="success")
         ]
 
-    def _get_equilibrium_coordinates(self) -> List[List[Tuple[float, float]]]:
+    def _get_equilibrium_coordinates(self, x_max: float, y_max: float) -> List[List[Tuple[float, float]]]:
         """
-        Returns a list containing the coordinates for the squares in the plot of the equilibrium path.
+        Returns a list containing the coordinates for the areas in the plot of the equilibrium path.
 
-        For the order of the squares refer to the file resources/dev_notes.md.
+        For the order of the areas refer to the file resources/dev_notes.md.
 
         Returns
         -------
-        List containing the coordinates for the squares in the plot of the best answers of the equilibrium path.
+        List[List[Tuple[float, float]]]
+            List containing the coordinates for the areas in the plot of the best answers of the equilibrium path.
         """
-        y_max: float = self._get_y_max()
-        x_max: float = self._get_x_max()
+        y_max = self._get_y_max(y_max)
+        x_max = self._get_x_max(x_max)
         return [
             # Square 1
             [(0, 0), (self._assets['A-s'], 0), (self._assets['A-s'], max(self._copying_fixed_costs['F(YN)c'], 0)),
@@ -454,7 +486,7 @@ class BaseModel(Shelegia_Motta_2021.IModel):
 
         Parameters
         ----------
-        raw_label
+        raw_label: str
             As given as key in the payoffs dict.
 
         Returns
@@ -490,29 +522,41 @@ class BaseModel(Shelegia_Motta_2021.IModel):
                              "I(C)E(C)": "$I_P+I_C;E_C+\\tilde{E}_C$"}
         return labels.get(raw_label, 'No valid market configuration')
 
-    def _get_x_max(self) -> float:
+    def _get_x_max(self, x_max: float = 0) -> float:
         """
         Returns the maximum value to plot on the x - axis.
 
+        Parameters
+        ----------
+        x_max: float
+            Preferred value for the maximum value on the x - axis.
+
         Returns
         -------
         float
-            Maximum value to plot on the x - axis.
+            Maximum value (which is feasible) to plot on the x - axis.
         """
-        return round(self._assets['A-c'] * 1.3, 1)
+        auto_x_max: float = round(self._assets['A-c'] * 1.3, 1)
+        return x_max if x_max > self._assets['A-c'] else auto_x_max
 
-    def _get_y_max(self) -> float:
+    def _get_y_max(self, y_max: float = 0) -> float:
         """
         Returns the maximum value to plot on the y - axis.
 
+        Parameters
+        ----------
+        y_max: float
+            Preferred value for the maximum value on the y - axis.
+
         Returns
         -------
         float
-            Maximum value to plot on the y - axis.
+            Maximum value (which is feasible) to plot on the y - axis.
         """
-        return round(self._copying_fixed_costs['F(YN)s'] * 1.3, 1)
+        auto_y_max: float = round(self._copying_fixed_costs['F(YN)s'] * 1.3, 1)
+        return y_max if y_max > self._copying_fixed_costs['F(YN)s'] else auto_y_max
 
-    def _draw_thresholds(self, axis: matplotlib.axes.Axes) -> None:
+    def _draw_thresholds(self, axis: matplotlib.axes.Axes, x_horizontal: float = 0, y_vertical: float = 0) -> None:
         """
         Draws the thresholds and the corresponding labels on a given axis.
 
@@ -520,23 +564,26 @@ class BaseModel(Shelegia_Motta_2021.IModel):
         ----------
         axis: matplotlib.axes.Axes
             Axis to draw the thresholds on.
+        x_horizontal : float
+            X - coordinate for horizontal thresholds labels (fixed costs of copying).
+        y_vertical : float
+            Y - coordinate for vertical thresholds labels (assets of the entrant).
         """
         # horizontal lines (fixed cost of copying thresholds)
-        self._draw_horizontal_line_with_label(axis, y=self._copying_fixed_costs['F(YN)s'], label="$F^{YN}_S$")
-        self._draw_horizontal_line_with_label(axis, y=self._copying_fixed_costs['F(YY)c'], label="$F^{YY}_C$")
-
+        self._draw_horizontal_line_with_label(axis, y=self._copying_fixed_costs['F(YN)s'], label="$F^{YN}_S$", x=x_horizontal)
+        self._draw_horizontal_line_with_label(axis, y=self._copying_fixed_costs['F(YY)c'], label="$F^{YY}_C$", x=x_horizontal)
         if abs(self._copying_fixed_costs['F(YY)s'] - self._copying_fixed_costs['F(YN)c']) < BaseModel.TOLERANCE:
             self._draw_horizontal_line_with_label(axis, y=self._copying_fixed_costs['F(YY)s'],
-                                                  label="$F^{YY}_S=F^{YN}_C$")
+                                                  label="$F^{YY}_S=F^{YN}_C$", x=x_horizontal)
         else:
-            self._draw_horizontal_line_with_label(axis, y=self._copying_fixed_costs['F(YY)s'], label="$F^{YY}_S$")
+            self._draw_horizontal_line_with_label(axis, y=self._copying_fixed_costs['F(YY)s'], label="$F^{YY}_S$", x=x_horizontal)
             if self._copying_fixed_costs['F(YN)c'] >= 0:
-                self._draw_horizontal_line_with_label(axis, y=self._copying_fixed_costs['F(YN)c'], label="$F^{YN}_C$")
+                self._draw_horizontal_line_with_label(axis, y=self._copying_fixed_costs['F(YN)c'], label="$F^{YN}_C$", x=x_horizontal)
         # vertical lines (asset thresholds)
-        self._draw_vertical_line_with_label(axis, x=self._assets['A-s'], label=r'$\bar{A}_S$')
-        self._draw_vertical_line_with_label(axis, x=self._assets['A-c'], label=r'$\bar{A}_C$')
+        self._draw_vertical_line_with_label(axis, x=self._assets['A-s'], label=r'$\bar{A}_S$', y=y_vertical)
+        self._draw_vertical_line_with_label(axis, x=self._assets['A-c'], label=r'$\bar{A}_C$', y=y_vertical)
 
-    def _draw_horizontal_line_with_label(self, axis: matplotlib.axes.Axes, y: float, label: str = None) -> None:
+    def _draw_horizontal_line_with_label(self, axis: matplotlib.axes.Axes, y: float, **kwargs) -> None:
         """
         Draws a horizontal line at a given y - coordinate and writes the corresponding label at the edge.
 
@@ -546,15 +593,16 @@ class BaseModel(Shelegia_Motta_2021.IModel):
             To draw the horizontal line and label on.
         y
             Coordinate of the of the line on the y - axis.
-        label
-            Label for the horizontal line written at the edge.
+        **kwargs
+            Optional key word arguments for the equilibrium plot.<br>
+            - label: Label for the horizontal line written at the edge.<br>
+            - x: X - coordinate for horizontal thresholds labels (fixed costs of copying).<br>
         """
-        label_x: float = self._get_x_max() + 0.05
+        label_x: float = self._get_x_max(kwargs.get("x", 0)) + 0.05
         axis.axhline(y, linestyle='--', color='k')
-        if label is not None:
-            axis.text(label_x, y, label)
+        axis.text(label_x, y, kwargs.get("label", ""))
 
-    def _draw_vertical_line_with_label(self, axis: matplotlib.axes.Axes, x: float, label: str = None) -> None:
+    def _draw_vertical_line_with_label(self, axis: matplotlib.axes.Axes, x: float, **kwargs) -> None:
         """
         Draws a vertical line at a given x - coordinate and writes the corresponding label at the edge.
 
@@ -564,15 +612,31 @@ class BaseModel(Shelegia_Motta_2021.IModel):
             To draw the vertical line and label on.
         x
             Coordinate of the of the line on the x - axis.
-        label
-            Label for the vertical line written at the edge.
+        **kwargs
+            Optional key word arguments for the equilibrium plot.<br>
+            - label: Label for the horizontal line written at the edge.<br>
+            - y: Y - coordinate for vertical thresholds labels (assets of the entrant).<br>
         """
-        label_y: float = self._get_y_max() + 0.15
+        label_y: float = self._get_y_max(kwargs.get("y", 0)) + 0.15
         axis.axvline(x, linestyle='--', color='k')
-        if label is not None:
-            axis.text(x, label_y, label)
+        axis.text(x, label_y, kwargs.get("label", ""))
 
     def _create_additional_legend(self, options_legend: bool, thresholds_legend: bool) -> str:
+        """
+        Handles the creation of the additional legend for the options of the entrant and incumbent as well as the legend for the thresholds.
+
+        Parameters
+        ----------
+        options_legend: bool
+            States all options of the entrant and the incumbent.
+        thresholds_legend
+            States all thresholds used in the plots.
+
+        Returns
+        -------
+        str
+            Containing the legend for the options of the entrant and the incumbent as well as the legend for the thresholds.
+        """
         legend: str = ""
         if options_legend:
             legend += self._create_options_legend()
@@ -581,6 +645,18 @@ class BaseModel(Shelegia_Motta_2021.IModel):
         return legend
 
     def _create_options_legend(self, latex: bool = True) -> str:
+        """
+        Creates a legend for the options of the entrant and the incumbent.
+
+        Parameters
+        ----------
+        latex: bool
+            If true, the legend will be compatible with latex.
+        Returns
+        -------
+        str
+            Containing the legend for the options of the entrant and the incumbent.
+        """
         space: str = "$\quad$" if latex else "\t"
         return "Options of the entrant:\n" + \
                space + self.ENTRANT_CHOICES[
@@ -601,6 +677,14 @@ class BaseModel(Shelegia_Motta_2021.IModel):
 
     @staticmethod
     def _create_thresholds_legend() -> str:
+        """
+        Creates a legend for the thresholds used in the plots. The legend is compatible with latex.
+
+        Returns
+        -------
+        str
+             Containing the legend for the thresholds used in the plots.
+        """
         space: str = "$\quad$"
         return "Thresholds for the assets of the entrant:\n" + \
                space + r'$\bar{A}_S$' + ": Minimum level of assets to ensure a perfect substitute\n" + \
@@ -840,9 +924,10 @@ class BargainingPowerModel(BaseModel):
         """
         return self._payoffs
 
-    def _get_incumbent_best_answer_coordinates(self) -> List[List[Tuple[float, float]]]:
+    def _get_incumbent_best_answer_coordinates(self, x_max: float, y_max: float) -> List[List[Tuple[float, float]]]:
         coordinates: List[List[Tuple[float, float]]] = super(BargainingPowerModel,
-                                                             self)._get_incumbent_best_answer_coordinates()
+                                                             self)._get_incumbent_best_answer_coordinates(x_max=x_max, y_max=y_max)
+        # add additional area 7
         if self._copying_fixed_costs["F(YY)s"] != self._copying_fixed_costs["F(YN)c"]:
             coordinates.append([(self._assets['A-s'], self._copying_fixed_costs['F(YY)s']),
                                 (self._assets['A-c'], self._copying_fixed_costs['F(YY)s']),
@@ -852,6 +937,7 @@ class BargainingPowerModel(BaseModel):
 
     def _get_incumbent_best_answer_labels(self) -> List[str]:
         labels: List[str] = super(BargainingPowerModel, self)._get_incumbent_best_answer_labels()
+        # add additional label for area 7
         if self._copying_fixed_costs["F(YY)s"] != self._copying_fixed_costs["F(YN)c"]:
             if self._copying_fixed_costs["F(YY)s"] > self._copying_fixed_costs["F(YN)c"]:
                 labels.append(
@@ -888,7 +974,8 @@ class UnobservableModel(BargainingPowerModel):
     def _create_choice_answer_label(self, entrant: Literal["complement", "substitute", "indifferent"],
                                     incumbent: Literal["copy", "refrain"],
                                     development: Literal["success", "failure"],
-                                    kill_zone: bool = False) -> str:
+                                    kill_zone: bool = False,
+                                    acquisition: str = "") -> str:
         return "{" + self.ENTRANT_CHOICES[entrant] + ", " + self.INCUMBENT_CHOICES[incumbent] + "} $\\rightarrow$ " + \
                self.DEVELOPMENT_OUTCOME[development]
 
@@ -924,18 +1011,20 @@ class UnobservableModel(BargainingPowerModel):
 
 class AcquisitionModel(BargainingPowerModel):
     """
-    In order to explore how acquisitions may modify the entrant’s and the incumbent’s strategic choices, we extend the base model in order to allow an acquisition to take place after the incumbent commits to copying the entrant’s original complementary product (between t=1 and t=2, see table 2). We assume that the incumbent and the entrant share the gains (if any) attained from the acquisition equally.
+    In order to explore how acquisitions may modify the entrant’s and the incumbent’s strategic choices, we extend the base model
+    in order to allow an acquisition to take place after the incumbent commits to copying the entrant’s original complementary product
+    (between t=1 and t=2, see table 2). We assume that the incumbent and the entrant share the gains (if any) attained from the acquisition equally.
     """
 
     def __init__(self, u: float = 1, B: float = 0.5, small_delta: float = 0.5, delta: float = 0.51,
-                 K: float = 0.2) -> None:
+                 K: float = 0.2, beta: float = 0.5) -> None:
         """
         An additional constraint is added compared to Shelegia_Motta_2021.Models.BaseModel. Namely, $\Delta$ has to be bigger than $\delta$, meaning the innovation of the entrant is not too drastic.
 
         Meanwhile, the parameters do not change compared to Shelegia_Motta_2021.Models.BargainingPowerModel.
         """
         assert delta > small_delta, "Delta has to be smaller than small_delta, meaning the innovation of the entrant is not too drastic."
-        super(AcquisitionModel, self).__init__(u=u, B=B, small_delta=small_delta, delta=delta, K=K)
+        super(AcquisitionModel, self).__init__(u=u, B=B, small_delta=small_delta, delta=delta, K=K, beta=beta)
         self.ACQUISITION_OUTCOMES: Final[Dict[str, str]] = {"merged": "M", "apart": "E"}
         """
         Contains the options for an acquisition or not.
@@ -991,9 +1080,94 @@ class AcquisitionModel(BargainingPowerModel):
                 result.update({"incumbent": self.INCUMBENT_CHOICES["refrain"]})
         return result
 
+    def _get_incumbent_best_answer_coordinates(self, x_max: float, y_max: float) -> List[List[Tuple[float, float]]]:
+        y_max: float = self._get_y_max(y_max)
+        x_max: float = self._get_x_max(x_max)
+        return [
+            # Square 1
+            [(0, 0), (self._assets['A-c'], 0), (self._assets['A-c'], max(self._copying_fixed_costs['F(ACQ)c'], 0)),
+             (0, max(self._copying_fixed_costs['F(ACQ)c'], 0))],
+            # Square 2
+            [(self._assets['A-c'], 0), (x_max, 0), (x_max, self._copying_fixed_costs['F(YY)c']),
+             (self._assets['A-c'], self._copying_fixed_costs['F(YY)c'])],
+            # Square 3
+            [(0, max(self._copying_fixed_costs['F(ACQ)c'], 0)),
+             (self._assets['A-s'], max(self._copying_fixed_costs['F(ACQ)c'], 0)),
+             (self._assets['A-s'], self._copying_fixed_costs['F(ACQ)s']), (0, self._copying_fixed_costs['F(ACQ)s'])],
+            # Square 4
+            [(self._assets['A-s'], max(self._copying_fixed_costs['F(ACQ)c'], 0)), (self._assets['A-c'], max(self._copying_fixed_costs['F(ACQ)c'], 0)),
+             (self._assets['A-c'], self._copying_fixed_costs['F(YY)c']), (self._assets['A-s'], self._copying_fixed_costs['F(YY)c'])],
+            # Square 5
+            [(self._assets['A-s'], self._copying_fixed_costs['F(YY)c']), (x_max, self._copying_fixed_costs['F(YY)c']), (x_max, y_max),
+             (0, y_max), (0, self._copying_fixed_costs['F(ACQ)s']), (self._assets['A-s'], self._copying_fixed_costs['F(ACQ)s'])]]
+
+    def _get_incumbent_best_answer_labels(self) -> List[str]:
+        return [
+            # Square 1
+            self._create_choice_answer_label(entrant="substitute", incumbent="copy", development="success", acquisition=self.ACQUISITION_OUTCOMES["merged"]) + " \n" +
+            self._create_choice_answer_label(entrant="complement", incumbent="copy", development="success", acquisition=self.ACQUISITION_OUTCOMES["merged"]),
+            # Square 2
+            self._create_choice_answer_label(entrant="substitute", incumbent="copy", development="success", acquisition=self.ACQUISITION_OUTCOMES["merged"]) + " \n" +
+            self._create_choice_answer_label(entrant="complement", incumbent="copy", development="success", acquisition=self.ACQUISITION_OUTCOMES["apart"]),
+            # Square 3
+            self._create_choice_answer_label(entrant="substitute", incumbent="copy", development="success", acquisition=self.ACQUISITION_OUTCOMES["merged"]) + " \n" +
+            self._create_choice_answer_label(entrant="complement", incumbent="refrain", development="success", acquisition=self.ACQUISITION_OUTCOMES["apart"]),
+            # Square 4
+            self._create_choice_answer_label(entrant="substitute", incumbent="copy", development="success", acquisition=self.ACQUISITION_OUTCOMES["merged"]) + " \n" +
+            self._create_choice_answer_label(entrant="complement", incumbent="refrain", development="success", acquisition=self.ACQUISITION_OUTCOMES["apart"]),
+            # Square 5
+            self._create_choice_answer_label(entrant="substitute", incumbent="refrain", development="success", acquisition=self.ACQUISITION_OUTCOMES["merged"]) + " \n" +
+            self._create_choice_answer_label(entrant="complement", incumbent="refrain", development="success", acquisition=self.ACQUISITION_OUTCOMES["apart"]),
+        ]
+
+    def _get_equilibrium_coordinates(self, x_max: float, y_max: float) -> List[List[Tuple[float, float]]]:
+        y_max: float = self._get_y_max(y_max)
+        x_max: float = self._get_x_max(x_max)
+        return [
+            # Square 1
+            [(0, 0), (self._assets['A-s'], 0), (self._assets['A-s'], max(self._copying_fixed_costs['F(ACQ)c'], 0)),
+             (0, max(self._copying_fixed_costs['F(ACQ)c'], 0))],
+            # Square 2
+            [(self._assets['A-s'], 0), (x_max, 0), (x_max, self._copying_fixed_costs['F(YY)c']),
+             (self._assets['A-s'], self._copying_fixed_costs['F(YY)c'])],
+            # Square 3
+            [(0, max(self._copying_fixed_costs['F(ACQ)c'], 0)),
+             (self._assets['A-s'], max(self._copying_fixed_costs['F(ACQ)c'], 0)),
+             (self._assets['A-s'], self._copying_fixed_costs['F(ACQ)s']), (0, self._copying_fixed_costs['F(ACQ)s'])],
+            # Square 4
+            [(self._assets['A-s'], self._copying_fixed_costs['F(YY)c']), (x_max, self._copying_fixed_costs['F(YY)c']),
+             (x_max, y_max), (0, y_max), (0, self._copying_fixed_costs['F(ACQ)s']),
+             (self._assets['A-s'], self._copying_fixed_costs['F(ACQ)s'])]]
+
+    def _get_equilibrium_labels(self) -> List[str]:
+        return [
+            # Square 1
+            self._create_choice_answer_label(entrant="substitute", incumbent="copy", development="success", acquisition=self.ACQUISITION_OUTCOMES["merged"]),
+            # Square 2
+            self._create_choice_answer_label(entrant="substitute", incumbent="copy", development="success", acquisition=self.ACQUISITION_OUTCOMES["merged"]),
+            # Square 3
+            self._create_choice_answer_label(entrant="complement", incumbent="refrain", development="success",
+                                             kill_zone=True, acquisition=self.ACQUISITION_OUTCOMES["apart"]),
+            # Square 4
+            self._create_choice_answer_label(entrant="substitute", incumbent="refrain", development="success", acquisition=self.ACQUISITION_OUTCOMES["merged"])
+        ]
+
+    def _draw_thresholds(self, axis: matplotlib.axes.Axes, x_horizontal: float = 0, y_vertical: float = 0) -> None:
+        self._draw_horizontal_line_with_label(axis, y=self._copying_fixed_costs['F(ACQ)s'], label="$F^{ACQ}_S$", x=x_horizontal)
+        self._draw_horizontal_line_with_label(axis, y=self._copying_fixed_costs['F(YY)c'], label="$F^{YY}_C$", x=x_horizontal)
+        self._draw_horizontal_line_with_label(axis, y=self._copying_fixed_costs['F(YN)s'], label="$F^{YN}_S$", x=x_horizontal)
+
+        if self._copying_fixed_costs['F(ACQ)c'] >= 0:
+            self._draw_horizontal_line_with_label(axis, y=self._copying_fixed_costs['F(ACQ)c'], label="$F^{ACQ}_C$", x=x_horizontal)
+
+        # vertical lines (asset thresholds)
+        self._draw_vertical_line_with_label(axis, x=self._assets['A-s'], label=r'$\bar{A}_S$', y=y_vertical)
+        self._draw_vertical_line_with_label(axis, x=self._assets['A-c'], label=r'$\bar{A}_C$', y=y_vertical)
+
 
 if __name__ == '__main__':
-    model = Shelegia_Motta_2021.UnobservableModel(beta=0.6)
-    a2 = model.plot_incumbent_best_answers()
-    a2.get_figure().savefig('../resources/bargaining_power_beta4_best.png')
+    Shelegia_Motta_2021.BaseModel().plot_incumbent_best_answers(x_max=0.8, y_max=2.5)
+    Shelegia_Motta_2021.BargainingPowerModel().plot_incumbent_best_answers(x_max=0.8, y_max=2.5)
+    Shelegia_Motta_2021.UnobservableModel().plot_incumbent_best_answers(x_max=0.8, y_max=2.5)
+    Shelegia_Motta_2021.AcquisitionModel().plot_incumbent_best_answers(x_max=0.8, y_max=2.5)
     plt.show()

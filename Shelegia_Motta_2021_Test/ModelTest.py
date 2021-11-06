@@ -24,7 +24,12 @@ class BaseModelTest(unittest.TestCase):
     def setUpModel() -> IModel:
         return BaseModel()
 
-    def setUpTestPoints(self):
+    def setUpTestPoints(self) -> None:
+        """
+        Sets up points for the testcases.
+
+        For the position of the points on the coordinate system refer to the file resources/dev_notes.md.
+        """
         self.costs: Dict[str, float] = self.model.get_copying_fixed_costs_values()
         self.assets: Dict[str, float] = self.model.get_asset_values()
         self.utility: Dict[str, Dict[str, float]] = self.model.get_payoffs()

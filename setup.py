@@ -10,7 +10,7 @@ with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
 setup(
     name='Shelegia_Motta_2021',
     packages=find_packages(exclude=["Shelegia_Motta_2021_Test"]),
-    version='0.0.5',
+    version='0.1.0',
     license='MIT',
     description='Implements the model presented in Shelegia and Motta (2021)',
     long_description=long_description,
