@@ -154,6 +154,7 @@
 
 <span class="kn">import</span> <span class="nn">matplotlib.axes</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;font.family&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;monospace&quot;</span>
 
@@ -395,7 +396,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_draw_thresholds</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">x_horizontal</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;x_max&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">y_vertical</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;y_max&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
 
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">coordinates</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">coordinates</span><span class="p">):</span>
-            <span class="n">poly</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">Polygon</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">ec</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_color</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">poly</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">Polygon</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_color</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
             <span class="n">axis</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">poly</span><span class="p">)</span>
 
         <span class="n">axis</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">1.3</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper left&quot;</span><span class="p">)</span>
@@ -578,42 +579,102 @@
              <span class="p">(</span><span class="n">x_max</span><span class="p">,</span> <span class="n">y_max</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">y_max</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copying_fixed_costs</span><span class="p">[</span><span class="s1">&#39;F(YN)s&#39;</span><span class="p">]),</span>
              <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_assets</span><span class="p">[</span><span class="s1">&#39;A-s&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copying_fixed_costs</span><span class="p">[</span><span class="s1">&#39;F(YN)s&#39;</span><span class="p">])]]</span>
 
-    <span class="k">def</span> <span class="nf">plot_payoffs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">plot_payoffs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">axis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">figure</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
         <span class="n">index</span> <span class="o">=</span> <span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_payoffs</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
         <span class="n">bar_width</span> <span class="o">=</span> <span class="mf">0.35</span>
-        <span class="n">opacity</span> <span class="o">=</span> <span class="mf">0.8</span>
         <span class="n">spacing</span> <span class="o">=</span> <span class="mf">0.05</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_plot_payoffs_bars</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">bar_width</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">spacing</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">axis</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Market Configurations&#39;</span><span class="p">)</span>
+        <span class="n">axis</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Payoffs for different Market Configurations&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_payoffs_ticks</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">bar_width</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">spacing</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_payoff_legend</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;products_legend&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_payoffs_figure</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">axis</span>
+
+    <span class="k">def</span> <span class="nf">_plot_payoffs_bars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">,</span> <span class="n">bar_width</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="n">spacing</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plots the bars representing the payoffs for different market configurations of different stakeholders on the specified axis.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        axis matplotlib.axes.Axes</span>
+<span class="sd">            To plot the bars on.</span>
+<span class="sd">        bar_width: float</span>
+<span class="sd">            Width of a bar in the plot.</span>
+<span class="sd">        index: np.array</span>
+<span class="sd">            Index of the different market configurations in the plot.</span>
+<span class="sd">        spacing: float</span>
+<span class="sd">            Spacing between the bars on the plot.</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Optional key word arguments for the payoff plot.&lt;br&gt;</span>
+<span class="sd">            - opacity : Opacity of the not optimal payoffs.&lt;br&gt;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">counter</span><span class="p">,</span> <span class="n">utility_type</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_payoffs</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_payoffs</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
             <span class="n">utility_values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">market_configuration</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_payoffs</span><span class="p">:</span>
                 <span class="n">utility_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_payoffs</span><span class="p">[</span><span class="n">market_configuration</span><span class="p">][</span><span class="n">utility_type</span><span class="p">])</span>
 
             <span class="n">bars</span> <span class="o">=</span> <span class="n">axis</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">index</span> <span class="o">+</span> <span class="n">counter</span> <span class="o">*</span> <span class="p">(</span><span class="n">bar_width</span> <span class="o">+</span> <span class="n">spacing</span><span class="p">),</span> <span class="n">utility_values</span><span class="p">,</span> <span class="n">bar_width</span><span class="p">,</span>
-                            <span class="n">alpha</span><span class="o">=</span><span class="n">opacity</span><span class="p">,</span>
-                            <span class="n">color</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span>
-                            <span class="n">hatch</span><span class="o">=</span><span class="s1">&#39;///&#39;</span><span class="p">,</span>
-                            <span class="n">edgecolor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_color</span><span class="p">(</span><span class="n">counter</span><span class="p">),</span>
+                            <span class="n">alpha</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;opacity&quot;</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">),</span>
+                            <span class="n">color</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_color</span><span class="p">(</span><span class="n">counter</span><span class="p">),</span>
+                            <span class="n">edgecolor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                             <span class="n">label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_convert_payoffs_label</span><span class="p">(</span><span class="n">utility_type</span><span class="p">))</span>
             <span class="n">max_indices</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
                 <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">utility_values</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">==</span> <span class="nb">max</span><span class="p">(</span><span class="n">utility_values</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">utility_values</span><span class="p">))))</span>
             <span class="k">for</span> <span class="n">max_index</span> <span class="ow">in</span> <span class="n">max_indices</span><span class="p">:</span>
-                <span class="n">bars</span><span class="p">[</span><span class="n">max_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_color</span><span class="p">(</span><span class="n">counter</span><span class="p">))</span>
+                <span class="n">bars</span><span class="p">[</span><span class="n">max_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_alpha</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
-        <span class="n">axis</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Market Configuration&#39;</span><span class="p">)</span>
-        <span class="n">axis</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Utility&#39;</span><span class="p">)</span>
-        <span class="n">axis</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Utility levels for different Market Configurations&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_set_payoff_legend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">,</span> <span class="n">products_legend</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates the legend and an additional legend for the products of the entrant and the incumbent,</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        axis: matplotlib.axes.Axes</span>
+<span class="sd">            To set the legends for.</span>
+<span class="sd">        products_legend: bool</span>
+<span class="sd">            If true, an additional legend, containing all possible products of the entrant and the incumbent, will be created.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">axis</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">1.02</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper left&#39;</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">products_legend</span><span class="p">:</span>
+            <span class="n">axis</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="o">-</span><span class="mf">0.7</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.8</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_market_configuration_annotations</span><span class="p">(),</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s2">&quot;top&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_set_payoffs_ticks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">,</span> <span class="n">bar_width</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="n">spacing</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the x - and y - ticks for the plot of the payoffs for different market configurations.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        axis matplotlib.axes.Axes</span>
+<span class="sd">            To adjust the ticks on.</span>
+<span class="sd">        bar_width: float</span>
+<span class="sd">            Width of a bar in the plot.</span>
+<span class="sd">        index: np.array</span>
+<span class="sd">            Index of the different market configurations in the plot.</span>
+<span class="sd">        spacing: float</span>
+<span class="sd">            Spacing between the bars on the plot.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">axis</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">yticklabels</span><span class="o">=</span><span class="p">[])</span>
+        <span class="n">axis</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">axis</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">index</span> <span class="o">+</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">bar_width</span> <span class="o">+</span> <span class="n">spacing</span><span class="p">))</span>
         <span class="n">axis</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="nb">tuple</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_convert_market_configuration_label</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_payoffs</span><span class="o">.</span><span class="n">keys</span><span class="p">()]))</span>
-        <span class="n">axis</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.3</span><span class="p">),</span> <span class="n">loc</span><span class="o">=</span><span class="s2">&quot;lower left&quot;</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
-        <span class="n">axis</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">+</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">bar_width</span> <span class="o">+</span> <span class="n">spacing</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_payoffs</span><span class="p">[</span><span class="s2">&quot;E(P)&quot;</span><span class="p">][</span><span class="s2">&quot;W&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">,</span>
-                  <span class="bp">self</span><span class="o">.</span><span class="n">_get_market_configuration_annotations</span><span class="p">())</span>
 
-        <span class="c1"># BaseModel._set_axis(axis)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">axis</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_set_payoffs_figure</span><span class="p">(</span><span class="n">axis</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adjust the matplotlib figure to plot the payoffs for different market configurations.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        axis: matplotlib.axes.Axes</span>
+<span class="sd">            To adjust for the payoff plot.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">axis</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">set_size_inches</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="n">axis</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_get_market_configuration_annotations</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -626,10 +687,11 @@
 <span class="sd">            Contains all product options for the entrant and the incumbent.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s2">&quot;$I_P$: Primary product sold by the incumbent</span><span class="se">\n</span><span class="s2">&quot;</span> \
-               <span class="s2">&quot;$I_C$: Complementary product to $I_P$ potentially sold by the incumbent, which is copied from $E_C$</span><span class="se">\n</span><span class="s2">&quot;</span> \
+               <span class="s2">&quot;$I_C$: Copied complementary product to $I_P$ potentially sold by the incumbent</span><span class="se">\n</span><span class="s2">&quot;</span> \
                <span class="s2">&quot;$E_P$: Perfect substitute to $I_P$ potentially sold by the entrant</span><span class="se">\n</span><span class="s2">&quot;</span> \
                <span class="s2">&quot;$E_C$: Complementary product to $I_P$ currently sold by the entrant</span><span class="se">\n</span><span class="s2">&quot;</span> \
-               <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">tilde</span><span class="si">{E}</span><span class="s2">_C$: Complementary product to $I_P$ potentially sold by the entrant</span><span class="se">\n</span><span class="s2">&quot;</span>
+               <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">tilde</span><span class="si">{E}</span><span class="s2">_C$: Complementary product to $I_P$ potentially sold by the entrant</span><span class="se">\n</span><span class="s2">&quot;</span> \
+               <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">The bars representing the maximum payoff for a stakeholder are fully filled.&quot;</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_convert_payoffs_label</span><span class="p">(</span><span class="n">raw_label</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -874,7 +936,7 @@
 <span class="sd">        str</span>
 <span class="sd">            A string corresponding to a matplotlib - color for a given index.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;m&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;salmon&#39;</span><span class="p">,</span> <span class="s1">&#39;khaki&#39;</span><span class="p">,</span> <span class="s1">&#39;limegreen&#39;</span><span class="p">,</span> <span class="s1">&#39;turquoise&#39;</span><span class="p">,</span> <span class="s1">&#39;powderblue&#39;</span><span class="p">,</span> <span class="s1">&#39;thistle&#39;</span><span class="p">,</span> <span class="s1">&#39;pink&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_set_axis</span><span class="p">(</span><span class="n">axis</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -1318,10 +1380,7 @@
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="n">a1</span> <span class="o">=</span> <span class="n">Shelegia_Motta_2021</span><span class="o">.</span><span class="n">AcquisitionModel</span><span class="p">()</span><span class="o">.</span><span class="n">plot_incumbent_best_answers</span><span class="p">()</span>
-    <span class="n">a2</span> <span class="o">=</span> <span class="n">Shelegia_Motta_2021</span><span class="o">.</span><span class="n">AcquisitionModel</span><span class="p">()</span><span class="o">.</span><span class="n">plot_equilibrium</span><span class="p">()</span>
-    <span class="n">a1</span><span class="o">.</span><span class="n">get_figure</span><span class="p">()</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;../resources/acqui_best.png&quot;</span><span class="p">)</span>
-    <span class="n">a2</span><span class="o">.</span><span class="n">get_figure</span><span class="p">()</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;../resources/acqui_eq.png&quot;</span><span class="p">)</span>
+    <span class="n">Shelegia_Motta_2021</span><span class="o">.</span><span class="n">AcquisitionModel</span><span class="p">(</span><span class="n">beta</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span><span class="o">.</span><span class="n">plot_payoffs</span><span class="p">()</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 
@@ -1572,7 +1631,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_draw_thresholds</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">x_horizontal</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;x_max&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">y_vertical</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;y_max&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
 
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">coordinates</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">coordinates</span><span class="p">):</span>
-            <span class="n">poly</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">Polygon</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">ec</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_color</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">poly</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">Polygon</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_color</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
             <span class="n">axis</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">poly</span><span class="p">)</span>
 
         <span class="n">axis</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">1.3</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper left&quot;</span><span class="p">)</span>
@@ -1755,42 +1814,102 @@
              <span class="p">(</span><span class="n">x_max</span><span class="p">,</span> <span class="n">y_max</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">y_max</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copying_fixed_costs</span><span class="p">[</span><span class="s1">&#39;F(YN)s&#39;</span><span class="p">]),</span>
              <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_assets</span><span class="p">[</span><span class="s1">&#39;A-s&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copying_fixed_costs</span><span class="p">[</span><span class="s1">&#39;F(YN)s&#39;</span><span class="p">])]]</span>
 
-    <span class="k">def</span> <span class="nf">plot_payoffs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">plot_payoffs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">axis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">figure</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
         <span class="n">index</span> <span class="o">=</span> <span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_payoffs</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
         <span class="n">bar_width</span> <span class="o">=</span> <span class="mf">0.35</span>
-        <span class="n">opacity</span> <span class="o">=</span> <span class="mf">0.8</span>
         <span class="n">spacing</span> <span class="o">=</span> <span class="mf">0.05</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_plot_payoffs_bars</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">bar_width</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">spacing</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">axis</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Market Configurations&#39;</span><span class="p">)</span>
+        <span class="n">axis</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Payoffs for different Market Configurations&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_payoffs_ticks</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">bar_width</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">spacing</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_payoff_legend</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;products_legend&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_payoffs_figure</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">axis</span>
+
+    <span class="k">def</span> <span class="nf">_plot_payoffs_bars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">,</span> <span class="n">bar_width</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="n">spacing</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plots the bars representing the payoffs for different market configurations of different stakeholders on the specified axis.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        axis matplotlib.axes.Axes</span>
+<span class="sd">            To plot the bars on.</span>
+<span class="sd">        bar_width: float</span>
+<span class="sd">            Width of a bar in the plot.</span>
+<span class="sd">        index: np.array</span>
+<span class="sd">            Index of the different market configurations in the plot.</span>
+<span class="sd">        spacing: float</span>
+<span class="sd">            Spacing between the bars on the plot.</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Optional key word arguments for the payoff plot.&lt;br&gt;</span>
+<span class="sd">            - opacity : Opacity of the not optimal payoffs.&lt;br&gt;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">counter</span><span class="p">,</span> <span class="n">utility_type</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_payoffs</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_payoffs</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
             <span class="n">utility_values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">market_configuration</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_payoffs</span><span class="p">:</span>
                 <span class="n">utility_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_payoffs</span><span class="p">[</span><span class="n">market_configuration</span><span class="p">][</span><span class="n">utility_type</span><span class="p">])</span>
 
             <span class="n">bars</span> <span class="o">=</span> <span class="n">axis</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">index</span> <span class="o">+</span> <span class="n">counter</span> <span class="o">*</span> <span class="p">(</span><span class="n">bar_width</span> <span class="o">+</span> <span class="n">spacing</span><span class="p">),</span> <span class="n">utility_values</span><span class="p">,</span> <span class="n">bar_width</span><span class="p">,</span>
-                            <span class="n">alpha</span><span class="o">=</span><span class="n">opacity</span><span class="p">,</span>
-                            <span class="n">color</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span>
-                            <span class="n">hatch</span><span class="o">=</span><span class="s1">&#39;///&#39;</span><span class="p">,</span>
-                            <span class="n">edgecolor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_color</span><span class="p">(</span><span class="n">counter</span><span class="p">),</span>
+                            <span class="n">alpha</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;opacity&quot;</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">),</span>
+                            <span class="n">color</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_color</span><span class="p">(</span><span class="n">counter</span><span class="p">),</span>
+                            <span class="n">edgecolor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                             <span class="n">label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_convert_payoffs_label</span><span class="p">(</span><span class="n">utility_type</span><span class="p">))</span>
             <span class="n">max_indices</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
                 <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">utility_values</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">==</span> <span class="nb">max</span><span class="p">(</span><span class="n">utility_values</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">utility_values</span><span class="p">))))</span>
             <span class="k">for</span> <span class="n">max_index</span> <span class="ow">in</span> <span class="n">max_indices</span><span class="p">:</span>
-                <span class="n">bars</span><span class="p">[</span><span class="n">max_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_color</span><span class="p">(</span><span class="n">counter</span><span class="p">))</span>
+                <span class="n">bars</span><span class="p">[</span><span class="n">max_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_alpha</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
-        <span class="n">axis</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Market Configuration&#39;</span><span class="p">)</span>
-        <span class="n">axis</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Utility&#39;</span><span class="p">)</span>
-        <span class="n">axis</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Utility levels for different Market Configurations&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_set_payoff_legend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">,</span> <span class="n">products_legend</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates the legend and an additional legend for the products of the entrant and the incumbent,</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        axis: matplotlib.axes.Axes</span>
+<span class="sd">            To set the legends for.</span>
+<span class="sd">        products_legend: bool</span>
+<span class="sd">            If true, an additional legend, containing all possible products of the entrant and the incumbent, will be created.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">axis</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">1.02</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper left&#39;</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">products_legend</span><span class="p">:</span>
+            <span class="n">axis</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="o">-</span><span class="mf">0.7</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.8</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_market_configuration_annotations</span><span class="p">(),</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s2">&quot;top&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_set_payoffs_ticks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">,</span> <span class="n">bar_width</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="n">spacing</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the x - and y - ticks for the plot of the payoffs for different market configurations.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        axis matplotlib.axes.Axes</span>
+<span class="sd">            To adjust the ticks on.</span>
+<span class="sd">        bar_width: float</span>
+<span class="sd">            Width of a bar in the plot.</span>
+<span class="sd">        index: np.array</span>
+<span class="sd">            Index of the different market configurations in the plot.</span>
+<span class="sd">        spacing: float</span>
+<span class="sd">            Spacing between the bars on the plot.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">axis</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">yticklabels</span><span class="o">=</span><span class="p">[])</span>
+        <span class="n">axis</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">axis</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">index</span> <span class="o">+</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">bar_width</span> <span class="o">+</span> <span class="n">spacing</span><span class="p">))</span>
         <span class="n">axis</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="nb">tuple</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_convert_market_configuration_label</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_payoffs</span><span class="o">.</span><span class="n">keys</span><span class="p">()]))</span>
-        <span class="n">axis</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.3</span><span class="p">),</span> <span class="n">loc</span><span class="o">=</span><span class="s2">&quot;lower left&quot;</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
-        <span class="n">axis</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">+</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">bar_width</span> <span class="o">+</span> <span class="n">spacing</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_payoffs</span><span class="p">[</span><span class="s2">&quot;E(P)&quot;</span><span class="p">][</span><span class="s2">&quot;W&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">,</span>
-                  <span class="bp">self</span><span class="o">.</span><span class="n">_get_market_configuration_annotations</span><span class="p">())</span>
 
-        <span class="c1"># BaseModel._set_axis(axis)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">axis</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_set_payoffs_figure</span><span class="p">(</span><span class="n">axis</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adjust the matplotlib figure to plot the payoffs for different market configurations.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        axis: matplotlib.axes.Axes</span>
+<span class="sd">            To adjust for the payoff plot.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">axis</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">set_size_inches</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="n">axis</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_get_market_configuration_annotations</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -1803,10 +1922,11 @@
 <span class="sd">            Contains all product options for the entrant and the incumbent.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s2">&quot;$I_P$: Primary product sold by the incumbent</span><span class="se">\n</span><span class="s2">&quot;</span> \
-               <span class="s2">&quot;$I_C$: Complementary product to $I_P$ potentially sold by the incumbent, which is copied from $E_C$</span><span class="se">\n</span><span class="s2">&quot;</span> \
+               <span class="s2">&quot;$I_C$: Copied complementary product to $I_P$ potentially sold by the incumbent</span><span class="se">\n</span><span class="s2">&quot;</span> \
                <span class="s2">&quot;$E_P$: Perfect substitute to $I_P$ potentially sold by the entrant</span><span class="se">\n</span><span class="s2">&quot;</span> \
                <span class="s2">&quot;$E_C$: Complementary product to $I_P$ currently sold by the entrant</span><span class="se">\n</span><span class="s2">&quot;</span> \
-               <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">tilde</span><span class="si">{E}</span><span class="s2">_C$: Complementary product to $I_P$ potentially sold by the entrant</span><span class="se">\n</span><span class="s2">&quot;</span>
+               <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">tilde</span><span class="si">{E}</span><span class="s2">_C$: Complementary product to $I_P$ potentially sold by the entrant</span><span class="se">\n</span><span class="s2">&quot;</span> \
+               <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">The bars representing the maximum payoff for a stakeholder are fully filled.&quot;</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_convert_payoffs_label</span><span class="p">(</span><span class="n">raw_label</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -2051,7 +2171,7 @@
 <span class="sd">        str</span>
 <span class="sd">            A string corresponding to a matplotlib - color for a given index.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;m&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;salmon&#39;</span><span class="p">,</span> <span class="s1">&#39;khaki&#39;</span><span class="p">,</span> <span class="s1">&#39;limegreen&#39;</span><span class="p">,</span> <span class="s1">&#39;turquoise&#39;</span><span class="p">,</span> <span class="s1">&#39;powderblue&#39;</span><span class="p">,</span> <span class="s1">&#39;thistle&#39;</span><span class="p">,</span> <span class="s1">&#39;pink&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_set_axis</span><span class="p">(</span><span class="n">axis</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -2653,47 +2773,27 @@ Axis to draw the plot on. (optional)</li>
             <span class="def">def</span>
             <span class="name">plot_payoffs</span><span class="signature">(
     self,
-    axis: matplotlib.axes._axes.Axes = None
+    axis: matplotlib.axes._axes.Axes = None,
+    **kwargs
 ) -&gt; matplotlib.axes._axes.Axes</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">plot_payoffs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">plot_payoffs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">axis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">figure</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
         <span class="n">index</span> <span class="o">=</span> <span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_payoffs</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
         <span class="n">bar_width</span> <span class="o">=</span> <span class="mf">0.35</span>
-        <span class="n">opacity</span> <span class="o">=</span> <span class="mf">0.8</span>
         <span class="n">spacing</span> <span class="o">=</span> <span class="mf">0.05</span>
 
-        <span class="k">for</span> <span class="n">counter</span><span class="p">,</span> <span class="n">utility_type</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_payoffs</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_payoffs</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-            <span class="n">utility_values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">market_configuration</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_payoffs</span><span class="p">:</span>
-                <span class="n">utility_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_payoffs</span><span class="p">[</span><span class="n">market_configuration</span><span class="p">][</span><span class="n">utility_type</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_plot_payoffs_bars</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">bar_width</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">spacing</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-            <span class="n">bars</span> <span class="o">=</span> <span class="n">axis</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">index</span> <span class="o">+</span> <span class="n">counter</span> <span class="o">*</span> <span class="p">(</span><span class="n">bar_width</span> <span class="o">+</span> <span class="n">spacing</span><span class="p">),</span> <span class="n">utility_values</span><span class="p">,</span> <span class="n">bar_width</span><span class="p">,</span>
-                            <span class="n">alpha</span><span class="o">=</span><span class="n">opacity</span><span class="p">,</span>
-                            <span class="n">color</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span>
-                            <span class="n">hatch</span><span class="o">=</span><span class="s1">&#39;///&#39;</span><span class="p">,</span>
-                            <span class="n">edgecolor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_color</span><span class="p">(</span><span class="n">counter</span><span class="p">),</span>
-                            <span class="n">label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_convert_payoffs_label</span><span class="p">(</span><span class="n">utility_type</span><span class="p">))</span>
-            <span class="n">max_indices</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
-                <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">utility_values</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">==</span> <span class="nb">max</span><span class="p">(</span><span class="n">utility_values</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">utility_values</span><span class="p">))))</span>
-            <span class="k">for</span> <span class="n">max_index</span> <span class="ow">in</span> <span class="n">max_indices</span><span class="p">:</span>
-                <span class="n">bars</span><span class="p">[</span><span class="n">max_index</span><span class="p">]</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_color</span><span class="p">(</span><span class="n">counter</span><span class="p">))</span>
-
-        <span class="n">axis</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Market Configuration&#39;</span><span class="p">)</span>
-        <span class="n">axis</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Utility&#39;</span><span class="p">)</span>
-        <span class="n">axis</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Utility levels for different Market Configurations&#39;</span><span class="p">)</span>
-        <span class="n">axis</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">index</span> <span class="o">+</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">bar_width</span> <span class="o">+</span> <span class="n">spacing</span><span class="p">))</span>
-        <span class="n">axis</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="nb">tuple</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_convert_market_configuration_label</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_payoffs</span><span class="o">.</span><span class="n">keys</span><span class="p">()]))</span>
-        <span class="n">axis</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.3</span><span class="p">),</span> <span class="n">loc</span><span class="o">=</span><span class="s2">&quot;lower left&quot;</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
-        <span class="n">axis</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">+</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">bar_width</span> <span class="o">+</span> <span class="n">spacing</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_payoffs</span><span class="p">[</span><span class="s2">&quot;E(P)&quot;</span><span class="p">][</span><span class="s2">&quot;W&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">,</span>
-                  <span class="bp">self</span><span class="o">.</span><span class="n">_get_market_configuration_annotations</span><span class="p">())</span>
-
-        <span class="c1"># BaseModel._set_axis(axis)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="n">axis</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Market Configurations&#39;</span><span class="p">)</span>
+        <span class="n">axis</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Payoffs for different Market Configurations&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_payoffs_ticks</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">bar_width</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">spacing</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_payoff_legend</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;products_legend&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_payoffs_figure</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">axis</span>
 </pre></div>
 
@@ -2706,6 +2806,11 @@ Axis to draw the plot on. (optional)</li>
 <ul>
 <li><strong>axis</strong> (matplotlib.axes.Axes):
 Axis to draw the plot on. (optional)</li>
+<li><strong>**kwargs</strong>: Optional key word arguments for the payoff plot.<br>
+<ul>
+<li>products_legend: If true, a legend, containing all possible products of the entrant and the incumbent, will be added to the plot.<br></li>
+<li>opacity : Opacity of the not optimal payoffs. (floating number between 0 and 1)<br></li>
+</ul></li>
 </ul>
 
 <h6 id="returns">Returns</h6>

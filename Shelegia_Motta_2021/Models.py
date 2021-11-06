@@ -2,6 +2,7 @@ from typing import Dict, List, Tuple, Literal, Final
 
 import matplotlib.axes
 import matplotlib.pyplot as plt
+import numpy as np
 
 plt.rcParams["font.family"] = "monospace"
 
@@ -426,42 +427,102 @@ class BaseModel(Shelegia_Motta_2021.IModel):
              (x_max, y_max), (0, y_max), (0, self._copying_fixed_costs['F(YN)s']),
              (self._assets['A-s'], self._copying_fixed_costs['F(YN)s'])]]
 
-    def plot_payoffs(self, axis: matplotlib.axes.Axes = None) -> matplotlib.axes.Axes:
+    def plot_payoffs(self, axis: matplotlib.axes.Axes = None, **kwargs) -> matplotlib.axes.Axes:
         if axis is None:
             figure, axis = plt.subplots()
         index = arange(0, len(self._payoffs) * 2, 2)
         bar_width = 0.35
-        opacity = 0.8
         spacing = 0.05
 
+        self._plot_payoffs_bars(axis, bar_width, index, spacing, **kwargs)
+
+        axis.set_xlabel('Market Configurations')
+        axis.set_title('Payoffs for different Market Configurations')
+        self._set_payoffs_ticks(axis, bar_width, index, spacing)
+        self._set_payoff_legend(axis, kwargs.get("products_legend", False))
+        self._set_payoffs_figure(axis)
+        return axis
+
+    def _plot_payoffs_bars(self, axis: matplotlib.axes.Axes, bar_width: float, index: np.array, spacing: float, **kwargs) -> None:
+        """
+        Plots the bars representing the payoffs for different market configurations of different stakeholders on the specified axis.
+
+        Parameters
+        ----------
+        axis matplotlib.axes.Axes
+            To plot the bars on.
+        bar_width: float
+            Width of a bar in the plot.
+        index: np.array
+            Index of the different market configurations in the plot.
+        spacing: float
+            Spacing between the bars on the plot.
+        **kwargs
+            Optional key word arguments for the payoff plot.<br>
+            - opacity : Opacity of the not optimal payoffs.<br>
+        """
         for counter, utility_type in enumerate(self._payoffs[list(self._payoffs.keys())[0]].keys()):
             utility_values: List[float] = []
             for market_configuration in self._payoffs:
                 utility_values.append(self._payoffs[market_configuration][utility_type])
 
             bars = axis.bar(index + counter * (bar_width + spacing), utility_values, bar_width,
-                            alpha=opacity,
-                            color='w',
-                            hatch='///',
-                            edgecolor=self._get_color(counter),
+                            alpha=kwargs.get("opacity", 0.2),
+                            color=self._get_color(counter),
+                            edgecolor=None,
                             label=self._convert_payoffs_label(utility_type))
             max_indices: List[int] = list(
                 filter(lambda x: utility_values[x] == max(utility_values), range(len(utility_values))))
             for max_index in max_indices:
-                bars[max_index].set_color(self._get_color(counter))
+                bars[max_index].set_alpha(1)
 
-        axis.set_xlabel('Market Configuration')
-        axis.set_ylabel('Utility')
-        axis.set_title('Utility levels for different Market Configurations')
+    def _set_payoff_legend(self, axis: matplotlib.axes.Axes, products_legend: bool = False) -> None:
+        """
+        Creates the legend and an additional legend for the products of the entrant and the incumbent,
+
+        Parameters
+        ----------
+        axis: matplotlib.axes.Axes
+            To set the legends for.
+        products_legend: bool
+            If true, an additional legend, containing all possible products of the entrant and the incumbent, will be created.
+        """
+        axis.legend(bbox_to_anchor=(1.02, 1), loc='upper left', ncol=1)
+        if products_legend:
+            axis.text(-0.7, -0.8, self._get_market_configuration_annotations(), verticalalignment="top")
+
+    def _set_payoffs_ticks(self, axis: matplotlib.axes.Axes, bar_width: float, index: np.array, spacing: float) -> None:
+        """
+        Sets the x - and y - ticks for the plot of the payoffs for different market configurations.
+
+        Parameters
+        ----------
+        axis matplotlib.axes.Axes
+            To adjust the ticks on.
+        bar_width: float
+            Width of a bar in the plot.
+        index: np.array
+            Index of the different market configurations in the plot.
+        spacing: float
+            Spacing between the bars on the plot.
+        """
+        axis.set(yticklabels=[])
+        axis.tick_params(left=False)
         axis.set_xticks(index + 1.5 * (bar_width + spacing))
         axis.set_xticklabels(tuple([self._convert_market_configuration_label(i) for i in self._payoffs.keys()]))
-        axis.legend(bbox_to_anchor=(0, -0.3), loc="lower left", ncol=4)
-        axis.text(max(index) + 2 + 1.5 * (bar_width + spacing), self._payoffs["E(P)"]["W"] * 0.5,
-                  self._get_market_configuration_annotations())
 
-        # BaseModel._set_axis(axis)
-        plt.show()
-        return axis
+    @staticmethod
+    def _set_payoffs_figure(axis: matplotlib.axes.Axes) -> None:
+        """
+        Adjust the matplotlib figure to plot the payoffs for different market configurations.
+
+        Parameters
+        ----------
+        axis: matplotlib.axes.Axes
+            To adjust for the payoff plot.
+        """
+        axis.figure.set_size_inches(10, 5)
+        axis.figure.tight_layout()
 
     @staticmethod
     def _get_market_configuration_annotations() -> str:
@@ -474,10 +535,11 @@ class BaseModel(Shelegia_Motta_2021.IModel):
             Contains all product options for the entrant and the incumbent.
         """
         return "$I_P$: Primary product sold by the incumbent\n" \
-               "$I_C$: Complementary product to $I_P$ potentially sold by the incumbent, which is copied from $E_C$\n" \
+               "$I_C$: Copied complementary product to $I_P$ potentially sold by the incumbent\n" \
                "$E_P$: Perfect substitute to $I_P$ potentially sold by the entrant\n" \
                "$E_C$: Complementary product to $I_P$ currently sold by the entrant\n" \
-               "$\\tilde{E}_C$: Complementary product to $I_P$ potentially sold by the entrant\n"
+               "$\\tilde{E}_C$: Complementary product to $I_P$ potentially sold by the entrant\n" \
+               "\nThe bars representing the maximum payoff for a stakeholder are fully filled."
 
     @staticmethod
     def _convert_payoffs_label(raw_label: str) -> str:
@@ -1166,5 +1228,5 @@ class AcquisitionModel(BargainingPowerModel):
 
 
 if __name__ == '__main__':
-    a1 = Shelegia_Motta_2021.BargainingPowerModel().plot_incumbent_best_answers()
+    Shelegia_Motta_2021.AcquisitionModel(beta=0.1).plot_payoffs()
     plt.show()

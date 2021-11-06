@@ -209,7 +209,7 @@ class IModel:
         pass
 
     @abc.abstractmethod
-    def plot_payoffs(self, axis: matplotlib.axes.Axes = None) -> matplotlib.axes.Axes:
+    def plot_payoffs(self, axis: matplotlib.axes.Axes = None, **kwargs) -> matplotlib.axes.Axes:
         """
         Plots the payoffs for different market configurations.
 
@@ -217,6 +217,10 @@ class IModel:
         ----------
         axis : matplotlib.axes.Axes
             Axis to draw the plot on. (optional)
+        **kwargs
+            Optional key word arguments for the payoff plot.<br>
+            - products_legend: If true, a legend, containing all possible products of the entrant and the incumbent, will be added to the plot.<br>
+            - opacity : Opacity of the not optimal payoffs. (floating number between 0 and 1)<br>
 
         Returns
         -------
