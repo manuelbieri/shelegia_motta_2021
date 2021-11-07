@@ -105,9 +105,17 @@
                 
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="kn">import</span> <span class="nn">abc</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Final</span>
+            <div class="codehilite"><pre><span></span><span class="kn">import</span> <span class="nn">platform</span>
+<span class="kn">import</span> <span class="nn">re</span>
 
+<span class="c1"># add typing support for Python 3.5 - 3.7</span>
+<span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;3.[5-7].*&quot;</span><span class="p">,</span> <span class="n">platform</span><span class="o">.</span><span class="n">python_version</span><span class="p">())</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Final</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span>
+    <span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">Final</span>
+
+<span class="kn">import</span> <span class="nn">abc</span>
 <span class="kn">import</span> <span class="nn">matplotlib.axes</span>
 
 
@@ -279,6 +287,7 @@
 <span class="sd">        **kwargs</span>
 <span class="sd">            Optional key word arguments for the best answers plot.&lt;br&gt;</span>
 <span class="sd">            - title: title on top of the plot, instead of the default title.&lt;br&gt;</span>
+<span class="sd">            - legend: If false, all legends are turned off.&lt;br&gt;</span>
 <span class="sd">            - options_legend: If true, an additional legend, explaining the options of the entrant and the incumbent, will be added to the plot.&lt;br&gt;</span>
 <span class="sd">            - thresholds_legend: If true, an additional legend explaining the thresholds of the entrant and the incumbent will be added to the plot.&lt;br&gt;</span>
 <span class="sd">            - x_max : Maximum number plotted on the x - axis.&lt;br&gt;</span>
@@ -303,6 +312,7 @@
 <span class="sd">        **kwargs</span>
 <span class="sd">            Optional key word arguments for the equilibrium plot.&lt;br&gt;</span>
 <span class="sd">            - title: title on top of the plot, instead of the default title.&lt;br&gt;</span>
+<span class="sd">            - legend: If false, all legends are turned off.&lt;br&gt;</span>
 <span class="sd">            - options_legend: If true, an additional legend, explaining the options of the entrant and the incumbent, will be added to the plot.&lt;br&gt;</span>
 <span class="sd">            - thresholds_legend: If true, an additional legend explaining the thresholds of the entrant and the incumbent will be added to the plot.&lt;br&gt;</span>
 <span class="sd">            - x_max : Maximum number plotted on the x - axis.&lt;br&gt;</span>
@@ -326,6 +336,7 @@
 <span class="sd">            Axis to draw the plot on. (optional)</span>
 <span class="sd">        **kwargs</span>
 <span class="sd">            Optional key word arguments for the payoff plot.&lt;br&gt;</span>
+<span class="sd">            - legend: If false, all legend are turned off.&lt;br&gt;</span>
 <span class="sd">            - products_legend: If true, a legend, containing all possible products of the entrant and the incumbent, will be added to the plot.&lt;br&gt;</span>
 <span class="sd">            - opacity : Opacity of the not optimal payoffs. (floating number between 0 and 1)&lt;br&gt;</span>
 
@@ -536,6 +547,7 @@
 <span class="sd">        **kwargs</span>
 <span class="sd">            Optional key word arguments for the best answers plot.&lt;br&gt;</span>
 <span class="sd">            - title: title on top of the plot, instead of the default title.&lt;br&gt;</span>
+<span class="sd">            - legend: If false, all legends are turned off.&lt;br&gt;</span>
 <span class="sd">            - options_legend: If true, an additional legend, explaining the options of the entrant and the incumbent, will be added to the plot.&lt;br&gt;</span>
 <span class="sd">            - thresholds_legend: If true, an additional legend explaining the thresholds of the entrant and the incumbent will be added to the plot.&lt;br&gt;</span>
 <span class="sd">            - x_max : Maximum number plotted on the x - axis.&lt;br&gt;</span>
@@ -560,6 +572,7 @@
 <span class="sd">        **kwargs</span>
 <span class="sd">            Optional key word arguments for the equilibrium plot.&lt;br&gt;</span>
 <span class="sd">            - title: title on top of the plot, instead of the default title.&lt;br&gt;</span>
+<span class="sd">            - legend: If false, all legends are turned off.&lt;br&gt;</span>
 <span class="sd">            - options_legend: If true, an additional legend, explaining the options of the entrant and the incumbent, will be added to the plot.&lt;br&gt;</span>
 <span class="sd">            - thresholds_legend: If true, an additional legend explaining the thresholds of the entrant and the incumbent will be added to the plot.&lt;br&gt;</span>
 <span class="sd">            - x_max : Maximum number plotted on the x - axis.&lt;br&gt;</span>
@@ -583,6 +596,7 @@
 <span class="sd">            Axis to draw the plot on. (optional)</span>
 <span class="sd">        **kwargs</span>
 <span class="sd">            Optional key word arguments for the payoff plot.&lt;br&gt;</span>
+<span class="sd">            - legend: If false, all legend are turned off.&lt;br&gt;</span>
 <span class="sd">            - products_legend: If true, a legend, containing all possible products of the entrant and the incumbent, will be added to the plot.&lt;br&gt;</span>
 <span class="sd">            - opacity : Opacity of the not optimal payoffs. (floating number between 0 and 1)&lt;br&gt;</span>
 
@@ -1007,6 +1021,7 @@ Fixed costs for copying of the incumbent.</li>
 <span class="sd">        **kwargs</span>
 <span class="sd">            Optional key word arguments for the best answers plot.&lt;br&gt;</span>
 <span class="sd">            - title: title on top of the plot, instead of the default title.&lt;br&gt;</span>
+<span class="sd">            - legend: If false, all legends are turned off.&lt;br&gt;</span>
 <span class="sd">            - options_legend: If true, an additional legend, explaining the options of the entrant and the incumbent, will be added to the plot.&lt;br&gt;</span>
 <span class="sd">            - thresholds_legend: If true, an additional legend explaining the thresholds of the entrant and the incumbent will be added to the plot.&lt;br&gt;</span>
 <span class="sd">            - x_max : Maximum number plotted on the x - axis.&lt;br&gt;</span>
@@ -1032,6 +1047,7 @@ Axis to draw the plot on. (optional)</li>
 <li><strong>**kwargs</strong>: Optional key word arguments for the best answers plot.<br>
 <ul>
 <li>title: title on top of the plot, instead of the default title.<br></li>
+<li>legend: If false, all legends are turned off.<br></li>
 <li>options_legend: If true, an additional legend, explaining the options of the entrant and the incumbent, will be added to the plot.<br></li>
 <li>thresholds_legend: If true, an additional legend explaining the thresholds of the entrant and the incumbent will be added to the plot.<br></li>
 <li>x_max : Maximum number plotted on the x - axis.<br></li>
@@ -1075,6 +1091,7 @@ Axis to draw the plot on. (optional)</li>
 <span class="sd">        **kwargs</span>
 <span class="sd">            Optional key word arguments for the equilibrium plot.&lt;br&gt;</span>
 <span class="sd">            - title: title on top of the plot, instead of the default title.&lt;br&gt;</span>
+<span class="sd">            - legend: If false, all legends are turned off.&lt;br&gt;</span>
 <span class="sd">            - options_legend: If true, an additional legend, explaining the options of the entrant and the incumbent, will be added to the plot.&lt;br&gt;</span>
 <span class="sd">            - thresholds_legend: If true, an additional legend explaining the thresholds of the entrant and the incumbent will be added to the plot.&lt;br&gt;</span>
 <span class="sd">            - x_max : Maximum number plotted on the x - axis.&lt;br&gt;</span>
@@ -1100,6 +1117,7 @@ Axis to draw the plot on. (optional)</li>
 <li><strong>**kwargs</strong>: Optional key word arguments for the equilibrium plot.<br>
 <ul>
 <li>title: title on top of the plot, instead of the default title.<br></li>
+<li>legend: If false, all legends are turned off.<br></li>
 <li>options_legend: If true, an additional legend, explaining the options of the entrant and the incumbent, will be added to the plot.<br></li>
 <li>thresholds_legend: If true, an additional legend explaining the thresholds of the entrant and the incumbent will be added to the plot.<br></li>
 <li>x_max : Maximum number plotted on the x - axis.<br></li>
@@ -1142,6 +1160,7 @@ Axis to draw the plot on. (optional)</li>
 <span class="sd">            Axis to draw the plot on. (optional)</span>
 <span class="sd">        **kwargs</span>
 <span class="sd">            Optional key word arguments for the payoff plot.&lt;br&gt;</span>
+<span class="sd">            - legend: If false, all legend are turned off.&lt;br&gt;</span>
 <span class="sd">            - products_legend: If true, a legend, containing all possible products of the entrant and the incumbent, will be added to the plot.&lt;br&gt;</span>
 <span class="sd">            - opacity : Opacity of the not optimal payoffs. (floating number between 0 and 1)&lt;br&gt;</span>
 
@@ -1164,6 +1183,7 @@ Axis to draw the plot on. (optional)</li>
 Axis to draw the plot on. (optional)</li>
 <li><strong>**kwargs</strong>: Optional key word arguments for the payoff plot.<br>
 <ul>
+<li>legend: If false, all legend are turned off.<br></li>
 <li>products_legend: If true, a legend, containing all possible products of the entrant and the incumbent, will be added to the plot.<br></li>
 <li>opacity : Opacity of the not optimal payoffs. (floating number between 0 and 1)<br></li>
 </ul></li>

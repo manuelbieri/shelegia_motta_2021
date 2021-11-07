@@ -154,10 +154,14 @@ Shelegia_Motta_2021    </h1>
 <h3 id="basic-usage">Basic usage</h3>
 
 <pre><code># every model type can be plugged in without changing the following code.
+# initialize model with custom parameters
 model: <a href="Shelegia_Motta_2021/IModel.html#IModel">Shelegia_Motta_2021.IModel.IModel</a> = <a href="Shelegia_Motta_2021/Models.html#BaseModel">Shelegia_Motta_2021.Models.BaseModel()</a>
 
 # print string representation of the model
 print(model)
+
+# plot the payoffs for different market configurations for all stakeholders
+model.plot_payoffs()
 
 # plot the best answers of the incumbent to the choice of the entrant
 model.plot_incumbent_best_answers()

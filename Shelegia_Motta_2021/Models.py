@@ -1,4 +1,12 @@
-from typing import Dict, List, Tuple, Literal, Final
+import platform
+import re
+
+# add typing support for Python 3.5 - 3.7
+if re.match("3.[5-7].*", platform.python_version()) is None:
+    from typing import Dict, List, Tuple, Literal, Final
+else:
+    from typing import Dict, List, Tuple
+    from typing_extensions import Literal, Final
 
 import matplotlib.axes
 import matplotlib.pyplot as plt

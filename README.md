@@ -56,10 +56,14 @@ acquisition_model = Shelegia_Motta_2021.Models.AcquisitionModel()
 ### Basic usage
 ```
 # every model type can be plugged in without changing the following code.
+# initialize model with custom parameters
 model: Shelegia_Motta_2021.IModel.IModel = Shelegia_Motta_2021.Models.BaseModel()
 
 # print string representation of the model
 print(model)
+
+# plot the payoffs for different market configurations for all stakeholders
+model.plot_payoffs()
 
 # plot the best answers of the incumbent to the choice of the entrant
 model.plot_incumbent_best_answers()

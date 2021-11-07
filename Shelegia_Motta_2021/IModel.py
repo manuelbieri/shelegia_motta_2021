@@ -1,6 +1,14 @@
-import abc
-from typing import Dict, Final
+import platform
+import re
 
+# add typing support for Python 3.5 - 3.7
+if re.match("3.[5-7].*", platform.python_version()) is None:
+    from typing import Dict, Final
+else:
+    from typing import Dict
+    from typing_extensions import Final
+
+import abc
 import matplotlib.axes
 
 
