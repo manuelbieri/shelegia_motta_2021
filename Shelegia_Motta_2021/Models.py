@@ -21,7 +21,21 @@ import Shelegia_Motta_2021
 
 class BaseModel(Shelegia_Motta_2021.IModel):
     """
-    There are two players in our base model: The Incumbent, which sells the primary product, denoted by Ip, and a start-up, called the Entrant, which sells a product Ec complementary to Ip. (One may think of Ip as a platform, and Ec as a service or product which can be accessed through the platform.) We are interested in studying the choice of E between developing a substitute to Ip, denoted by Ep, or another complement to Ip, denoted by Ẽc and the choice of I between copying E’s original complementary product Ec by creating a perfect substitute Ic, or not. Since E may not have enough assets to cover the development cost of its second product, copying its current product will affect the entrant’s ability to obtain funding for the development. We shall show that the incumbent has a strategic incentive to copy when the entrant plans to compete, and to abstain from copying when it plans to create another complement.
+    The base model of the project consists of two players: The incumbent, denoted as Ip, which sells the primary product,
+    and a start-up otherwise known as the entrant which sells a complementary product to the incumbent (E).
+    One way to visualize a real-world application of this model would be to think of the entrant as a product or service
+    that can be accessed through the platform of the incumbent, like a plug in that can be accessed through Google or a game on Facebook.
+    The aim of this model is to monitor the choice that the entrant has between developing a substitute (Ep) to or
+    another compliment (Ec) to the incumbent. The second aim is to observe the choice of the incumbent of whether
+    to copy the original complementary product of the entrant by creating a perfect substitute (Ip) or not.
+    Seeing as the entrant may not have enough assets to fund a second product, the incumbent copying its first product
+    would inhibit the entrant’s ability to fund its projects. This report will illustrate how the incumbent has a strategic incentive to copy
+    the entrant if it is planning to compete and that it would refrain from copying if the entrant plans to develop a compliment.
+    The subsequent models included in this report will introduce additional factors but will all be based on the basic model.
+
+    The equilibrium path arguably supports the “kill zone” argument: due to the risk of an exclusionary strategy by the incumbent,
+    a potential entrant may prefer to avoid a market trajectory which would lead it to compete with the core product of a dominant incumbent
+    and would choose to develop another complementary product instead.
     """
 
     TOLERANCE: Final[float] = 10 ** (-8)
@@ -1032,7 +1046,17 @@ class BargainingPowerModel(BaseModel):
 
 class UnobservableModel(BargainingPowerModel):
     """
-    This model indicates that if the incumbent were not able to observe the entrant at the moment of choosing, the “kill zone” effect whereby the entrant stays away from the substitute in order to avoid being copied) would not take place. Intuitively, in the game as we studied it so far, the only reason why the entrant is choosing a trajectory leading to another complement is that it anticipates that if it chose one leading to a substitute, the incumbent would copy, making it an inefficient strategy for entering the market. However, if the incumbent cannot observe the entrant’s choice of strategy, the entrant could not hope to strategically affect the decision of the incumbent. This would lead to the entrant having a host of new opportunities when entering the market and it makes competing with a large company much more attractive.
+    This model indicates that if the incumbent were not able to observe the entrant at the moment of choosing,
+    the “kill zone” effect whereby the entrant stays away from the substitute in order to avoid being copied) would not take place.
+    Intuitively, in the game as we studied it so far, the only reason why the entrant is choosing a trajectory leading to another complement
+    is that it anticipates that if it chose one leading to a substitute, the incumbent would copy, making it an inefficient strategy
+    for entering the market. However, if the incumbent cannot observe the entrant’s choice of strategy, the entrant could not hope to strategically affect the decision
+    of the incumbent. This would lead to the entrant having a host of new opportunities when entering the market and it makes competing with a large company much more attractive.
+
+    Although there may be situations where the entrant could commit to some actions (product design or marketing choices)
+    which signals that it will not become a rival, and it would have all the incentive to commit to do so,
+    then the game would be like the sequential moves game analyzed in the basic model.
+    Otherwise, the entrant will never choose a complement just to avoid copying, and it will enter the “kill zone”.
     """
 
     def __init__(self, u: float = 1, B: float = 0.5, small_delta: float = 0.5, delta: float = 0.51,
@@ -1088,6 +1112,10 @@ class AcquisitionModel(BargainingPowerModel):
     In order to explore how acquisitions may modify the entrant’s and the incumbent’s strategic choices, we extend the base model
     in order to allow an acquisition to take place after the incumbent commits to copying the entrant’s original complementary product
     (between t=1 and t=2, see table 2). We assume that the incumbent and the entrant share the gains (if any) attained from the acquisition equally.
+
+    The “kill zone” still appears as a possible equilibrium outcome, however for a more reduced region of the parameter space.
+    The prospect of getting some of the acquisition gains does tend to increase the proﬁts gained from developing a substitute to the primary product,
+    and this explains why part of the “kill zone” region where a complement was chosen without the acquisition, the entrant will now choose a substitute instead.
     """
 
     def __init__(self, u: float = 1, B: float = 0.5, small_delta: float = 0.5, delta: float = 0.51,
