@@ -10,6 +10,7 @@ else:
 
 import matplotlib.axes
 import matplotlib.pyplot as plt
+import textwrap
 import numpy as np
 
 plt.rcParams["font.family"] = "monospace"
@@ -253,7 +254,9 @@ class BaseModel(Shelegia_Motta_2021.IModel):
             - xlabel: label for the x - axis.<br>
             - ylabel: label for the y - axis.<br>
             - options_legend: If true, an additional legend, explaining the options of the entrant and the incumbent, will be added to the plot.<br>
-            - thresholds_legend: If true, an additional legend explaining the thresholds of the entrant and the incumbent will be added to the plot.<br>
+            - asset_legend: If true, an additional legend explaining the thresholds of the assets of the entrant will be added to the plot.<br>
+            - costs_legend: If true, an additional legend explaining the thresholds of the fixed costs of copying for the incumbent will be added to the plot.<br>
+            - legend_width : Maximum number letters in one line in the legend (for adjustments to figure width).<br>
             - x_max : Maximum number plotted on the x - axis.<br>
             - y_max : Maximum number plotted on the y - axis.<br>
 
@@ -262,7 +265,7 @@ class BaseModel(Shelegia_Motta_2021.IModel):
         Axis containing the plot.
         """
         if axis is None:
-            figure, axis = plt.subplots()
+            plot_fig, axis = plt.subplots()
         self._draw_thresholds(axis, x_horizontal=kwargs.get("x_max", 0), y_vertical=kwargs.get("y_max", 0))
 
         for i, coordinates in enumerate(coordinates):
@@ -272,9 +275,11 @@ class BaseModel(Shelegia_Motta_2021.IModel):
         if kwargs.get("legend", True):
             axis.legend(bbox_to_anchor=(1.3, 1), loc="upper left")
             additional_legend: str = self._create_additional_legend(options_legend=kwargs.get('options_legend', False),
-                                                                    thresholds_legend=kwargs.get('thresholds_legend', False))
+                                                                    assets_thresholds_legend=kwargs.get('asset_legend', False),
+                                                                    costs_thresholds_legend=kwargs.get('costs_legend', False),
+                                                                    width=kwargs.get('legend_width', 60))
             if additional_legend != "":
-                axis.text(-0.1, -0.6, additional_legend, verticalalignment='top', linespacing=1)
+                axis.text(-0.1, -0.6, additional_legend, verticalalignment='top', linespacing=1, wrap=True)
 
         BaseModel._set_axis_labels(axis, title=kwargs.get('title', ''),
                                    x_label=kwargs.get('xlabel', 'Assets of the entrant'),
@@ -451,7 +456,7 @@ class BaseModel(Shelegia_Motta_2021.IModel):
 
     def plot_payoffs(self, axis: matplotlib.axes.Axes = None, **kwargs) -> matplotlib.axes.Axes:
         if axis is None:
-            figure, axis = plt.subplots()
+            plot_fig, axis = plt.subplots()
         index = arange(0, len(self._payoffs) * 2, 2)
         bar_width = 0.35
         spacing = 0.05
@@ -711,7 +716,7 @@ class BaseModel(Shelegia_Motta_2021.IModel):
         axis.axvline(x, linestyle='--', color='k')
         axis.text(x, label_y, kwargs.get("label", ""))
 
-    def _create_additional_legend(self, options_legend: bool, thresholds_legend: bool) -> str:
+    def _create_additional_legend(self, options_legend: bool, assets_thresholds_legend: bool, costs_thresholds_legend: bool, width: int) -> str:
         """
         Handles the creation of the additional legend for the options of the entrant and incumbent as well as the legend for the thresholds.
 
@@ -719,8 +724,10 @@ class BaseModel(Shelegia_Motta_2021.IModel):
         ----------
         options_legend: bool
             States all options of the entrant and the incumbent.
-        thresholds_legend
-            States all thresholds used in the plots.
+        assets_thresholds_legend
+            States the thresholds for the assets of the entrant used in the plots.
+        costs_thresholds_legend
+            States the thresholds for the fixed costs of copying of the incumbent used in the plots.
 
         Returns
         -------
@@ -729,44 +736,53 @@ class BaseModel(Shelegia_Motta_2021.IModel):
         """
         legend: str = ""
         if options_legend:
-            legend += self._create_options_legend()
-        if thresholds_legend:
-            legend += self._create_thresholds_legend()
+            legend += self._create_options_legend(width=width)
+        if assets_thresholds_legend:
+            legend += "\n\n" if options_legend else ""
+            legend += self._create_asset_thresholds_legend(width=width)
+        if costs_thresholds_legend:
+            legend += "\n\n" if options_legend or assets_thresholds_legend else ""
+            legend += self._create_cost_thresholds_legend(width=width)
         return legend
 
-    def _create_options_legend(self, latex: bool = True) -> str:
+    def _create_options_legend(self, width: int) -> str:
         """
         Creates a legend for the options of the entrant and the incumbent.
 
-        Parameters
-        ----------
-        latex: bool
-            If true, the legend will be compatible with latex.
         Returns
         -------
         str
             Containing the legend for the options of the entrant and the incumbent.
         """
-        space: str = "$\quad$" if latex else "\t"
         return "Options of the entrant:\n" + \
-               space + self.ENTRANT_CHOICES[
-                   'complement'] + ": Develop an additional complementary product to a primary product.\n" + \
-               space + self.ENTRANT_CHOICES[
-                   'substitute'] + ": Develop an substitute to the primary product of the incumbent.\n" + \
-               space + self.ENTRANT_CHOICES['indifferent'] + " : Indifferent between the options mentioned above.\n" + \
-               "Options of the incumbent:\n" + \
-               space + self.INCUMBENT_CHOICES[
-                   'copy'] + " : Copy the original complement of the entrant.\n" + \
-               space + self.INCUMBENT_CHOICES[
-                   'refrain'] + " : Do not copy the original complement of the entrant.\n" + \
-               "Outcomes of the development:\n" + \
-               space + self.DEVELOPMENT_OUTCOME[
-                   'success'] + " : The entrant has sufficient assets to develop the product.\n" + \
-               space + self.DEVELOPMENT_OUTCOME[
-                   'failure'] + " : The entrant has not sufficient assets to develop the product."
+               self._format_legend_line(self.ENTRANT_CHOICES['complement'] + ": Develop an additional complementary product to a primary product.", width=width) + "\n" + \
+               self._format_legend_line(self.ENTRANT_CHOICES['substitute'] + ": Develop an substitute to the primary product of the incumbent.", width=width) + "\n" + \
+               self._format_legend_line(self.ENTRANT_CHOICES['indifferent'] + " : Indifferent between the options mentioned above.", width=width) + "\n" + \
+               "\nOptions of the incumbent:\n" + \
+               self._format_legend_line(self.INCUMBENT_CHOICES['copy'] + " : Copy the original complement of the entrant.", width=width) + "\n" + \
+               self._format_legend_line(self.INCUMBENT_CHOICES['refrain'] + " : Do not copy the original complement of the entrant.", width=width) + "\n" + \
+               "\nOutcomes of the development:\n" + \
+               self._format_legend_line(self.DEVELOPMENT_OUTCOME['success'] + " : The entrant has sufficient assets to develop the product.", width=width) + "\n" + \
+               self._format_legend_line(self.DEVELOPMENT_OUTCOME['failure'] + " : The entrant has not sufficient assets to develop the product.", width=width)
 
     @staticmethod
-    def _create_thresholds_legend() -> str:
+    def _create_asset_thresholds_legend(width: int) -> str:
+        """
+        Creates a legend for the asset of the entrant thresholds used in the plots. The legend is compatible with latex.
+
+        Returns
+        -------
+        str
+             Containing the legend for the thresholds used in the plots.
+        """
+        return "Thresholds for the assets of the entrant:\n" + \
+               BaseModel._format_legend_line(r'$\bar{A}_S$' + ": Minimum level of assets to ensure a perfect substitute gets funded if the incumbent copies.", width=width) + "\n" + \
+               BaseModel._format_legend_line(r'$\bar{A}_S$' + ": Minimum level of assets to ensure a perfect substitute gets funded if the incumbent copies.", width=width) + "\n" + \
+               BaseModel._format_legend_line(r'$\bar{A}_C$' + ": Minimum level of assets to ensure another complement gets funded if the incumbent copies.", width=width) + "\n" + \
+               BaseModel._format_legend_line("If the incumbent does not copy, the entrant will have sufficient assets.", width=width)
+
+    @staticmethod
+    def _create_cost_thresholds_legend(width: int) -> str:
         """
         Creates a legend for the thresholds used in the plots. The legend is compatible with latex.
 
@@ -775,26 +791,16 @@ class BaseModel(Shelegia_Motta_2021.IModel):
         str
              Containing the legend for the thresholds used in the plots.
         """
-        space: str = "$\quad$"
-        return "Thresholds for the assets of the entrant:\n" + \
-               space + r'$\bar{A}_S$' + ": Minimum level of assets to ensure a perfect substitute\n" + \
-               space + space + space + " gets funded if the incumbent copies.\n" + \
-               space + r'$\bar{A}_C$' + ": Minimum level of assets to ensure another complement\n" + \
-               space + space + space + " gets funded if the incumbent copies.\n" + \
-               "If the incumbent does not copy, the entrant will have sufficient assets.\n\n" + \
-               "Thresholds for the fixed costs of copying for the incumbent:\n" + \
-               space + r'$F^{YY}_S$' + ": Maximum costs of copying that ensure that the incumbent\n" + \
-               space + space + space + space + "copies the entrant if the entrant is guaranteed to invest\n" + \
-               space + space + space + space + "in a perfect substitute.\n" + \
-               space + r'$F^{YN}_S$' + ": Maximum costs of copying that ensure that the incumbent\n" + \
-               space + space + space + space + "copies the entrant if the copying prevents the entrant\n" + \
-               space + space + space + space + " from developing a perfect substitute.\n" + \
-               space + r'$F^{YY}_C$' + ": Maximum costs of copying that ensure that the incumbent\n" + \
-               space + space + space + space + "copies the entrant if the entrant is guaranteed to invest\n" + \
-               space + space + space + space + "in another complement.\n" + \
-               space + r'$F^{YN}_C$' + ": Maximum costs of copying that ensure that the incumbent\n" + \
-               space + space + space + space + "copies the entrant if the copying prevents the entrant\n" + \
-               space + space + space + space + "from developing another complement.\n"
+        return "Thresholds for the fixed costs of copying for the incumbent:\n" + \
+               BaseModel._format_legend_line(r'$F^{YY}_S$' + ": Maximum costs of copying that ensure that the incumbent copies the entrant if the entrant is guaranteed to invest in a perfect substitute.", width=width) + "\n" + \
+               BaseModel._format_legend_line(r'$F^{YN}_S$' + ": Maximum costs of copying that ensure that the incumbent copies the entrant if the copying prevents the entrant from developing a perfect substitute.", width=width) + "\n" + \
+               BaseModel._format_legend_line(r'$F^{YY}_C$' + ": Maximum costs of copying that ensure that the incumbent copies the entrant if the entrant is guaranteed to invest in another complement.", width=width) + "\n" + \
+               BaseModel._format_legend_line(r'$F^{YN}_C$' + ": Maximum costs of copying that ensure that the incumbent copies the entrant if the copying prevents the entrant from developing another complement.", width=width)
+
+    @staticmethod
+    def _format_legend_line(line: str, width: int = 60, latex: bool = True) -> str:
+        space: str = "$\quad$" if latex else " " * 4
+        return textwrap.fill(line, width=width, initial_indent='', subsequent_indent=space * 3)
 
     @staticmethod
     def _get_color(i: int) -> str:
@@ -1287,7 +1293,18 @@ class AcquisitionModel(BargainingPowerModel):
         self._draw_vertical_line_with_label(axis, x=self._assets['A-s'], label=r'$\bar{A}_S$', y=y_vertical)
         self._draw_vertical_line_with_label(axis, x=self._assets['A-c'], label=r'$\bar{A}_C$', y=y_vertical)
 
+    @staticmethod
+    def _create_cost_thresholds_legend(width: int) -> str:
+        legend: str = super(AcquisitionModel, AcquisitionModel)._create_cost_thresholds_legend(width)
+        return legend + "\n" + \
+               AcquisitionModel._format_legend_line(r'$F^{ACQ}_C$' + ": Maximum level of fixed costs that ensure that the incumbent acquires the entrant if the entrant develops a second complement.", width=width) + "\n" + \
+               AcquisitionModel._format_legend_line(r'$F^{ACQ}_S$' + ": Maximum level of fixed costs that ensure that the incumbent acquires the entrant if the entrant develops a perfect substitute.", width=width)
+
 
 if __name__ == '__main__':
-    Shelegia_Motta_2021.AcquisitionModel().plot_equilibrium(legend=True)
+    base_model: Shelegia_Motta_2021.IModel = Shelegia_Motta_2021.AcquisitionModel(beta=0.6)
+    fig, (axis_best, axis_eq) = plt.subplots(ncols=2, figsize=(12, 10))
+    base_model.plot_incumbent_best_answers(axis=axis_best, title="BaseModel Best Answers", x_max=0.7, y_max=2,
+                                           costs_legend=True, legend_width=65)
+    base_model.plot_equilibrium(axis=axis_eq, title="BaseModel Equilibrium", x_max=0.7, y_max=2, options_legend=True, asset_legend=True)
     plt.show()

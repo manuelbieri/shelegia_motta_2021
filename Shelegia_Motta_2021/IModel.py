@@ -182,7 +182,8 @@ class IModel:
             - title: title on top of the plot, instead of the default title.<br>
             - legend: If false, all legends are turned off.<br>
             - options_legend: If true, an additional legend, explaining the options of the entrant and the incumbent, will be added to the plot.<br>
-            - thresholds_legend: If true, an additional legend explaining the thresholds of the entrant and the incumbent will be added to the plot.<br>
+            - asset_legend: If true, an additional legend explaining the thresholds of the assets of the entrant will be added to the plot.<br>
+            - costs_legend: If true, an additional legend explaining the thresholds of the fixed costs of copying for the incumbent will be added to the plot.<br>            - legend_width : Maximum number letters in one line in the legend (for adjustments to figure width).<br>
             - x_max : Maximum number plotted on the x - axis.<br>
             - y_max : Maximum number plotted on the y - axis.<br>
 
@@ -207,7 +208,8 @@ class IModel:
             - title: title on top of the plot, instead of the default title.<br>
             - legend: If false, all legends are turned off.<br>
             - options_legend: If true, an additional legend, explaining the options of the entrant and the incumbent, will be added to the plot.<br>
-            - thresholds_legend: If true, an additional legend explaining the thresholds of the entrant and the incumbent will be added to the plot.<br>
+            - asset_legend: If true, an additional legend explaining the thresholds of the assets of the entrant will be added to the plot.<br>
+            - costs_legend: If true, an additional legend explaining the thresholds of the fixed costs of copying for the incumbent will be added to the plot.<br>            - legend_width : Maximum number letters in one line in the legend (for adjustments to figure width).<br>
             - x_max : Maximum number plotted on the x - axis.<br>
             - y_max : Maximum number plotted on the y - axis.<br>
 
