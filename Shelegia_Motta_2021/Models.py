@@ -1295,10 +1295,21 @@ class AcquisitionModel(BargainingPowerModel):
 
     @staticmethod
     def _create_cost_thresholds_legend(width: int) -> str:
-        legend: str = super(AcquisitionModel, AcquisitionModel)._create_cost_thresholds_legend(width)
+        legend: str = super(AcquisitionModel, AcquisitionModel)._create_cost_thresholds_legend(width=width)
         return legend + "\n" + \
                AcquisitionModel._format_legend_line(r'$F^{ACQ}_C$' + ": Maximum level of fixed costs that ensure that the incumbent acquires the entrant if the entrant develops a second complement.", width=width) + "\n" + \
                AcquisitionModel._format_legend_line(r'$F^{ACQ}_S$' + ": Maximum level of fixed costs that ensure that the incumbent acquires the entrant if the entrant develops a perfect substitute.", width=width)
+
+    def _create_options_legend(self, width: int) -> str:
+        legend: str = super(AcquisitionModel, self)._create_options_legend(width=width)
+        # modify outcomes without acquisition
+        legend = legend.replace(self.DEVELOPMENT_OUTCOME['success'], "$" + self.DEVELOPMENT_OUTCOME['success'] + "_" + self.ACQUISITION_OUTCOMES["apart"] + "$")
+        legend = legend.replace(self.DEVELOPMENT_OUTCOME['failure'], "$" + self.DEVELOPMENT_OUTCOME['failure'] + "_" + self.ACQUISITION_OUTCOMES["apart"] + "$")
+
+        # add additional outcomes with acquisition
+        return legend + "\n" + \
+               self._format_legend_line("$" + self.DEVELOPMENT_OUTCOME['success'] + "_" + self.ACQUISITION_OUTCOMES["merged"] + "$ : The merged entity has sufficient assets to develop the product.", width=width) + "\n" + \
+               self._format_legend_line("$" + self.DEVELOPMENT_OUTCOME['failure'] + "_" + self.ACQUISITION_OUTCOMES["merged"] + "$ : The merged entity has not sufficient assets to develop the product.", width=width)
 
 
 if __name__ == '__main__':
@@ -1306,5 +1317,5 @@ if __name__ == '__main__':
     fig, (axis_best, axis_eq) = plt.subplots(ncols=2, figsize=(12, 10))
     base_model.plot_incumbent_best_answers(axis=axis_best, title="BaseModel Best Answers", x_max=0.7, y_max=2,
                                            costs_legend=True, legend_width=65)
-    base_model.plot_equilibrium(axis=axis_eq, title="BaseModel Equilibrium", x_max=0.7, y_max=2, options_legend=True, asset_legend=True)
+    base_model.plot_equilibrium(axis=axis_eq, title="BaseModel Equilibrium", x_max=0.7, y_max=2, options_legend=True)
     plt.show()

@@ -231,7 +231,7 @@ class IModel:
             Axis to draw the plot on. (optional)
         **kwargs
             Optional key word arguments for the payoff plot.<br>
-            - legend: If false, all legend are turned off.<br>
+            - legend: If false, all legends are turned off.<br>
             - products_legend: If true, a legend, containing all possible products of the entrant and the incumbent, will be added to the plot.<br>
             - opacity : Opacity of the not optimal payoffs. (floating number between 0 and 1)<br>
 

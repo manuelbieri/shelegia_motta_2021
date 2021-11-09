@@ -121,6 +121,9 @@ model.plot_incumbent_best_answers()
 
 # plot the equilibrium path
 model.plot_equilibrium()
+
+# not necessary when working with jupyter notebooks
+plt.show()
 ```
 
 ### Dependencies
