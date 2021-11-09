@@ -256,7 +256,7 @@ class BaseModel(Shelegia_Motta_2021.IModel):
             - options_legend: If true, an additional legend, explaining the options of the entrant and the incumbent, will be added to the plot.<br>
             - asset_legend: If true, an additional legend explaining the thresholds of the assets of the entrant will be added to the plot.<br>
             - costs_legend: If true, an additional legend explaining the thresholds of the fixed costs of copying for the incumbent will be added to the plot.<br>
-            - legend_width : Maximum number letters in one line in the legend (for adjustments to figure width).<br>
+            - legend_width : Maximum number of characters in one line in the legend (for adjustments to figure width).<br>
             - x_max : Maximum number plotted on the x - axis.<br>
             - y_max : Maximum number plotted on the y - axis.<br>
 
@@ -1117,7 +1117,7 @@ class AcquisitionModel(BargainingPowerModel):
     """
     In order to explore how acquisitions may modify the entrant’s and the incumbent’s strategic choices, we extend the base model
     in order to allow an acquisition to take place after the incumbent commits to copying the entrant’s original complementary product
-    (between t=1 and t=2, see table 2). We assume that the incumbent and the entrant share the gains (if any) attained from the acquisition equally.
+    (between t=1 and t=2, see demo.ipynb "Timing of the game"). We assume that the incumbent and the entrant share the gains (if any) attained from the acquisition equally.
 
     The “kill zone” still appears as a possible equilibrium outcome, however for a more reduced region of the parameter space.
     The prospect of getting some of the acquisition gains does tend to increase the proﬁts gained from developing a substitute to the primary product,

@@ -184,6 +184,7 @@ class IModel:
             - options_legend: If true, an additional legend, explaining the options of the entrant and the incumbent, will be added to the plot.<br>
             - asset_legend: If true, an additional legend explaining the thresholds of the assets of the entrant will be added to the plot.<br>
             - costs_legend: If true, an additional legend explaining the thresholds of the fixed costs of copying for the incumbent will be added to the plot.<br>            - legend_width : Maximum number letters in one line in the legend (for adjustments to figure width).<br>
+            - legend_width : Maximum number of characters in one line in the legend (for adjustments to figure width).<br>
             - x_max : Maximum number plotted on the x - axis.<br>
             - y_max : Maximum number plotted on the y - axis.<br>
 
@@ -210,6 +211,7 @@ class IModel:
             - options_legend: If true, an additional legend, explaining the options of the entrant and the incumbent, will be added to the plot.<br>
             - asset_legend: If true, an additional legend explaining the thresholds of the assets of the entrant will be added to the plot.<br>
             - costs_legend: If true, an additional legend explaining the thresholds of the fixed costs of copying for the incumbent will be added to the plot.<br>            - legend_width : Maximum number letters in one line in the legend (for adjustments to figure width).<br>
+            - legend_width : Maximum number of characters in one line in the legend (for adjustments to figure width).<br>
             - x_max : Maximum number plotted on the x - axis.<br>
             - y_max : Maximum number plotted on the y - axis.<br>
 
