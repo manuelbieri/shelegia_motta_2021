@@ -39,7 +39,7 @@ class BaseModel(Shelegia_Motta_2021.IModel):
     and would choose to develop another complementary product instead.
     """
 
-    TOLERANCE: Final[float] = 10 ** (-8)
+    TOLERANCE: Final[float] = 10 ** (-10)
     """Tolerance for the comparison of two floating numbers."""
 
     def __init__(self, u: float = 1, B: float = 0.5, small_delta: float = 0.5, delta: float = 0.51,
@@ -1280,15 +1280,18 @@ class AcquisitionModel(BargainingPowerModel):
     def _draw_thresholds(self, axis: matplotlib.axes.Axes, x_horizontal: float = 0, y_vertical: float = 0) -> None:
         self._draw_horizontal_line_with_label(axis, y=self._copying_fixed_costs['F(ACQ)s'], label="$F^{ACQ}_S$",
                                               x=x_horizontal)
-        self._draw_horizontal_line_with_label(axis, y=self._copying_fixed_costs['F(YY)c'], label="$F^{YY}_C$",
-                                              x=x_horizontal)
         self._draw_horizontal_line_with_label(axis, y=self._copying_fixed_costs['F(YN)s'], label="$F^{YN}_S$",
                                               x=x_horizontal)
 
-        if self._copying_fixed_costs['F(ACQ)c'] >= 0:
-            self._draw_horizontal_line_with_label(axis, y=self._copying_fixed_costs['F(ACQ)c'], label="$F^{ACQ}_C$",
-                                                  x=x_horizontal)
-
+        if abs(self._copying_fixed_costs['F(YY)c'] - self._copying_fixed_costs['F(ACQ)c']) < self.TOLERANCE:
+            self._draw_horizontal_line_with_label(axis, y=self._copying_fixed_costs['F(ACQ)c'], x=x_horizontal,
+                                                  label="$F^{ACQ}_C=F^{YY}_C$")
+        else:
+            if self._copying_fixed_costs['F(ACQ)c'] >= 0:
+                self._draw_horizontal_line_with_label(axis, y=self._copying_fixed_costs['F(ACQ)c'], x=x_horizontal,
+                                                      label="$F^{ACQ}_C$")
+            self._draw_horizontal_line_with_label(axis, y=self._copying_fixed_costs['F(YY)c'], label="$F^{YY}_C$",
+                                                      x=x_horizontal)
         # vertical lines (asset thresholds)
         self._draw_vertical_line_with_label(axis, x=self._assets['A-s'], label=r'$\bar{A}_S$', y=y_vertical)
         self._draw_vertical_line_with_label(axis, x=self._assets['A-c'], label=r'$\bar{A}_C$', y=y_vertical)
@@ -1313,7 +1316,7 @@ class AcquisitionModel(BargainingPowerModel):
 
 
 if __name__ == '__main__':
-    base_model: Shelegia_Motta_2021.IModel = Shelegia_Motta_2021.AcquisitionModel(beta=0.6)
+    base_model: Shelegia_Motta_2021.IModel = Shelegia_Motta_2021.AcquisitionModel(beta=0.4)
     fig, (axis_best, axis_eq) = plt.subplots(ncols=2, figsize=(12, 10))
     base_model.plot_incumbent_best_answers(axis=axis_best, title="BaseModel Best Answers", x_max=0.7, y_max=2,
                                            costs_legend=True, legend_width=65)
