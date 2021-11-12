@@ -1127,11 +1127,12 @@ class AcquisitionModel(BargainingPowerModel):
     def __init__(self, u: float = 1, B: float = 0.5, small_delta: float = 0.5, delta: float = 0.51,
                  K: float = 0.2, beta: float = 0.5) -> None:
         """
-        An additional constraint is added compared to Shelegia_Motta_2021.Models.BaseModel. Namely, $\Delta$ has to be bigger than $\delta$, meaning the innovation of the entrant is not too drastic.
+        An additional constraint is added compared to Shelegia_Motta_2021.Models.BaseModel. Namely, $\Delta$ has to be bigger than $\delta$,
+        meaning the innovation of the entrant is not too drastic.
 
         Meanwhile, the parameters do not change compared to Shelegia_Motta_2021.Models.BargainingPowerModel.
         """
-        assert delta > small_delta, "Delta has to be smaller than small_delta, meaning the innovation of the entrant is not too drastic."
+        assert delta < u, "Delta has to be smaller than u, meaning the innovation of the entrant is not too drastic."
         super(AcquisitionModel, self).__init__(u=u, B=B, small_delta=small_delta, delta=delta, K=K, beta=beta)
         self.ACQUISITION_OUTCOMES: Final[Dict[str, str]] = {"merged": "M", "apart": "E"}
         """
@@ -1145,6 +1146,8 @@ class AcquisitionModel(BargainingPowerModel):
         copying_fixed_costs_values.update(
             {'F(ACQ)s': (self._u + self._delta - self._K) / 2 + self._small_delta * (2 - self._beta),
              'F(ACQ)c': self._small_delta * (2.5 - 3 * self._beta) - self._K / 2})
+        assert (abs(copying_fixed_costs_values["F(ACQ)c"] - copying_fixed_costs_values["F(YY)c"]) < self.TOLERANCE or
+                copying_fixed_costs_values["F(ACQ)c"] < copying_fixed_costs_values["F(YY)c"]), "F(ACQ)c has to be smaller or equal than F(YY)c"
         return copying_fixed_costs_values
 
     def get_copying_fixed_costs_values(self) -> Dict[str, float]:
@@ -1262,9 +1265,14 @@ class AcquisitionModel(BargainingPowerModel):
              (self._assets['A-s'], self._copying_fixed_costs['F(ACQ)s'])]]
 
     def _get_equilibrium_labels(self) -> List[str]:
+        # to develop a substitute is the weakly dominant strategy of the entrant
+        entrant_choice_area_1: Literal["substitute", "complement"] = "substitute"
+        # if the payoff for a complement is higher than for a substitute, the entrant will choose the complement.
+        if self._delta < self._small_delta:
+            entrant_choice_area_1 = "complement"
         return [
             # Area 1
-            self._create_choice_answer_label(entrant="substitute", incumbent="copy", development="success",
+            self._create_choice_answer_label(entrant=entrant_choice_area_1, incumbent="copy", development="success",
                                              acquisition=self.ACQUISITION_OUTCOMES["merged"]),
             # Area 2
             self._create_choice_answer_label(entrant="substitute", incumbent="copy", development="success",
@@ -1316,9 +1324,9 @@ class AcquisitionModel(BargainingPowerModel):
 
 
 if __name__ == '__main__':
-    base_model: Shelegia_Motta_2021.IModel = Shelegia_Motta_2021.AcquisitionModel(beta=0.4)
-    fig, (axis_best, axis_eq) = plt.subplots(ncols=2, figsize=(12, 10))
+    base_model: Shelegia_Motta_2021.IModel = Shelegia_Motta_2021.AcquisitionModel(beta=0.299999999999999, delta=0.52)
+    fig, (axis_best, axis_eq) = plt.subplots(ncols=2, figsize=(9, 4))
     base_model.plot_incumbent_best_answers(axis=axis_best, title="BaseModel Best Answers", x_max=0.7, y_max=2,
-                                           costs_legend=True, legend_width=65)
-    base_model.plot_equilibrium(axis=axis_eq, title="BaseModel Equilibrium", x_max=0.7, y_max=2, options_legend=True)
+                                           legend=True, legend_width=65)
+    base_model.plot_equilibrium(axis=axis_eq, title="BaseModel Equilibrium", x_max=0.7, y_max=2, legend=True)
     plt.show()
