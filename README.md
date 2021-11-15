@@ -19,9 +19,9 @@ Installation over [PyPI](https://pypi.org/project/Shelegia-Motta-2021/):
 pip install Shelegia-Motta-2021
 ```
 
-Or clone the repository via [GitHub](https://github.com/manuelbieri/shelegia_motta_2021):
+Or fork the repository on [GitHub](https://github.com/manuelbieri/shelegia_motta_2021):
 ```
-git clone https://github.com/manuelbieri/shelegia_motta_2021.git
+git fork https://github.com/manuelbieri/shelegia_motta_2021.git
 ```
 
 ### Introduction
@@ -132,6 +132,7 @@ plt.show()
 |:-----------|:---------|:------------------------------------------------|
 | matplotlib | 3.4.3    | Always needed (includes numpy)                  |
 | jupyter    | 1.0.0    | Just for the demonstration in demo.ipynb        |
+| IPython    | 7.29.0   | Just for the demonstration in demo.ipynb        |
 | pdoc       | 8.0.1    | Only to generate the documentation from scratch |
 <br>
 These packages include all the needed imports for the functionality of this package.
