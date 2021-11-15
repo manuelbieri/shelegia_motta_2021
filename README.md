@@ -1,4 +1,4 @@
-This package implements the models of [Shelegia and Motta (2021)](shelegia_motta_2021.pdf).
+This package implements the models of [Shelegia and Motta (2021)]().
 
 ![GitHub](https://img.shields.io/github/license/manuelbieri/shelegia_motta_2021)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/Shelegia-Motta-2021)
@@ -19,9 +19,9 @@ Installation over [PyPI](https://pypi.org/project/Shelegia-Motta-2021/):
 pip install Shelegia-Motta-2021
 ```
 
-Or clone the repository via [GitHub](https://github.com/manuelbieri/shelegia_motta_2021):
+Or installation over [GitHub](https://github.com/manuelbieri/shelegia_motta_2021):
 ```
-git clone https://github.com/manuelbieri/shelegia_motta_2021.git
+pip install git+https://github.com/manuelbieri/shelegia_motta_2021.git
 ```
 
 ### Introduction
@@ -41,13 +41,13 @@ import Shelegia_Motta_2021.Models
 ### Models
 #### Base Model
 
-The base model of the project consists of two players: The incumbent, denoted as Ip, which sells the primary product,
-and a start-up otherwise known as the entrant which sells a complementary product to the incumbent (E).
+The base model of the project consists of two players: The incumbent, which sells the primary product,
+and a start-up otherwise known as the entrant which sells a complementary product to the incumbent.
 One way to visualize a real-world application of this model would be to think of the entrant as a product or service
 that can be accessed through the platform of the incumbent, like a plug in that can be accessed through Google or a game on Facebook.
-The aim of this model is to monitor the choice that the entrant has between developing a substitute (Ep) to or
-another compliment (Ec) to the incumbent. The second aim is to observe the choice of the incumbent of whether
-to copy the original complementary product of the entrant by creating a perfect substitute (Ip) or not.
+The aim of this model is to monitor the choice that the entrant has between developing a substitute to or
+another compliment to the incumbent. The second aim is to observe the choice of the incumbent of whether
+to copy the original complementary product of the entrant by creating a perfect substitute or not.
 Seeing as the entrant may not have enough assets to fund a second product, the incumbent copying its first product
 would inhibit the entrant’s ability to fund its projects. This report will illustrate how the incumbent has a strategic incentive to copy
 the entrant if it is planning to compete and that it would refrain from copying if the entrant plans to develop a compliment.
@@ -63,7 +63,9 @@ base_model = Shelegia_Motta_2021.Models.BaseModel()
 
 #### Bargaining Power Model
 
-
+Besides the parameters used in the paper (and in the BaseModel), this class will introduce the parameter $\beta$ in the models, called
+the bargaining power of the incumbent. $\beta$ describes how much of the profits from the complementary product of the entrant will go to the incumbent
+In the paper the default value $\beta=0.5$ is used to derive the results, which indicate an equal share of the profits.
 
 ```
 bargaining_power_model = Shelegia_Motta_2021.Models.BargainingPowerModel()
@@ -72,11 +74,11 @@ bargaining_power_model = Shelegia_Motta_2021.Models.BargainingPowerModel()
 #### Unobservable Choices Model
 
 This model indicates that if the incumbent were not able to observe the entrant at the moment of choosing,
-the “kill zone” effect whereby the entrant stays away from the substitute in order to avoid being copied) would not take place.
+the “kill zone” effect whereby the entrant stays away from the substitute in order to avoid being copied would not take place.
 Intuitively, in the game as we studied it so far, the only reason why the entrant is choosing a trajectory leading to another complement
 is that it anticipates that if it chose one leading to a substitute, the incumbent would copy, making it an inefficient strategy
 for entering the market. However, if the incumbent cannot observe the entrant’s choice of strategy, the entrant could not hope to strategically affect the decision
-of the incumbent. This would lead to the entrant having a host of new opportunities when entering the market and it makes competing with a large company much more attractive.
+of the incumbent. This would lead to the entrant having a host of new opportunities when entering the market makes the entrant competing with a large company much more attractive.
 
 Although there may be situations where the entrant could commit to some actions (product design or marketing choices)
 which signals that it will not become a rival, and it would have all the incentive to commit to do so,
@@ -91,19 +93,21 @@ unobservable_model = Shelegia_Motta_2021.Models.UnobservableModel()
 
 In order to explore how acquisitions may modify the entrant’s and the incumbent’s strategic choices, we extend the base model
 in order to allow an acquisition to take place after the incumbent commits to copying the entrant’s original complementary product
-(between t=1 and t=2, see table 2). We assume that the incumbent and the entrant share the gains (if any) attained from the acquisition equally.
+(between t=1 and t=2, see demo.ipynb "Timing of the game"). We assume that the incumbent and the entrant share the gains (if any) attained from the acquisition equally.
 
 The “kill zone” still appears as a possible equilibrium outcome, however for a more reduced region of the parameter space.
-The prospect of getting some of the acquisition gains does tend to increase the proﬁts gained from developing a substitute to the primary product,
+The prospect of getting some acquisition gains does tend to increase the profits gained from developing a substitute to the primary product,
 and this explains why part of the “kill zone” region where a complement was chosen without the acquisition, the entrant will now choose a substitute instead.
 
 ```
 acquisition_model = Shelegia_Motta_2021.Models.AcquisitionModel()
 ```
 
+#### Alternative formulations of the acquisition game
+An alternative formulation could be introduced in order to allow acquisitions to take place before the copying decision by the incumbent. The results are qualitatively like the results of the model which had the acquisition after the copying decision. In this alternative formulation of the game, copying would never occur along the equilibrium path. Indeed, there would be an additional source of gains from acquisition consisting of avoiding the fixed cost of copying.
+
+
 ### Basic usage
-
-
 
 ```
 # every model type can be plugged in without changing the following code.
@@ -132,6 +136,7 @@ plt.show()
 |:-----------|:---------|:------------------------------------------------|
 | matplotlib | 3.4.3    | Always needed (includes numpy)                  |
 | jupyter    | 1.0.0    | Just for the demonstration in demo.ipynb        |
+| IPython    | 7.29.0   | Just for the demonstration in demo.ipynb        |
 | pdoc       | 8.0.1    | Only to generate the documentation from scratch |
 <br>
 These packages include all the needed imports for the functionality of this package.
@@ -155,4 +160,4 @@ pdoc -o ./docs Shelegia_Motta_2021 --docformat "numpy" --math
 ```
 
 #### Additional Notes
-For further information about the coordinates used in the code, see resources/dev_notes.md.
+For further information about the project (structure) and the code, see [resources/dev_notes.md](https://github.com/manuelbieri/shelegia_motta_2021/blob/master/resources/dev_notes.md).

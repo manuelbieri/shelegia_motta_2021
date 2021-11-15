@@ -10,12 +10,10 @@ else:
 
 import matplotlib.axes
 import matplotlib.pyplot as plt
+from numpy import arange, array
+
 import textwrap
-import numpy as np
-
 plt.rcParams["font.family"] = "monospace"
-
-from numpy import arange
 
 import Shelegia_Motta_2021
 
@@ -471,7 +469,7 @@ class BaseModel(Shelegia_Motta_2021.IModel):
         self._set_payoffs_figure(axis)
         return axis
 
-    def _plot_payoffs_bars(self, axis: matplotlib.axes.Axes, bar_width: float, index: np.array, spacing: float,
+    def _plot_payoffs_bars(self, axis: matplotlib.axes.Axes, bar_width: float, index: array, spacing: float,
                            **kwargs) -> None:
         """
         Plots the bars representing the payoffs for different market configurations of different stakeholders on the specified axis.
@@ -520,7 +518,7 @@ class BaseModel(Shelegia_Motta_2021.IModel):
         if products_legend:
             axis.text(-0.7, -0.8, self._get_market_configuration_annotations(), verticalalignment="top")
 
-    def _set_payoffs_ticks(self, axis: matplotlib.axes.Axes, bar_width: float, index: np.array, spacing: float) -> None:
+    def _set_payoffs_ticks(self, axis: matplotlib.axes.Axes, bar_width: float, index: array, spacing: float) -> None:
         """
         Sets the x - and y - ticks for the plot of the payoffs for different market configurations.
 
@@ -876,8 +874,9 @@ class BaseModel(Shelegia_Motta_2021.IModel):
 
 class BargainingPowerModel(BaseModel):
     """
-    Besides the parameters used in the paper, this class will introduce the parameter $\\beta$ in the models, called
-    the bargaining power of the incumbent. In the paper the default value 0.5 is used to derive the results.
+    Besides the parameters used in the paper (and in the BaseModel), this class will introduce the parameter $\\beta$ in the models, called
+    the bargaining power of the incumbent. $\\beta$ describes how much of the profits from the complementary product of the entrant will go to the incumbent
+    In the paper the default value $\\beta=0.5$ is used to derive the results, which indicate an equal share of the profits.
     """
 
     def __init__(self, u: float = 1, B: float = 0.5, small_delta: float = 0.5, delta: float = 0.51,
@@ -1161,6 +1160,8 @@ class AcquisitionModel(BargainingPowerModel):
         | $F^{ACQ}_S$ | F(ACQ)s | $\\frac{(u + \Delta - K)}{2} + \delta(2 - \\beta)$ |
         | $F^{ACQ}_C$ | F(ACQ)c | $\\frac{K}{2} + \delta(2.5 - 3\\beta)$ |
         <br>
+        As an additional constraint, $F^{ACQ}_C$ has to be smaller or equal than $F^{YY}_C$, since the logic described in the paper may not apply anymore for the other cases.
+
         Returns
         -------
         Dict[str, float]
@@ -1176,8 +1177,12 @@ class AcquisitionModel(BargainingPowerModel):
             result.update({"development": self.DEVELOPMENT_OUTCOME["success"]})
             result.update({"acquisition": self.ACQUISITION_OUTCOMES["apart"]})
         elif F < self._copying_fixed_costs["F(ACQ)c"] and A < self._assets["A-s"]:
-            # since delta will always be bigger than small_delta, the entrant will choose to develop a substitute
-            result.update({"entrant": self.ENTRANT_CHOICES["substitute"]})
+            # to develop a substitute is the weakly dominant strategy of the entrant
+            entrant_choice_area_1: Literal["substitute", "complement"] = "substitute"
+            # if the payoff for a complement is higher than for a substitute, the entrant will choose the complement.
+            if self._delta < self._small_delta:
+                entrant_choice_area_1 = "complement"
+            result.update({"entrant": self.ENTRANT_CHOICES[entrant_choice_area_1]})
             result.update({"incumbent": self.INCUMBENT_CHOICES["copy"]})
             result.update({"development": self.DEVELOPMENT_OUTCOME["success"]})
             result.update({"acquisition": self.ACQUISITION_OUTCOMES["merged"]})

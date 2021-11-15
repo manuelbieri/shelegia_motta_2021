@@ -9,7 +9,7 @@ class BaseModelTest(unittest.TestCase):
     """
     Tests the constraints and the optimal choice method in the base model.
 
-    See dev_notes.md for the enumeration of the areas used in the testcases.
+    See dev_notes.md for the enumeration of the areas and testing points used in the testcases.
     """
 
     class TestPoint:
@@ -42,6 +42,9 @@ class BaseModelTest(unittest.TestCase):
         self.g = BaseModelTest.TestPoint(self.assets["A-s"], (self.costs["F(YN)c"] + self.costs["F(YY)s"])/2)
 
     def setUp(self) -> None:
+        """
+        Sets up the model and points (see resources/dev_notes.md) for the tests.
+        """
         self.model: IModel = self.setUpModel()
         self.setUpTestPoints()
 
@@ -186,3 +189,17 @@ class AcquisitionModelTest(BaseModelTest):
         self.e = BaseModelTest.TestPoint(self.assets["A-s"]/2, self.costs["F(ACQ)s"])
         self.f = BaseModelTest.TestPoint(self.assets["A-s"], self.costs["F(ACQ)s"])
         self.g = BaseModelTest.TestPoint(self.assets["A-s"], (self.costs["F(ACQ)c"] + self.costs["F(YY)s"])/2)
+
+    def test_setUpInvalidThresholds(self):
+        """
+        Tests the violation of the following condition: $F^{ACQ}_C <= F^{YY}_C$
+        """
+        self.assertRaises(AssertionError, AcquisitionModel, beta=0.2)
+
+    def test_area_one_small_delta_bigger_than_delta(self):
+        self.model = AcquisitionModel(small_delta=0.52)
+        choice: Dict[str, str] = self.model.get_optimal_choice(A=self.a.A, F=self.a.F * 0.9)
+        self.assertEqual(choice["entrant"], self.model.ENTRANT_CHOICES["complement"])
+        self.assertEqual(choice["incumbent"], self.model.INCUMBENT_CHOICES["copy"])
+        self.assertEqual(choice["development"], self.model.DEVELOPMENT_OUTCOME["success"])
+        self.assertEqual(choice["acquisition"], self.model.ACQUISITION_OUTCOMES["merged"])
