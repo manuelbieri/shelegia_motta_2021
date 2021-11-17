@@ -1133,7 +1133,7 @@ class AcquisitionModel(BargainingPowerModel):
         """
         assert delta < u, "Delta has to be smaller than u, meaning the innovation of the entrant is not too drastic."
         super(AcquisitionModel, self).__init__(u=u, B=B, small_delta=small_delta, delta=delta, K=K, beta=beta)
-        self.ACQUISITION_OUTCOMES: Final[Dict[str, str]] = {"merged": "M", "apart": "E"}
+        self.ACQUISITION_OUTCOME: Final[Dict[str, str]] = {"merged": "M", "apart": "E"}
         """
         Contains the options for an acquisition or not.
         - merged (M): The incumbent acquired the entrant.
@@ -1170,12 +1170,36 @@ class AcquisitionModel(BargainingPowerModel):
         return self._copying_fixed_costs
 
     def get_optimal_choice(self, A: float, F: float) -> Dict[str, str]:
+        """
+        Returns the optimal choice of the entrant and the incumbent based on a pair of assets of the entrant and fixed costs for copying of the incumbent.
+
+        The output dictionary will contain the following details:
+
+        - "entrant": choice of the entrant (possible choices listed in Shelegia_Motta_2021.IModel.IModel.ENTRANT_CHOICES))
+        - "incumbent": choice of the incumbent (possible choices listed in Shelegia_Motta_2021.IModel.IModel.INCUMBENT_CHOICES)
+        - "development": outcome of the development (possible outcomes listed in Shelegia_Motta_2021.IModel.IModel.DEVELOPMENT_OUTCOME)
+        - "acquisition": outcome of the acquisition (possible outcomes listed in Shelegia_Motta_2021.Models.AcquisitionModel.ACQUISITION_OUTCOME)
+
+        To understand the details of the logic implemented, consult the chapter in Shelegia and Motta (2021) corresponding to the model.
+
+        Parameters
+        ----------
+        A : float
+            Assets of the entrant.
+        F : float
+            Fixed costs for copying of the incumbent.
+
+        Returns
+        -------
+        Dict[str, str]
+            Optimal choice of the entrant, the incumbent and the outcome of the development.
+        """
         result: Dict[str, str] = {"entrant": "", "incumbent": "", "development": "", "acquisition": ""}
         if self._copying_fixed_costs["F(ACQ)c"] <= F <= self._copying_fixed_costs["F(ACQ)s"] and A < self._assets["A-s"]:
             result.update({"entrant": self.ENTRANT_CHOICES["complement"]})
             result.update({"incumbent": self.INCUMBENT_CHOICES["refrain"]})
             result.update({"development": self.DEVELOPMENT_OUTCOME["success"]})
-            result.update({"acquisition": self.ACQUISITION_OUTCOMES["apart"]})
+            result.update({"acquisition": self.ACQUISITION_OUTCOME["apart"]})
         elif F < self._copying_fixed_costs["F(ACQ)c"] and A < self._assets["A-s"]:
             # to develop a substitute is the weakly dominant strategy of the entrant
             entrant_choice_area_1: Literal["substitute", "complement"] = "substitute"
@@ -1185,11 +1209,11 @@ class AcquisitionModel(BargainingPowerModel):
             result.update({"entrant": self.ENTRANT_CHOICES[entrant_choice_area_1]})
             result.update({"incumbent": self.INCUMBENT_CHOICES["copy"]})
             result.update({"development": self.DEVELOPMENT_OUTCOME["success"]})
-            result.update({"acquisition": self.ACQUISITION_OUTCOMES["merged"]})
+            result.update({"acquisition": self.ACQUISITION_OUTCOME["merged"]})
         else:
             result.update({"entrant": self.ENTRANT_CHOICES["substitute"]})
             result.update({"development": self.DEVELOPMENT_OUTCOME["success"]})
-            result.update({"acquisition": self.ACQUISITION_OUTCOMES["merged"]})
+            result.update({"acquisition": self.ACQUISITION_OUTCOME["merged"]})
             if F <= self._copying_fixed_costs["F(YY)c"]:
                 result.update({"incumbent": self.INCUMBENT_CHOICES["copy"]})
             else:
@@ -1225,29 +1249,29 @@ class AcquisitionModel(BargainingPowerModel):
         return [
             # Area 1
             self._create_choice_answer_label(entrant="substitute", incumbent="copy", development="success",
-                                             acquisition=self.ACQUISITION_OUTCOMES["merged"]) + " \n" +
+                                             acquisition=self.ACQUISITION_OUTCOME["merged"]) + " \n" +
             self._create_choice_answer_label(entrant="complement", incumbent="copy", development="success",
-                                             acquisition=self.ACQUISITION_OUTCOMES["merged"]),
+                                             acquisition=self.ACQUISITION_OUTCOME["merged"]),
             # Area 2
             self._create_choice_answer_label(entrant="substitute", incumbent="copy", development="success",
-                                             acquisition=self.ACQUISITION_OUTCOMES["merged"]) + " \n" +
+                                             acquisition=self.ACQUISITION_OUTCOME["merged"]) + " \n" +
             self._create_choice_answer_label(entrant="complement", incumbent="copy", development="success",
-                                             acquisition=self.ACQUISITION_OUTCOMES["apart"]),
+                                             acquisition=self.ACQUISITION_OUTCOME["apart"]),
             # Area 3
             self._create_choice_answer_label(entrant="substitute", incumbent="copy", development="success",
-                                             acquisition=self.ACQUISITION_OUTCOMES["merged"]) + " \n" +
+                                             acquisition=self.ACQUISITION_OUTCOME["merged"]) + " \n" +
             self._create_choice_answer_label(entrant="complement", incumbent="refrain", development="success",
-                                             acquisition=self.ACQUISITION_OUTCOMES["apart"]),
+                                             acquisition=self.ACQUISITION_OUTCOME["apart"]),
             # Area 4
             self._create_choice_answer_label(entrant="substitute", incumbent="copy", development="success",
-                                             acquisition=self.ACQUISITION_OUTCOMES["merged"]) + " \n" +
+                                             acquisition=self.ACQUISITION_OUTCOME["merged"]) + " \n" +
             self._create_choice_answer_label(entrant="complement", incumbent="refrain", development="success",
-                                             acquisition=self.ACQUISITION_OUTCOMES["apart"]),
+                                             acquisition=self.ACQUISITION_OUTCOME["apart"]),
             # Area 5
             self._create_choice_answer_label(entrant="substitute", incumbent="refrain", development="success",
-                                             acquisition=self.ACQUISITION_OUTCOMES["merged"]) + " \n" +
+                                             acquisition=self.ACQUISITION_OUTCOME["merged"]) + " \n" +
             self._create_choice_answer_label(entrant="complement", incumbent="refrain", development="success",
-                                             acquisition=self.ACQUISITION_OUTCOMES["apart"]),
+                                             acquisition=self.ACQUISITION_OUTCOME["apart"]),
         ]
 
     def _get_equilibrium_coordinates(self, x_max: float, y_max: float) -> List[List[Tuple[float, float]]]:
@@ -1278,16 +1302,16 @@ class AcquisitionModel(BargainingPowerModel):
         return [
             # Area 1
             self._create_choice_answer_label(entrant=entrant_choice_area_1, incumbent="copy", development="success",
-                                             acquisition=self.ACQUISITION_OUTCOMES["merged"]),
+                                             acquisition=self.ACQUISITION_OUTCOME["merged"]),
             # Area 2
             self._create_choice_answer_label(entrant="substitute", incumbent="copy", development="success",
-                                             acquisition=self.ACQUISITION_OUTCOMES["merged"]),
+                                             acquisition=self.ACQUISITION_OUTCOME["merged"]),
             # Area 3
             self._create_choice_answer_label(entrant="complement", incumbent="refrain", development="success",
-                                             kill_zone=True, acquisition=self.ACQUISITION_OUTCOMES["apart"]),
+                                             kill_zone=True, acquisition=self.ACQUISITION_OUTCOME["apart"]),
             # Area 4
             self._create_choice_answer_label(entrant="substitute", incumbent="refrain", development="success",
-                                             acquisition=self.ACQUISITION_OUTCOMES["merged"])
+                                             acquisition=self.ACQUISITION_OUTCOME["merged"])
         ]
 
     def _draw_thresholds(self, axis: matplotlib.axes.Axes, x_horizontal: float = 0, y_vertical: float = 0) -> None:
@@ -1319,13 +1343,13 @@ class AcquisitionModel(BargainingPowerModel):
     def _create_options_legend(self, width: int) -> str:
         legend: str = super(AcquisitionModel, self)._create_options_legend(width=width)
         # modify outcomes without acquisition
-        legend = legend.replace(self.DEVELOPMENT_OUTCOME['success'], "$" + self.DEVELOPMENT_OUTCOME['success'] + "_" + self.ACQUISITION_OUTCOMES["apart"] + "$")
-        legend = legend.replace(self.DEVELOPMENT_OUTCOME['failure'], "$" + self.DEVELOPMENT_OUTCOME['failure'] + "_" + self.ACQUISITION_OUTCOMES["apart"] + "$")
+        legend = legend.replace(self.DEVELOPMENT_OUTCOME['success'], "$" + self.DEVELOPMENT_OUTCOME['success'] + "_" + self.ACQUISITION_OUTCOME["apart"] + "$")
+        legend = legend.replace(self.DEVELOPMENT_OUTCOME['failure'], "$" + self.DEVELOPMENT_OUTCOME['failure'] + "_" + self.ACQUISITION_OUTCOME["apart"] + "$")
 
         # add additional outcomes with acquisition
         return legend + "\n" + \
-               self._format_legend_line("$" + self.DEVELOPMENT_OUTCOME['success'] + "_" + self.ACQUISITION_OUTCOMES["merged"] + "$ : The merged entity has sufficient assets to develop the product.", width=width) + "\n" + \
-               self._format_legend_line("$" + self.DEVELOPMENT_OUTCOME['failure'] + "_" + self.ACQUISITION_OUTCOMES["merged"] + "$ : The merged entity has not sufficient assets to develop the product.", width=width)
+               self._format_legend_line("$" + self.DEVELOPMENT_OUTCOME['success'] + "_" + self.ACQUISITION_OUTCOME["merged"] + "$ : The merged entity has sufficient assets to develop the product.", width=width) + "\n" + \
+               self._format_legend_line("$" + self.DEVELOPMENT_OUTCOME['failure'] + "_" + self.ACQUISITION_OUTCOME["merged"] + "$ : The merged entity has not sufficient assets to develop the product.", width=width)
 
 
 if __name__ == '__main__':

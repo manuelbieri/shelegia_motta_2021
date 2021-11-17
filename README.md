@@ -1,4 +1,4 @@
-This package implements the models of [Shelegia and Motta (2021)]().
+This package implements the models of [Shelegia and Motta (2021)](https://github.com/manuelbieri/shelegia_motta_2021/blob/f48f46ad2a37e3686189f17650d0923a88c1ae0d/Shelegia%20and%20Motta%20(2021).pdf).
 
 ![GitHub](https://img.shields.io/github/license/manuelbieri/shelegia_motta_2021)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/Shelegia-Motta-2021)
@@ -141,6 +141,9 @@ plt.show()
 <br>
 These packages include all the needed imports for the functionality of this package.
 
+#### Additional Notes
+For further information about the project (structure) and the code, see [resources/dev_notes.md](https://github.com/manuelbieri/shelegia_motta_2021/blob/master/resources/dev_notes.md).
+
 ### Documentation
 For the latest version of the documentation open [manuelbieri.github.io/shelegia_motta_2021](https://manuelbieri.github.io/shelegia_motta_2021/Shelegia_Motta_2021.html) in your browser or call:
 ```
@@ -158,6 +161,3 @@ Generate api-documentation with the following command:
 ```
 pdoc -o ./docs Shelegia_Motta_2021 --docformat "numpy" --math
 ```
-
-#### Additional Notes
-For further information about the project (structure) and the code, see [resources/dev_notes.md](https://github.com/manuelbieri/shelegia_motta_2021/blob/master/resources/dev_notes.md).

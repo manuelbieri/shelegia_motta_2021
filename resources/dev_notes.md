@@ -33,7 +33,7 @@ Here you can find some helpful information about the project and the code.
 ```
 
 ### Class Hierarchy
-![](plots-uml_class.png)
+![](plots-uml_class.svg)
 
 The implementation of the classes can be found in Models.py.
 
@@ -45,13 +45,13 @@ The number of the area is denoted in brackets (i.e. (1)).
 Additionally, the points used in the testcases are denoted.
 
 #### BaseModel
-![](plots-base.png)
+![](plots-base.svg)
 
 #### BargainingPowerModel
-![](plots-bargaining_power.png)
+![](plots-bargaining_power.svg)
 
 #### UnobservableModel
-![](plots-unobservable.png)
+![](plots-unobservable.svg)
 
 #### AcquisitionModel
-![](plots-acquisition.png)
+![](plots-acquisition.svg)

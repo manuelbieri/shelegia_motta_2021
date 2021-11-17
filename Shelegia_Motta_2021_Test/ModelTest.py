@@ -166,19 +166,19 @@ class AcquisitionModelTest(BaseModelTest):
         self.assertEqual(choice["entrant"], self.model.ENTRANT_CHOICES["substitute"])
         self.assertEqual(choice["incumbent"], self.model.INCUMBENT_CHOICES["copy"])
         self.assertEqual(choice["development"], self.model.DEVELOPMENT_OUTCOME["success"])
-        self.assertEqual(choice["acquisition"], self.model.ACQUISITION_OUTCOMES["merged"])
+        self.assertEqual(choice["acquisition"], self.model.ACQUISITION_OUTCOME["merged"])
 
     def assert_area_two(self, choice: Dict[str, str]):
         super(AcquisitionModelTest, self).assert_area_two(choice)
-        self.assertEqual(choice["acquisition"], self.model.ACQUISITION_OUTCOMES["merged"])
+        self.assertEqual(choice["acquisition"], self.model.ACQUISITION_OUTCOME["merged"])
 
     def assert_area_three(self, choice: Dict[str, str]):
         super(AcquisitionModelTest, self).assert_area_three(choice)
-        self.assertEqual(choice["acquisition"], self.model.ACQUISITION_OUTCOMES["apart"])
+        self.assertEqual(choice["acquisition"], self.model.ACQUISITION_OUTCOME["apart"])
 
     def assert_area_four(self, choice: Dict[str, str]):
         super(AcquisitionModelTest, self).assert_area_four(choice)
-        self.assertEqual(choice["acquisition"], self.model.ACQUISITION_OUTCOMES["merged"])
+        self.assertEqual(choice["acquisition"], self.model.ACQUISITION_OUTCOME["merged"])
 
     def setUpTestPoints(self):
         super(AcquisitionModelTest, self).setUpTestPoints()
@@ -202,4 +202,4 @@ class AcquisitionModelTest(BaseModelTest):
         self.assertEqual(choice["entrant"], self.model.ENTRANT_CHOICES["complement"])
         self.assertEqual(choice["incumbent"], self.model.INCUMBENT_CHOICES["copy"])
         self.assertEqual(choice["development"], self.model.DEVELOPMENT_OUTCOME["success"])
-        self.assertEqual(choice["acquisition"], self.model.ACQUISITION_OUTCOMES["merged"])
+        self.assertEqual(choice["acquisition"], self.model.ACQUISITION_OUTCOME["merged"])
