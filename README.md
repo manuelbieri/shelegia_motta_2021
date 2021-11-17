@@ -103,7 +103,7 @@ and this explains why part of the “kill zone” region where a complement was 
 acquisition_model = Shelegia_Motta_2021.Models.AcquisitionModel()
 ```
 
-#### Alternative formulations of the acquisition game
+##### Alternative formulations of the acquisition game
 An alternative formulation could be introduced in order to allow acquisitions to take place before the copying decision by the incumbent. The results are qualitatively like the results of the model which had the acquisition after the copying decision. In this alternative formulation of the game, copying would never occur along the equilibrium path. Indeed, there would be an additional source of gains from acquisition consisting of avoiding the fixed cost of copying.
 
 
@@ -129,6 +129,8 @@ model.plot_equilibrium()
 # not necessary when working with jupyter notebooks
 plt.show()
 ```
+
+A demonstration of the code can be found in [demo.html](demo.html) (output of [demo.ipynb](demo.ipynb)).
 
 ### Dependencies
 

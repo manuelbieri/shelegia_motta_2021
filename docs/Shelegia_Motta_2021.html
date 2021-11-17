@@ -54,8 +54,10 @@
     <li><a href="#base-model">Base Model</a></li>
     <li><a href="#bargaining-power-model">Bargaining Power Model</a></li>
     <li><a href="#unobservable-choices-model">Unobservable Choices Model</a></li>
-    <li><a href="#acquisition-model">Acquisition Model</a></li>
-    <li><a href="#alternative-formulations-of-the-acquisition-game">Alternative formulations of the acquisition game</a></li>
+    <li><a href="#acquisition-model">Acquisition Model</a>
+    <ul>
+      <li><a href="#alternative-formulations-of-the-acquisition-game">Alternative formulations of the acquisition game</a></li>
+    </ul></li>
   </ul></li>
   <li><a href="#basic-usage">Basic usage</a></li>
   <li><a href="#dependencies">Dependencies</a>
@@ -198,7 +200,7 @@ and this explains why part of the “kill zone” region where a complement was 
 <pre><code>acquisition_model = <a href="Shelegia_Motta_2021/Models.html#AcquisitionModel">Shelegia_Motta_2021.Models.AcquisitionModel()</a>
 </code></pre>
 
-<h4 id="alternative-formulations-of-the-acquisition-game">Alternative formulations of the acquisition game</h4>
+<h5 id="alternative-formulations-of-the-acquisition-game">Alternative formulations of the acquisition game</h5>
 
 <p>An alternative formulation could be introduced in order to allow acquisitions to take place before the copying decision by the incumbent. The results are qualitatively like the results of the model which had the acquisition after the copying decision. In this alternative formulation of the game, copying would never occur along the equilibrium path. Indeed, there would be an additional source of gains from acquisition consisting of avoiding the fixed cost of copying.</p>
 
@@ -223,6 +225,8 @@ model.plot_equilibrium()
 # not necessary when working with jupyter notebooks
 plt.show()
 </code></pre>
+
+<p>A demonstration of the code can be found in <a href="demo.html">demo.html</a> (output of <a href="demo.ipynb">demo.ipynb</a>).</p>
 
 <h3 id="dependencies">Dependencies</h3>
 

@@ -21,6 +21,8 @@ Here you can find some helpful information about the project and the code.
 |
 +-- demo.ipynb # demonstration of the functionality provided by the package and summary of the paper
 |
++-- demo.html # output of demo.ipynb for display in the browser
+|
 +-- LICENSE # the package is published under the MIT - license
 |
 +-- README.md # contains an overview over the package and models 
