@@ -130,16 +130,16 @@ model.plot_equilibrium()
 plt.show()
 ```
 
-A demonstration of the code can be found in [demo.html](demo.html) (output of [demo.ipynb](demo.ipynb)).
+A demonstration of the code can be found in [demo.html](demo.html) (output of [demo.ipynb](demo.ipynb), on small screens it may not be displayed correctly).
 
 ### Dependencies
 
-| Package &emsp;| Version &emsp; | Annotation &emsp;                                     |
-|:-----------|:---------|:------------------------------------------------|
-| matplotlib | 3.4.3    | Always needed (includes numpy)                  |
-| jupyter    | 1.0.0    | Just for the demonstration in demo.ipynb        |
-| IPython    | 7.29.0   | Just for the demonstration in demo.ipynb        |
-| pdoc       | 8.0.1    | Only to generate the documentation from scratch |
+| Package &emsp;| Version &emsp;| Annotation &emsp;                                     |
+|:--------------|:-------------:|:------------------------------------------------|
+| matplotlib    | 3.5.0         | Always needed (includes numpy)                  |
+| jupyter       | 1.0.0         | Just for the demonstration in demo.ipynb        |
+| IPython       | 7.29.0        | Just for the demonstration in demo.ipynb        |
+| pdoc          | 8.0.1         | Only to generate the documentation from scratch |
 <br>
 These packages include all the needed imports for the functionality of this package.
 
@@ -155,11 +155,8 @@ Shelegia_Motta_2021.docs()
 ```
 
 #### Build Documentation
-Install the pdoc package:
-```
-pip install pdoc
-```
-Generate api-documentation with the following command:
+
+Generate api-documentation with the following command (note the use of `pdoc`):
 ```
 pdoc -o ./docs Shelegia_Motta_2021 --docformat "numpy" --math
 ```

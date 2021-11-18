@@ -852,24 +852,75 @@ class BaseModel(Shelegia_Motta_2021.IModel):
         axis.set_ylabel(y_label)
 
     def __str__(self) -> str:
-        str_representation: str = 'Assets:'
-        for key in self._assets.keys():
-            str_representation += '\n\t- ' + key + ':\t' + str(self._assets[key])
+        str_representation = self._create_asset_str()
 
-        str_representation += '\nCosts for copying:'
-        for key in self._copying_fixed_costs.keys():
-            str_representation += '\n\t- ' + key + ':\t' + str(self._copying_fixed_costs[key])
+        str_representation += "\n" + self._create_copying_costs_str()
 
+        str_representation += "\n" + self._create_payoff_str()
+
+        return str_representation
+
+    def _create_payoff_str(self):
+        """
+        Creates a string representation for the payoffs of different stakeholder for different market configurations.
+
+        See Shelegia_Motta_2021.IModel.get_payoffs for the formulas of the payoffs.
+
+        Returns
+        -------
+        str
+            String representation for the payoffs of different stakeholder for different market configurations
+        """
         market_configurations: List[str] = list(self._payoffs.keys())
-        str_representation += '\nPayoffs for different Market Configurations:\n\t' + ''.join(
+        str_representation = 'Payoffs for different Market Configurations:\n\t' + ''.join(
             ['{0: <14}'.format(item) for item in market_configurations])
         for utility_type in self._payoffs[market_configurations[0]].keys():
             str_representation += '\n\t'
             for market_configuration in market_configurations:
                 str_representation += '-' + '{0: <4}'.format(utility_type).replace('pi', 'π') + ': ' + '{0: <5}'.format(
                     str(self._payoffs[market_configuration][utility_type])) + '| '
-
         return str_representation
+
+    def _create_copying_costs_str(self):
+        """
+        Creates a string representation for the fixed costs of copying for the incumbent.
+
+        See Shelegia_Motta_2021.IModel.get_copying_fixed_costs_values for the formulas of the fixed costs of copying.
+
+        Returns
+        -------
+        str
+            String representation for the fixed costs of copying for the incumbent.
+        """
+        str_representation = 'Costs for copying:'
+        for key in self._copying_fixed_costs.keys():
+            str_representation += '\n\t- ' + key + ':\t' + str(self._copying_fixed_costs[key])
+        return str_representation
+
+    def _create_asset_str(self):
+        """
+        Creates a string representation for the assets of the entrant.
+
+        See Shelegia_Motta_2021.IModel.get_asset_values for the formulas of the assets of the entrant.
+
+        Returns
+        -------
+        str
+            String representation for the assets of the entrant.
+        """
+        str_representation: str = 'Assets:'
+        for key in self._assets:
+            str_representation += '\n\t- ' + key + ':\t' + str(self._assets[key])
+        return str_representation
+
+    def __call__(self, A: float, F: float) -> Dict[str, str]:
+        """
+        Makes the object callable and will return the equilibrium for a given pair of copying fixed costs of the incumbent
+        and assets of the entrant.
+
+        See Shelegia_Motta_2021.IModel.get_optimal_choice for further documentation.
+        """
+        return self.get_optimal_choice(A=A, F=F)
 
 
 class BargainingPowerModel(BaseModel):
@@ -1353,9 +1404,5 @@ class AcquisitionModel(BargainingPowerModel):
 
 
 if __name__ == '__main__':
-    base_model: Shelegia_Motta_2021.IModel = Shelegia_Motta_2021.AcquisitionModel(beta=0.299999999999999, delta=0.52)
-    fig, (axis_best, axis_eq) = plt.subplots(ncols=2, figsize=(9, 4))
-    base_model.plot_incumbent_best_answers(axis=axis_best, title="BaseModel Best Answers", x_max=0.7, y_max=2,
-                                           legend=True, legend_width=65)
-    base_model.plot_equilibrium(axis=axis_eq, title="BaseModel Equilibrium", x_max=0.7, y_max=2, legend=True)
-    plt.show()
+    model: Shelegia_Motta_2021.IModel = Shelegia_Motta_2021.AcquisitionModel()
+    print(model)
