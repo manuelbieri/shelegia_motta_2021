@@ -6,7 +6,7 @@ Here you can find some helpful information about the project and the code.
 
 ```
 .
-+-- .github # includes workflows for the repository
++-- .github # includes automated workflows for the repository
 |
 +-- docs # includes the API - Documentation
 |
@@ -25,7 +25,7 @@ Here you can find some helpful information about the project and the code.
 |
 +-- demo.html # output of demo.ipynb for display in the browser
 |
-+-- LICENSE # the package is published under the MIT - license
++-- LICENSE # license of the package
 |
 +-- README.md # contains an overview over the package and models 
 |

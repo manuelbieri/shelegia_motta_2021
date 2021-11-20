@@ -10,7 +10,7 @@ with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
 setup(
     name='Shelegia_Motta_2021',
     packages=find_packages(exclude=["Shelegia_Motta_2021_Test"]),
-    version='0.1.2',  # change with new version
+    version='1.0.0',  # change with new version
     license='MIT',
     description='Implements the model presented in Shelegia and Motta (2021)',
     long_description=long_description,
@@ -18,10 +18,10 @@ setup(
     author='Manuel Bieri',
     author_email='manuel.bieri@outlook.com',
     url='https://github.com/manuelbieri/shelegia_motta_2021',
-    download_url='https://github.com/manuelbieri/Shelegia_Motta_2021/archive/refs/tags/v0.1.2.tar.gz',  # change with new version
-    keywords=['Acquisition', 'Kill Zone', 'Start-up'],
+    download_url='https://github.com/manuelbieri/Shelegia_Motta_2021/archive/refs/tags/v1.0.0.tar.gz',  # change with new version
+    keywords=['Acquisition', 'Kill Zone'],
     classifiers=[
-        'Development Status :: 4 - Beta',  # "3 - Alpha" / "4 - Beta" / "5 - Production/Stable"
+        'Development Status :: 5 - Production/Stable',  # "3 - Alpha" / "4 - Beta" / "5 - Production/Stable"
         'Intended Audience :: Developers',
         'Topic :: Software Development',
         'License :: OSI Approved :: MIT License',
@@ -33,6 +33,5 @@ setup(
     ],
     install_requires=[
         "matplotlib>=3.5.0",  # change with new version
-        "numpy>=1.17",  # change with new version
     ],
 )
