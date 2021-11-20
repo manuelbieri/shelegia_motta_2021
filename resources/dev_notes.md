@@ -10,7 +10,9 @@ Here you can find some helpful information about the project and the code.
 |
 +-- docs # includes the API - Documentation
 |
-+-- resources # includes this file and further files for the better understanding of the code
++-- resources # includes files for the better understanding of the code
+|   +-- dev_notes.md # this file with further information about the code and project structure
+|   +-- bargaining_power_beta.pdf # derivation of the additional parameter beta (called the bargaining power of the incumbent)
 |
 +-- Shelegia_Motta_2021 # package published on PyPI
 |   +-- IModel.py # interface used in the models
@@ -32,6 +34,8 @@ Here you can find some helpful information about the project and the code.
 +-- setup.py # contains all the informations to build and install the package
 |
 +-- Shelegia and Motta (2021).pdf # the package is based on this paper
+|
++-- slides.ipynb # slides generated from demo.ipynb
 ```
 
 ### Class Hierarchy
