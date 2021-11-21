@@ -26,9 +26,9 @@ pip install git+https://github.com/manuelbieri/shelegia_motta_2021.git
 
 ### Introduction
 
-The theory of the “kill zone” has become an increasingly prominent cause for concern among economists in recent times, especially with the rise of digital companies that have become monopolists in their sectors internationally. Companies like Facebook are continuously acquiring start-ups that may have a chance of competing with them in some way in the future. The sheer size and dominance of these companies combined with their aggression regarding the acquisition of competitors makes entering these markets as a direct competitor very unattractive at first glance. However, this issue is not as one sided as that. This paper aims to rationalize the well-known “kill zone” argument by providing a simple model that explores how and when an incumbent ﬁrm may induce an entrant to choose a “non-aggressive” innovation path and enter with the goal of being acquired.
+The theory of the “kill zone” has become an increasingly prominent cause for concern among economists in recent times, especially with the rise of digital companies that have become monopolists in their sectors internationally. Companies like Facebook are continuously acquiring start-ups that may have a chance of competing with them in some way in the future. The sheer size and dominance of these companies combined with their aggression regarding the acquisition of competitors makes entering these markets as a direct competitor very unattractive at first glance. However, this issue is not as one-sided as that. This paper aims to rationalize the well-known “kill zone” argument by providing a simple model that explores how and when an incumbent firm may induce an entrant to choose a “non-aggressive” innovation path and enter with the goal of being acquired.
 
-The different models revealed that platform-owning incumbents react in diametrically opposing fashion to an entrant’s plans to develop a substitute to their platform and a complement. When a larger firm is dominating a certain sector and new firms are trying to enter this market, these firms may feel a hesitation to produce a direct competitor to the products of the incumbent and they will veer more towards producing a compliment as the prospect of the incumbent copying or acquiring the entrant looms. This is the reason a “kill zone” may emerge. Interestingly, the possibility of an acquisition by the incumbent does not worsen the “kill zone” effect. In fact, it may even induce the entrant to develop a product that rivals the incumbent in the hope of being acquired as this can generate massive profits for the smaller entrant. Meanwhile, a two – sided market will not alter the “kill zone” significantly compared to the basic model. Only simultaneous choices of both parties will avoid the existence of a “kill zone” since the choice of the entrant cannot prevent the incumbent to copy the entrant.
+The different models revealed that platform-owning incumbents react in diametrically opposing fashion to an entrant’s plans to develop a substitute to their platform and a complement. When a larger firm is dominating a certain sector and new firms are trying to enter this market, these firms may feel a hesitation to produce a direct competitor to the products of the incumbent, and they will veer more towards producing a compliment as the prospect of the incumbent copying or acquiring the entrant looms. This is the reason a “kill zone” may emerge. Interestingly, the possibility of an acquisition by the incumbent does not worsen the “kill zone” effect. In fact, it may even induce the entrant to develop a product that rivals the incumbent in the hope of being acquired as this can generate massive profits for the smaller entrant. Meanwhile, a two – sided market will not alter the “kill zone” significantly compared to the basic model. Only simultaneous choices of both parties will avoid the existence of a “kill zone” since the choice of the entrant cannot prevent the incumbent to copy the entrant.
 
 
 Since all models implement the Shelegia_Motta_2021.IModel.IModel - Interface, therefore all models provide the same functionality (public methods), even though the results may change substantially.
@@ -141,6 +141,13 @@ A demonstration of the code can be found in [demo.html](demo.html) (output of [d
 | IPython       | 7.29.0        | Just for the demonstration in demo.ipynb        |
 | pdoc          | 8.0.1         | Only to generate the documentation from scratch |
 <br>
+Install the dependencies with the following command:
+
+```
+pip install -r requirements.txt
+```
+(Note: Make sure you are operating in the same directory as the `requirements.txt` is located.)
+
 These packages include all the needed imports for the functionality of this package.
 
 #### Additional Notes
