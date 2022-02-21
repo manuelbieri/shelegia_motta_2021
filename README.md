@@ -12,6 +12,7 @@ This package implements the models of [Shelegia and Motta (2021)](https://github
 ![PyPI](https://img.shields.io/pypi/v/Shelegia-Motta-2021)
 ![PyPI - Status](https://img.shields.io/pypi/status/Shelegia-Motta-2021)
 ![GitHub deployments](https://img.shields.io/github/deployments/manuelbieri/shelegia_motta_2021/github-pages?label=Documentation)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/manuelbieri/shelegia_motta_2021/HEAD)
 
 ### Installation
 Installation over [PyPI](https://pypi.org/project/Shelegia-Motta-2021/):
