@@ -1,4 +1,4 @@
 matplotlib==3.5.1
 jupyter==1.0.0
 pdoc==10.0.1
-IPython<=7.31.1
+IPython>=7.31.1
