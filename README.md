@@ -135,12 +135,12 @@ A demonstration of the code can be found in [demo.html](demo.html) (output of [d
 
 ### Dependencies
 
-| Package &emsp;| Version &emsp;| Annotation &emsp;                                     |
-|:--------------|:-------------:|:------------------------------------------------|
-| matplotlib    | 3.5.0         | Always needed (includes numpy)                  |
-| jupyter       | 1.0.0         | Just for the demonstration in demo.ipynb        |
-| IPython       | 7.29.0        | Just for the demonstration in demo.ipynb        |
-| pdoc          | 8.0.1         | Only to generate the documentation from scratch |
+| Package &emsp; | Version &emsp; | Annotation &emsp;                               |
+|:---------------|:--------------:|:------------------------------------------------|
+| matplotlib     |     3.5.1      | Always needed (includes numpy)                  |
+| jupyter        |     1.0.0      | Just for the demonstration in demo.ipynb        |
+| IPython        |     8.1.0      | Just for the demonstration in demo.ipynb        |
+| pdoc           |     10.0.1     | Only to generate the documentation from scratch |
 <br>
 Install the dependencies with the following command:
 

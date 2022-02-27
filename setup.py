@@ -10,7 +10,7 @@ with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
 setup(
     name='Shelegia_Motta_2021',
     packages=find_packages(exclude=["Shelegia_Motta_2021_Test"]),
-    version='1.0.0',  # change with new version
+    version='1.0.1',  # change with new version
     license='MIT',
     description='Implements the model presented in Shelegia and Motta (2021)',
     long_description=long_description,
@@ -32,6 +32,6 @@ setup(
         'Programming Language :: Python :: 3.8',
     ],
     install_requires=[
-        "matplotlib>=3.5.0",  # change with new version
+        "matplotlib>=3.5.1",  # change with new version
     ],
 )
