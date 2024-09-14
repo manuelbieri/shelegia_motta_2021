@@ -7,7 +7,7 @@ This package implements the models of [Shelegia and Motta (2021)](https://github
 ![CI](https://github.com/manuelbieri/shelegia_motta_2021/actions/workflows/ci.yml/badge.svg)
 ![CodeQL](https://github.com/manuelbieri/shelegia_motta_2021/actions/workflows/codeql.yml/badge.svg)
 ![GitHub Release Date](https://img.shields.io/github/release-date/manuelbieri/shelegia_motta_2021)
-![PyPi](https://github.com/manuelbieri/shelegia_motta_2021/actions/workflows/pypi.yml/badge.svg)
+![PyPi](https://github.com/manuelbieri/shelegia_motta_2021/actions/workflows/python-publish.yml/badge.svg)
 ![PyPI](https://img.shields.io/pypi/v/Shelegia-Motta-2021)
 ![PyPI - Status](https://img.shields.io/pypi/status/Shelegia-Motta-2021)
 ![GitHub deployments](https://img.shields.io/github/deployments/manuelbieri/shelegia_motta_2021/github-pages?label=Documentation)
