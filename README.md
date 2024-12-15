@@ -34,7 +34,7 @@ The different models revealed that platform-owning incumbents react in diametric
 Since all models implement the Shelegia_Motta_2021.IModel.IModel - Interface, therefore all models provide the same functionality (public methods), even though the results may change substantially.
 
 For all models add the following import statement:
-```
+```python
 import Shelegia_Motta_2021.Models
 ```
 
@@ -57,7 +57,7 @@ The equilibrium path arguably supports the “kill zone” argument: due to the 
 a potential entrant may prefer to avoid a market trajectory which would lead it to compete with the core product of a dominant incumbent
 and would choose to develop another complementary product instead.
 
-```
+```python
 base_model = Shelegia_Motta_2021.Models.BaseModel()
 ```
 
@@ -67,7 +67,7 @@ Besides the parameters used in the paper (and in the BaseModel), this class will
 the bargaining power of the incumbent. $\beta$ describes how much of the profits from the complementary product of the entrant will go to the incumbent
 In the paper the default value $\beta=0.5$ is used to derive the results, which indicate an equal share of the profits.
 
-```
+```python
 bargaining_power_model = Shelegia_Motta_2021.Models.BargainingPowerModel()
 ```
 
@@ -85,7 +85,7 @@ which signals that it will not become a rival, and it would have all the incenti
 then the game would be like the sequential moves game analyzed in the basic model.
 Otherwise, the entrant will never choose a complement just to avoid copying, and it will enter the “kill zone”.
 
-```
+```python
 unobservable_model = Shelegia_Motta_2021.Models.UnobservableModel()
 ```
 
@@ -99,7 +99,7 @@ The “kill zone” still appears as a possible equilibrium outcome, however for
 The prospect of getting some acquisition gains does tend to increase the profits gained from developing a substitute to the primary product,
 and this explains why part of the “kill zone” region where a complement was chosen without the acquisition, the entrant will now choose a substitute instead.
 
-```
+```python
 acquisition_model = Shelegia_Motta_2021.Models.AcquisitionModel()
 ```
 
@@ -109,7 +109,10 @@ An alternative formulation could be introduced in order to allow acquisitions to
 
 ### Basic usage
 
-```
+```python
+# import package
+import Shelegia_Motta_2021.Models
+
 # every model type can be plugged in without changing the following code.
 # initialize model with custom parameters
 model: Shelegia_Motta_2021.IModel.IModel = Shelegia_Motta_2021.Models.BaseModel()
@@ -136,14 +139,14 @@ A demonstration of the code can be found in [demo.html](demo.html) (output of [d
 
 | Package &emsp; | Version &emsp; | Annotation &emsp;                               |
 |:---------------|:--------------:|:------------------------------------------------|
-| matplotlib     |     3.5.1      | Always needed (includes numpy)                  |
-| jupyter        |     1.0.0      | Just for the demonstration in demo.ipynb        |
-| IPython        |     8.1.0      | Just for the demonstration in demo.ipynb        |
-| pdoc           |     10.0.1     | Only to generate the documentation from scratch |
+| matplotlib     |     3.9.2      | Always needed (includes numpy)                  |
+| jupyter        |     1.1.1      | Just for the demonstration in demo.ipynb        |
+| IPython        |     8.27.0     | Just for the demonstration in demo.ipynb        |
+| pdoc           |     14.7.0     | Only to generate the documentation from scratch |
 <br>
 Install the dependencies with the following command:
 
-```
+```bash
 pip install -r requirements.txt
 ```
 (Note: Make sure you are operating in the same directory as the `requirements.txt` is located.)
@@ -153,9 +156,17 @@ These packages include all the needed imports for the functionality of this pack
 #### Additional Notes
 For further information about the project (structure) and the code, see [resources/dev_notes.md](https://github.com/manuelbieri/shelegia_motta_2021/blob/master/resources/dev_notes.md).
 
+#### Tests
+
+Run the testsuite with the following command:
+
+```bash
+python -m unittest Shelegia_Motta_2021_Test/*Test.py
+```
+
 ### Documentation
 For the latest version of the documentation open [manuelbieri.github.io/shelegia_motta_2021](https://manuelbieri.github.io/shelegia_motta_2021/Shelegia_Motta_2021.html) in your browser or call:
-```
+```python
 import Shelegia_Motta_2021
 
 Shelegia_Motta_2021.docs()
@@ -164,6 +175,6 @@ Shelegia_Motta_2021.docs()
 #### Build Documentation
 
 Generate api-documentation with the following command (note the use of `pdoc`):
-```
+```bash
 pdoc -o ./docs Shelegia_Motta_2021 --docformat "numpy" --math
 ```
