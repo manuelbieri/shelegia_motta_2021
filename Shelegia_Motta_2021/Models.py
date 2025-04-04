@@ -925,9 +925,9 @@ class BaseModel(Shelegia_Motta_2021.IModel):
 
 class BargainingPowerModel(BaseModel):
     """
-    Besides the parameters used in the paper (and in the BaseModel), this class will introduce the parameter $\beta$ in the models, called
-    the bargaining power of the incumbent. $\beta$ describes how much of the profits from the complementary product of the entrant will go to the incumbent
-    In the paper the default value $\beta=0.5$ is used to derive the results, which indicate an equal share of the profits.
+    Besides the parameters used in the paper (and in the BaseModel), this class will introduce the parameter $\\beta$ in the models, called
+    the bargaining power of the incumbent. $\\beta$ describes how much of the profits from the complementary product of the entrant will go to the incumbent
+    In the paper the default value $\\beta=0.5$ is used to derive the results, which indicate an equal share of the profits.
     """
 
     def __init__(self, u: float = 1, B: float = 0.5, small_delta: float = 0.5, delta: float = 0.51,

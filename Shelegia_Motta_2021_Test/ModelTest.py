@@ -207,6 +207,10 @@ class AcquisitionModelTest(BaseModelTest):
 
 
 class ModelPlotTest(unittest.TestCase):
+    """
+    Tests available plot methods.
+    """
+
     show_all = False
     """If true, show plots in the test cases."""
 

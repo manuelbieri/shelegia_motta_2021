@@ -139,10 +139,10 @@ A demonstration of the code can be found in [demo.html](demo.html) (output of [d
 
 | Package &emsp; | Version &emsp; | Annotation &emsp;                               |
 |:---------------|:--------------:|:------------------------------------------------|
-| matplotlib     |     3.9.2      | Always needed (includes numpy)                  |
+| matplotlib     |     3.10.1     | Always needed (includes numpy)                  |
 | jupyter        |     1.1.1      | Just for the demonstration in demo.ipynb        |
 | IPython        |     8.27.0     | Just for the demonstration in demo.ipynb        |
-| pdoc           |     14.7.0     | Only to generate the documentation from scratch |
+| pdoc           |     15.0.1     | Only to generate the documentation from scratch |
 <br>
 Install the dependencies with the following command:
 
