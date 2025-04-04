@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+title: Implementation of Shelegia and Motta (2021)
+message: Please cite this software using these metadata.
+type: software
+authors:
+  - given-names: Manuel
+    family-names: Bieri
+    email: mail@manuelbieri.ch
+    orcid: "https://orcid.org/0000-0002-1530-423X"
+version: 1.0.4
+date-released: "2025-04-04"
+license: MIT
+repository-code: "https://github.com/manuelbieri/shelegia_motta_2021"
