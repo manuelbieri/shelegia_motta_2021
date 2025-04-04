@@ -1,4 +1,5 @@
 import unittest
+import matplotlib.pyplot as plt
 from typing import Dict
 
 from Shelegia_Motta_2021.IModel import IModel
@@ -203,3 +204,24 @@ class AcquisitionModelTest(BaseModelTest):
         self.assertEqual(choice["incumbent"], self.model.INCUMBENT_CHOICES["copy"])
         self.assertEqual(choice["development"], self.model.DEVELOPMENT_OUTCOME["success"])
         self.assertEqual(choice["acquisition"], self.model.ACQUISITION_OUTCOME["merged"])
+
+
+class ModelPlotTest(unittest.TestCase):
+    show_all = False
+    """If true, show plots in the test cases."""
+
+    def setUp(self):
+        self.model = BaseModel()
+
+    def tearDown(self):
+        if ModelPlotTest.show_all:
+            plt.show()
+
+    def test_plot_payoffs(self):
+        self.model.plot_payoffs()
+
+    def test_plot_incumbent_best_answer(self):
+        self.model.plot_incumbent_best_answers()
+
+    def test_plot_equilibrium(self):
+        self.model.plot_equilibrium()
